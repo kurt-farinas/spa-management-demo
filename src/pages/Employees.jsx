@@ -17,7 +17,7 @@ function WorkingDays({ schedule }) {
       {WEEK.map((d) => {
         const on = schedule.includes(d)
         return (
-          <span key={d} className={`w-9 rounded-md border border-transparent py-1 text-center text-[11px] ${on ? 'bg-soft font-medium text-rail-active' : 'border border-dashed border-line text-muted'}`}>
+          <span key={d} className={`w-9 rounded-md border py-1 text-center text-[11px] ${on ? 'border-transparent bg-soft font-semibold text-ink' : 'border-dashed border-line text-muted'}`}>
             {d}
           </span>
         )
@@ -36,13 +36,13 @@ export function Employees() {
   const therapists = state.employees.filter((e) => e.role === 'Therapist').length
 
   return (
-    <div className="flex flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-[13px] text-muted">
+          <h1 className="text-[22px] leading-7 font-bold md:text-2xl md:leading-8">Employees</h1>
+          <p className="text-sm text-muted tabular-nums">
             {state.employees.length} on the team · {therapists} therapists
-          </div>
-          <h1 className="mt-1 font-heading text-[26px] font-medium md:text-[32px]">Employees</h1>
+          </p>
         </div>
         <button type="button" className={primaryButton} onClick={demoOnly}>
           + Add employee
@@ -58,7 +58,7 @@ export function Employees() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name"
-            className="h-11 w-full rounded-full border border-line bg-surface pr-4 pl-10 text-sm placeholder:text-muted"
+            className="h-11 w-full rounded-md border border-line bg-surface pr-4 pl-10 text-sm placeholder:text-muted"
           />
         </label>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
@@ -70,38 +70,41 @@ export function Employees() {
         </div>
       </div>
 
-      <section aria-label="Employee list" className="relative min-w-0 overflow-x-auto rounded-2xl border border-soft bg-surface">
+      <section aria-label="Employee list" className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface">
         {list.length === 0 ? (
-          <p className="px-5 py-8 text-sm text-muted">No employees match that search.</p>
+          <p className="px-3.5 py-6 text-sm text-muted md:px-5">No employees match that search.</p>
         ) : (
-          <table className="w-full min-w-[720px] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="text-left text-xs text-muted">
-                <th scope="col" className="px-5 py-3.5 font-medium">Employee</th>
-                <th scope="col" className="px-3 py-3.5 font-medium">Phone</th>
-                <th scope="col" className="px-3 py-3.5 font-medium">Working days</th>
-                <th scope="col" className="px-3 py-3.5 text-right font-medium">Appointments this month</th>
-                <th scope="col" className="px-5 py-3.5"><span className="sr-only">Actions</span></th>
+              <tr className="h-9 border-b border-line text-left text-xs font-semibold text-muted">
+                <th scope="col" className="px-3.5 md:px-5">Employee</th>
+                <th scope="col" className="hidden px-3 md:table-cell">Phone</th>
+                <th scope="col" className="hidden px-3 lg:table-cell">Working days</th>
+                <th scope="col" className="px-3 text-right">
+                  <span className="md:hidden">This month</span>
+                  <span className="max-md:hidden">Appointments this month</span>
+                </th>
+                <th scope="col" className="pr-1.5 md:pr-3"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
               {list.map((e) => (
-                <tr key={e.id} className="border-t border-soft">
-                  <td className="px-5 py-3">
+                <tr key={e.id} className="border-b border-line last:border-b-0">
+                  <td className="py-2 pl-3.5 md:pl-5">
                     <Link to={`/employees/${e.id}`} className="group flex min-h-11 items-center gap-2.5">
                       <Avatar name={e.name} />
                       <span>
-                        <span className="block font-medium underline-offset-4 group-hover:underline">{e.name}</span>
+                        <span className="block font-semibold underline-offset-4 group-hover:underline">{e.name}</span>
                         <span className="text-xs text-muted">{e.role}</span>
                       </span>
                     </Link>
                   </td>
-                  <td className="px-3 py-3 whitespace-nowrap tabular-nums">{e.phone}</td>
-                  <td className="px-3 py-3">
+                  <td className="hidden px-3 py-2 whitespace-nowrap tabular-nums md:table-cell">{e.phone}</td>
+                  <td className="hidden px-3 py-2 lg:table-cell">
                     <WorkingDays schedule={e.schedule} />
                   </td>
-                  <td className="px-3 py-3 text-right font-medium tabular-nums">{employeeStats(state, e.id, month).appointments}</td>
-                  <td className="px-5 py-3 text-right">
+                  <td className="px-3 py-2 text-right font-semibold tabular-nums">{employeeStats(state, e.id, month).appointments}</td>
+                  <td className="py-2 pr-1.5 text-right md:pr-3">
                     <button
                       type="button"
                       aria-label={`Edit ${e.name}`}

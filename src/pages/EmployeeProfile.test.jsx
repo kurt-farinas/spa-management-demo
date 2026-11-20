@@ -56,6 +56,14 @@ describe('EmployeeProfile', () => {
     act(() => root.unmount())
   })
 
+  it('marks each booking row with its service category band', () => {
+    const { el, root } = render('owner')
+    const row = [...el.querySelectorAll('li')].find((li) => li.textContent.includes('Bea Santos'))
+    expect(row).toBeDefined()
+    expect(row.querySelector('[class*="bg-cat-"]')).not.toBeNull()
+    act(() => root.unmount())
+  })
+
   it('says Employee not found for an unknown id', () => {
     const { el, root } = render('owner', '/employees/nobody')
     expect(el.textContent).toContain('Employee not found')
