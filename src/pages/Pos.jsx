@@ -4,10 +4,10 @@ import { PiMinus, PiPlus, PiX } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { cartTotal } from '../data/selectors.js'
 import { formatPeso } from '../lib/money.js'
-import { duration, monthDay, nameOf } from '../lib/format.js'
+import { clock, duration, monthDay, nameOf } from '../lib/format.js'
 import { pillClass, primaryButton } from '../components/ui.js'
 
-const TABS = ['Services', 'Products', 'Packages']
+const TABS = ['Services', 'Packages', 'Products']
 const PAYMENTS = [
   ['cash', 'Cash'],
   ['card', 'Card'],
@@ -52,7 +52,7 @@ function Receipt({ sale, state, onNew }) {
         <dd className="text-right tabular-nums">{sale.id}</dd>
         <dt className="text-muted">Date</dt>
         <dd className="text-right tabular-nums">
-          {monthDay(sale.date)}, {sale.date.slice(11)}
+          {monthDay(sale.date)}, {clock(sale.date.slice(11))}
         </dd>
         <dt className="text-muted">Client</dt>
         <dd className="text-right">{sale.clientId ? nameOf(state.clients, sale.clientId) : 'Walk-in'}</dd>
@@ -97,6 +97,7 @@ export function Pos() {
   const [sale, setSale] = useState(null)
   const panel = useRef(null)
   const panelHeading = useRef(null)
+  const refocus = useRef(false)
 
   const q = query.trim().toLowerCase()
   const type = tab === 'Products' ? 'product' : 'service'
@@ -138,6 +139,14 @@ export function Pos() {
     setErrors({})
     setSale(result.sale)
   }
+
+  // after "New sale" the receipt is gone: put focus on the sale panel heading
+  useEffect(() => {
+    if (!sale && refocus.current) {
+      refocus.current = false
+      panelHeading.current?.focus()
+    }
+  }, [sale])
 
   const viewSale = () => {
     panel.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -199,7 +208,10 @@ export function Pos() {
         className="flex scroll-mt-4 flex-col gap-3.5 rounded-2xl border border-tint bg-surface p-[22px] lg:sticky lg:top-6"
       >
         {sale ? (
-          <Receipt key={sale.id} sale={sale} state={state} onNew={() => setSale(null)} />
+          <Receipt key={sale.id} sale={sale} state={state} onNew={() => {
+              refocus.current = true
+              setSale(null)
+            }} />
         ) : (
           <>
             <h2 ref={panelHeading} tabIndex={-1} className="font-heading text-[22px] font-medium">
