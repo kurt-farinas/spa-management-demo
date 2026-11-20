@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
-import { agenda, dashboardStats, todaysAppointments, dailySales, incomeStatement } from '../data/selectors.js'
+import { dashboardStats, todaysAppointments, inSpaNow, dailySales, incomeStatement } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
 import { spaConfig } from '../config/spa.config.js'
 import { formatPeso } from '../lib/money.js'
 import { StatCard } from '../components/StatCard.jsx'
 import { linkClass, primaryButton, STATUS_PILL as PILL, CATEGORY_BAND, categoryBand } from '../components/ui.js'
-import { clock } from '../lib/format.js'
+import { clock, nameOf } from '../lib/format.js'
 import { SalesBarChart } from '../components/charts/SalesBarChart.jsx'
 
 const FIRST_NAME = { owner: spaConfig.staff.ownerName, receptionist: spaConfig.staff.receptionistName }
@@ -31,7 +31,7 @@ function Panel({ title, action, children }) {
 }
 
 const ROW = 'flex items-center gap-3 pr-3.5 md:gap-4 md:pr-5'
-const TIME = 'w-[58px] shrink-0 md:w-[72px]'
+const TIME = 'w-[68px] shrink-0 whitespace-nowrap tabular-nums md:w-[72px]'
 const WHO = 'min-w-0 flex-1 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_5rem] md:items-center md:gap-4'
 const STATUS = 'shrink-0 md:w-24'
 
@@ -40,15 +40,22 @@ export function Dashboard() {
   const { role } = useRole()
   const now = new Date()
   const stats = dashboardStats(state, now)
+  // in time order; cancelled and no-show stay listed
   const appointments = todaysAppointments(state, now)
-  // still to come first, then the rest; cancelled and no-show stay listed
-  const list = agenda(appointments)
   const serviceIdOf = new Map(state.appointments.map((a) => [a.id, a.serviceId]))
   const categoryById = (id) => state.services.find((s) => s.id === id)?.category
   const categoryByName = (name) => state.services.find((s) => s.name === name)?.category
   const days = dailySales(state.sales, now, 14)
   const done = appointments.filter((a) => a.status === 'done').length
   const toGo = appointments.filter((a) => a.status === 'booked').length
+  const noShow = appointments.filter((a) => a.status === 'no-show').length
+  const cancelled = appointments.filter((a) => a.status === 'cancelled').length
+  // each part stays on one line, so a narrow tile never breaks inside "no-show"
+  const bookingsNote = [`${done} done`, `${toGo} to go`, noShow && `${noShow} no-show`, cancelled && `${cancelled} cancelled`]
+    .filter(Boolean)
+    .map((part, i) => <span key={part}>{i > 0 && ' · '}<span className="whitespace-nowrap">{part}</span></span>)
+  const here = inSpaNow(state.appointments, now).map((a) => nameOf(state.clients, a.clientId))
+  const hereNote = here.length === 0 ? 'No one right now' : here.slice(0, 2).join(', ') + (here.length > 2 ? ` +${here.length - 2}` : '')
   const lowStock = state.products.filter((p) => p.stock <= p.reorderAt).sort((a, b) => a.stock - b.stock)
   const salesCount = days.at(-1).count
   const topMax = Math.max(1, ...stats.topServices.map((s) => s.count))
@@ -74,8 +81,8 @@ export function Dashboard() {
 
       <section aria-label="Today at a glance" className="grid grid-cols-2 gap-3 md:grid-cols-[repeat(auto-fit,minmax(190px,1fr))] md:gap-6">
         <StatCard label="Today's sales" value={formatPeso(stats.salesToday)} note={`${salesCount} ${salesCount === 1 ? 'sale' : 'sales'} so far`} />
-        <StatCard label="Bookings today" value={stats.bookingsToday} note={`${done} done · ${toGo} to go`} />
-        <StatCard label="New clients this month" value={stats.newClientsThisMonth} note={`${state.clients.length} clients in all`} />
+        <StatCard label="Bookings today" value={stats.bookingsToday} note={bookingsNote} />
+        <StatCard label="In the spa now" value={here.length} note={hereNote} />
         {canSee(role, 'profit') && (
           <StatCard label="Profit this month" value={formatPeso(incomeStatement(state, toDateStr(now).slice(0, 7)).netIncome)} note="Owner only" />
         )}
@@ -96,12 +103,12 @@ export function Dashboard() {
                   ))}
                 </ul>
                 <Link to="/appointments" className={`${linkClass} min-w-11 justify-end`}>
-                  See all{appointments.length > 0 && ` ${appointments.length}`}
+                  See all{stats.bookingsToday > 0 && ` ${stats.bookingsToday}`}
                 </Link>
               </div>
             }
           >
-            {list.length === 0 ? (
+            {appointments.length === 0 ? (
               <p className="px-3.5 py-6 text-sm text-muted md:px-5">No appointments today</p>
             ) : (
               <>
@@ -115,14 +122,15 @@ export function Dashboard() {
                   </span>
                   <span className={STATUS}>Status</span>
                 </div>
-                <ul>
-                  {list.slice(0, 6).map((a) => {
+                {/* every row; from md up it scrolls at 8.5 rows (the cut row shows there is more), below md the page scrolls */}
+                <ul tabIndex={0} aria-label="Appointment rows" className="md:max-h-[374px] md:overflow-y-auto">
+                  {appointments.map((a) => {
                     const [label, pill] = PILL[a.status] ?? PILL.booked
                     const off = a.status === 'cancelled' || a.status === 'no-show'
                     return (
                       <li key={a.id} className={`${ROW} min-h-[60px] border-b border-line last:border-b-0 md:min-h-11 ${off ? 'text-muted' : ''}`}>
                         <span aria-hidden="true" className={`w-1 shrink-0 self-stretch ${categoryBand(categoryById(serviceIdOf.get(a.id)))}`} />
-                        <span className={`${TIME} text-[13px] font-semibold tabular-nums md:text-sm ${off ? 'line-through' : ''}`}>{clock(a.time)}</span>
+                        <span className={`${TIME} text-[13px] font-semibold md:text-sm ${off ? 'line-through' : ''}`}>{clock(a.time)}</span>
                         <span className={`${WHO} ${off ? 'line-through' : ''}`}>
                           <span className="block truncate text-sm font-semibold md:font-normal">{a.clientName}</span>
                           <span className={`block truncate text-xs text-muted md:contents md:text-sm ${off ? '' : 'md:text-ink'}`}>

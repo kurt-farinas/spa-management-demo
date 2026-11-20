@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { MemoryRouter } from 'react-router-dom'
@@ -30,7 +30,51 @@ function render(role, initialState) {
   return { el, root }
 }
 
+// a day of the seed with only these appointments; rows are [clientName, 'HH:MM', status]
+function dayOf(rows) {
+  const seed = buildSeed(42, new Date())
+  const day = toDateStr(new Date())
+  return {
+    ...seed,
+    clients: [...seed.clients, ...rows.map(([name], i) => ({ id: `t${i}`, name, joinedOn: '2026-01-01', tags: [] }))],
+    appointments: rows.map(([, time, status], i) => ({ id: `T-${i}`, clientId: `t${i}`, employeeId: seed.employees[0].id, serviceId: seed.services[0].id, start: `${day}T${time}`, durationMin: 60, status })),
+  }
+}
+const listRows = (el) => [...el.querySelectorAll(`[aria-label="Today's appointments"] > ul > li`)].map((li) => li.textContent)
+const tile = (el, label) => [...el.querySelectorAll('div')].find((d) => d.textContent === label).parentElement
+
 describe('Dashboard', () => {
+  afterEach(() => vi.useRealTimers())
+
+  it('counts the same bookings in the tile and the See all link, no-show included', () => {
+    const { el, root } = render('owner', dayOf([['Ana A', '10:00', 'done'], ['Ben B', '11:00', 'no-show'], ['Cy C', '19:00', 'booked']]))
+    const value = tile(el, 'Bookings today').children[1].textContent
+    const seeAll = [...el.querySelectorAll('a')].find((a) => a.textContent.startsWith('See all')).textContent
+    expect(value).toBe('3')
+    expect(seeAll).toBe(`See all ${value}`)
+    expect(tile(el, 'Bookings today').textContent).toContain('1 done · 1 to go · 1 no-show')
+    act(() => root.unmount())
+  })
+
+  it('lists every appointment of today in time order', () => {
+    const times = ['10:00', '10:30', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
+    const rows = times.map((t, i) => [`Client ${i}`, t, i === 0 ? 'done' : i === 7 ? 'no-show' : 'booked'])
+    const { el, root } = render('owner', dayOf([...rows].reverse()))
+    const names = listRows(el).map((t) => t.match(/Client \d/)[0])
+    expect(names).toEqual(times.map((_, i) => `Client ${i}`))
+    act(() => root.unmount())
+  })
+
+  it('shows who is in the spa now instead of new clients', () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-11-20T10:30'))
+    const { el, root } = render('owner', dayOf([['Maria Reyes', '10:00', 'booked'], ['Paolo Cruz', '10:00', 'no-show'], ['Lea Lim', '11:00', 'booked']]))
+    expect(el.textContent).not.toContain('New clients this month')
+    expect(tile(el, 'In the spa now').children[1].textContent).toBe('1')
+    expect(tile(el, 'In the spa now').children[2].textContent).toBe('Maria Reyes')
+    act(() => root.unmount())
+  })
+
   it('shows Profit this month to the owner only', () => {
     const owner = render('owner')
     expect(owner.el.textContent).toContain('Profit this month')
