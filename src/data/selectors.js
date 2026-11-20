@@ -167,7 +167,7 @@ export function employeeStats(state, employeeId, month) {
   }
 }
 
-// 'YYYY-MM-DD' → the 7 days of its week, Monday first
+// 'YYYY-MM-DD' â†’ the 7 days of its week, Monday first
 export function weekDays(anyDate) {
   const d = new Date(`${anyDate}T00:00`)
   const monday = addDays(d, -((d.getDay() + 6) % 7))
@@ -189,7 +189,7 @@ export function appointmentsInRange(state, fromDate, toDate, employeeId) {
 
 export const SPA_OPEN = '10:00'
 export const SPA_CLOSE = '20:00'
-// 'YYYY-MM-DD' → 'Mon' … 'Sun', the form employee schedules use
+// 'YYYY-MM-DD' â†’ 'Mon' â€¦ 'Sun', the form employee schedules use
 export const weekdayOf = (date) => WEEK[(new Date(`${date}T00:00`).getDay() + 6) % 7]
 
 // the form's own rules; overlaps are checked by the store's validateBooking
@@ -208,3 +208,16 @@ export function validateBookingForm(state, { clientId, serviceId, employeeId, da
     errors.time = `Ends after closing (${clock(SPA_CLOSE)})`
   return errors
 }
+// out at 0, low at or below the reorder point
+export const stockStatus = (p) => (p.stock <= 0 ? 'out' : p.stock <= p.reorderAt ? 'low' : 'ok')
+
+// lowStock counts every product at or below its reorder point, out of stock included
+export const inventorySummary = (state) => ({
+  products: state.products.length,
+  lowStock: state.products.filter((p) => stockStatus(p) !== 'ok').length,
+  stockValueAtCost: sum(state.products, (p) => p.stock * p.cost),
+})
+
+// lines are checkout input: { type: 'service' | 'product', id, qty }
+export const cartTotal = (state, lines) =>
+  sum(lines, (l) => l.qty * ((l.type === 'service' ? state.services : state.products).find((x) => x.id === l.id)?.price ?? 0))

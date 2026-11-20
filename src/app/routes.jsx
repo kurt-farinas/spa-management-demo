@@ -11,6 +11,8 @@ import { Employees } from '../pages/Employees.jsx'
 import { EmployeeProfile } from '../pages/EmployeeProfile.jsx'
 import { Services } from '../pages/Services.jsx'
 import { Appointments } from '../pages/Appointments.jsx'
+import { Pos } from '../pages/Pos.jsx'
+import { Inventory } from '../pages/Inventory.jsx'
 
 // One entry per built page; pages not listed here show ComingSoon.
 const PAGE_ELEMENTS = {
@@ -19,6 +21,8 @@ const PAGE_ELEMENTS = {
   clients: <Clients />,
   employees: <Employees />,
   services: <Services />,
+  pos: <Pos />,
+  inventory: <Inventory />,
 }
 
 // Detail routes: { path, page (the PAGES key that guards it), element }.

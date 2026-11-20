@@ -4,10 +4,9 @@ import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
 import { toDateStr } from '../data/dates.js'
 import { formatPeso } from '../lib/money.js'
+import { duration } from '../lib/format.js'
 import { demoOnly } from '../components/demoOnly.js'
 import { pillClass, primaryButton, textButton } from '../components/ui.js'
-
-const duration = (min) => (min < 60 ? `${min} min` : `${Math.floor(min / 60)} hr${min % 60 ? ` ${min % 60} min` : ''}`)
 
 // top 3 service ids by qty sold this month; services nobody booked get no badge
 function mostBooked(sales, month) {
