@@ -2,6 +2,15 @@
 
 Live: https://spa-management-demo.vercel.app (Vercel, team "kurt's things", project spa-management-demo, deploys on every push to `main`).
 
+## 2026-11-20 21:29 — 828bb1e — Rename to Spa Management System; Massage colour teal
+- By: Claude, requested by Kurt
+- Card: #141
+- Code: feaf312 → 828bb1e (fast-forward of redesign/name-massage into main)
+- Migrations: none
+- Backup: none (static site, no database)
+- Data changes: none (all data is fake and lives in the browser)
+- Verified: live site serves the new bundle (assets/index-rwp2VzIA.js) with title "Spa Management System"; logged in as Owner at 1440x900 and 390x844, all 9 pages load with their headings, --brand-cat-massage is #2F7F86 (rail stays #2E6B4F), page width equals the window, 0 page errors.
+
 ## 2026-11-20 19:01 — 74f1e67 — Pandan & Calamansi redesign of all screens
 - By: Claude, requested by Kurt
 - Card: #141
