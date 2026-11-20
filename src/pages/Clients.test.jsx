@@ -207,3 +207,13 @@ describe('ClientProfile', () => {
     expect(rows[1].textContent).toContain('Done')
   })
 })
+
+describe('Clients on a phone', () => {
+  it('keeps each sub-line token and the sort headers from breaking inside', () => {
+    const el = render()
+    const tokens = [...el.querySelector('tbody tr .md\\:hidden').children]
+    expect(tokens).toHaveLength(2)
+    tokens.forEach((t) => expect(t.className).toContain('whitespace-nowrap'))
+    expect(button(el, 'Total spent').className).toContain('whitespace-nowrap')
+  })
+})

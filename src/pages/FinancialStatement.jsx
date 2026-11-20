@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { PiCaretDown } from 'react-icons/pi'
+import { PiArrowDownBold, PiArrowUpBold, PiCaretDown } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { incomeStatement, statementMonths, compareStatements, monthlyTrend } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
@@ -29,9 +29,10 @@ function Change({ change, upIsGood = true }) {
   if (change === null) return <span className="text-muted">—</span>
   if (change === 0) return <span className="text-muted">0.0%</span>
   const up = change > 0
+  const Arrow = up ? PiArrowUpBold : PiArrowDownBold
   return (
-    <span className={up === upIsGood ? 'text-success' : 'text-danger'}>
-      <span aria-hidden="true">{up ? '▲' : '▼'} </span>
+    <span className={`inline-flex items-center gap-1 ${up === upIsGood ? 'text-success' : 'text-danger'}`}>
+      <Arrow aria-hidden="true" className="size-3" />
       <span className="sr-only">{up ? 'up ' : 'down '}</span>
       {Math.abs(change).toFixed(1)}%
     </span>

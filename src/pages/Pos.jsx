@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { PiCheck, PiMagnifyingGlass, PiMinus, PiPlus, PiX } from 'react-icons/pi'
+import { PiCaretDown, PiCheck, PiMagnifyingGlass, PiMinus, PiPlus, PiX } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { cartTotal } from '../data/selectors.js'
 import { formatPeso } from '../lib/money.js'
@@ -14,7 +14,8 @@ const PAYMENTS = [
   ['gcash', 'GCash'],
 ]
 const LOW_HINT = 3 // warn once the sale comes within this many of the shelf count
-const selectClass = 'h-11 w-full min-w-0 rounded-md border bg-surface px-3 text-sm font-medium text-ink aria-invalid:border-danger'
+const selectClass = 'h-11 w-full min-w-0 cursor-pointer appearance-none rounded-md border bg-surface pr-9 pl-3 text-sm font-medium text-ink aria-invalid:border-danger'
+const caret = <PiCaretDown aria-hidden="true" className="pointer-events-none absolute right-3 size-4 text-muted" />
 const fieldClass = 'grid grid-cols-[76px_minmax(0,1fr)] items-center gap-y-1 text-[13px] font-medium text-muted'
 const stepButton = 'inline-flex size-11 shrink-0 items-center justify-center text-ink hover:bg-soft disabled:text-muted disabled:hover:bg-transparent'
 // one colour job per finished sale: amber with ink text, never white on amber
@@ -31,9 +32,10 @@ function Tile({ item, meta, out, inSale, onAdd }) {
       }`}
     >
       <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1 ${categoryBand(item.category)}`} />
-      <span className="pr-10 text-[11px] font-semibold tracking-[0.08em] text-muted uppercase">{item.category}</span>
-      <span className="mt-0.5 text-[15px] leading-5 font-semibold">{item.name}</span>
-      <span className="text-[13px] text-muted">{out ? 'Out of stock' : meta}</span>
+      <span className="pr-10 text-[15px] leading-5 font-semibold">{item.name}</span>
+      <span className="text-[13px] text-muted">
+        {item.category} · {out ? 'Out of stock' : meta}
+      </span>
       <span className={`mt-auto pt-2 text-base font-semibold tabular-nums ${out ? 'text-muted' : ''}`}>{formatPeso(item.price)}</span>
       {inSale > 0 && (
         <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 rounded-full bg-highlight py-px pr-2 pl-1.5 text-xs font-bold text-ink tabular-nums">
@@ -244,36 +246,42 @@ export function Pos() {
               </h2>
               <div className={fieldClass}>
                 <label htmlFor="pos-client">Client</label>
-                <select id="pos-client" value={clientId} onChange={(e) => setClientId(e.target.value)} className={`${selectClass} border-line`}>
-                  <option value="">Walk-in</option>
-                  {clients.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                      {c.tags.includes('VIP') ? ' (VIP)' : ''}
-                    </option>
-                  ))}
-                </select>
+                <span className="relative flex items-center">
+                  <select id="pos-client" value={clientId} onChange={(e) => setClientId(e.target.value)} className={`${selectClass} border-line`}>
+                    <option value="">Walk-in</option>
+                    {clients.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                        {c.tags.includes('VIP') ? ' (VIP)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  {caret}
+                </span>
               </div>
               <div className={fieldClass}>
                 <label htmlFor="pos-therapist">Therapist</label>
-                <select
-                  id="pos-therapist"
-                  value={employeeId}
-                  onChange={(e) => {
-                    setEmployeeId(e.target.value)
-                    setErrors(({ therapist, ...rest }) => rest)
-                  }}
-                  aria-invalid={errors.therapist ? true : undefined}
-                  aria-describedby={errors.therapist ? 'pos-therapist-error' : undefined}
-                  className={`${selectClass} ${errors.therapist ? '' : 'border-line'}`}
-                >
-                  <option value="">{lines.some((l) => l.type === 'service') ? 'Choose a therapist' : 'None (products only)'}</option>
-                  {therapists.map((e) => (
-                    <option key={e.id} value={e.id}>
-                      {e.name}
-                    </option>
-                  ))}
-                </select>
+                <span className="relative flex items-center">
+                  <select
+                    id="pos-therapist"
+                    value={employeeId}
+                    onChange={(e) => {
+                      setEmployeeId(e.target.value)
+                      setErrors(({ therapist, ...rest }) => rest)
+                    }}
+                    aria-invalid={errors.therapist ? true : undefined}
+                    aria-describedby={errors.therapist ? 'pos-therapist-error' : undefined}
+                    className={`${selectClass} ${errors.therapist ? '' : 'border-line'}`}
+                  >
+                    <option value="">{lines.some((l) => l.type === 'service') ? 'Choose a therapist' : 'None (products only)'}</option>
+                    {therapists.map((e) => (
+                      <option key={e.id} value={e.id}>
+                        {e.name}
+                      </option>
+                    ))}
+                  </select>
+                  {caret}
+                </span>
                 {errors.therapist && (
                   <p id="pos-therapist-error" role="alert" className="col-start-2 text-xs font-semibold text-danger">
                     {errors.therapist}

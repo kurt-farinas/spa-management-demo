@@ -147,3 +147,14 @@ describe('financial-statement route', () => {
     act(() => root.unmount())
   })
 })
+
+describe('FinancialStatement change marker', () => {
+  it('marks a change with an icon plus the spoken direction, not a text glyph', () => {
+    const { el, root } = render(<FinancialStatement />, '/financial-statement?month=2026-10')
+    const td = [...el.querySelectorAll('tr')].find((tr) => tr.querySelector('th')?.textContent === 'Total revenue').querySelectorAll('td')[2]
+    expect(td.textContent).not.toMatch(/[▲▼]/)
+    expect(td.textContent).toContain('up 50.0%')
+    expect(td.querySelector('svg[aria-hidden="true"]')).not.toBeNull()
+    act(() => root.unmount())
+  })
+})

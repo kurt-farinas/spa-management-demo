@@ -25,7 +25,8 @@ export const STATUS_PILL = {
 // service category → colour band
 export const CATEGORY_BAND = {
   Massage: 'bg-cat-massage',
-  Facial: 'bg-cat-facial',
+  // the pale facial colour gets an inset ink hairline so a thin band or dot still shows on surface
+  Facial: 'bg-cat-facial ring-1 ring-ink/25 ring-inset',
   Body: 'bg-cat-body',
   Nails: 'bg-cat-nails',
   Package: 'bg-cat-package',

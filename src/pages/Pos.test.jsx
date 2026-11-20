@@ -193,3 +193,21 @@ describe('Inventory', () => {
     expect(rowOf('Lavender massage oil').textContent).toContain('Low')
   })
 })
+
+describe('Point of Sale styling', () => {
+  it('puts the category in the tile meta line, not a label above the name', () => {
+    const el = render(<Pos />)
+    const tile = button(el, 'Swedish massage')
+    expect([...tile.querySelectorAll('span')].map((s) => s.textContent)).toContain('Massage · 1 hr')
+    expect(tile.querySelector('.uppercase')).toBeNull()
+  })
+
+  it('draws the Client and Therapist selects with the app caret instead of the browser arrow', () => {
+    const el = render(<Pos />)
+    for (const id of ['#pos-client', '#pos-therapist']) {
+      const select = el.querySelector(id)
+      expect(select.className).toContain('appearance-none')
+      expect(select.parentElement.querySelector('svg[aria-hidden="true"]')).not.toBeNull()
+    }
+  })
+})
