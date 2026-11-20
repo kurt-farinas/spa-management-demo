@@ -2,7 +2,7 @@ import { Avatar } from './Avatar.jsx'
 import { monthYear } from '../lib/format.js'
 import { formatPeso } from '../lib/money.js'
 
-const TAG_COLOR = { VIP: 'text-gold-text', Regular: 'text-muted', New: 'text-success' }
+const TAG_COLOR = { VIP: 'text-accent-ink', Regular: 'text-muted', New: 'text-success' }
 // seed VIPs also carry 'Regular'; show the one that matters
 export const mainTag = (tags) => (tags.includes('VIP') ? 'VIP' : tags[0])
 const birthday = (date) => (date ? new Date(`${date}T00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) : 'Not given')
@@ -57,7 +57,7 @@ export function ClientFacts({ client }) {
       {client.notes ? (
         <p className="mt-4 rounded-[10px] bg-warn-bg px-3.5 py-3 text-[13px] text-warn-ink">Note: {client.notes}</p>
       ) : (
-        <p className="mt-4 rounded-[10px] border border-dashed border-lavender px-3.5 py-3 text-[13px] text-muted">No notes yet</p>
+        <p className="mt-4 rounded-[10px] border border-dashed border-line px-3.5 py-3 text-[13px] text-muted">No notes yet</p>
       )}
     </>
   )

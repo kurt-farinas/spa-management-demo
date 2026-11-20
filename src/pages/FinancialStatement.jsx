@@ -40,7 +40,7 @@ function Change({ change, upIsGood = true }) {
 
 function Row({ label, line, upIsGood, kind = 'item' }) {
   const strong = kind !== 'item'
-  const border = kind === 'total' ? 'border-t border-tint' : kind === 'net' ? 'border-t-[3px] border-double border-ink' : ''
+  const border = kind === 'total' ? 'border-t border-soft' : kind === 'net' ? 'border-t-[3px] border-double border-ink' : ''
   const cell = `px-3 py-2 text-right tabular-nums ${border}`
   return (
     <tr className={strong ? 'font-semibold' : ''}>
@@ -102,7 +102,7 @@ export function FinancialStatement() {
           <select
             value={month}
             onChange={(e) => setParams({ month: e.target.value })}
-            className="h-11 cursor-pointer appearance-none rounded-full border border-lavender bg-surface pr-9 pl-4 text-sm text-ink hover:border-plum-light"
+            className="h-11 cursor-pointer appearance-none rounded-full border border-line bg-surface pr-9 pl-4 text-sm text-ink hover:border-rail-active"
           >
             {months.map((m) => (
               <option key={m} value={m}>
@@ -129,7 +129,7 @@ export function FinancialStatement() {
         />
       </section>
 
-      <section aria-labelledby="statement-title" className="min-w-0 rounded-2xl border border-tint bg-surface px-5 py-4 md:px-[22px]">
+      <section aria-labelledby="statement-title" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
         <h2 id="statement-title" className="font-heading text-[19px] font-medium">
           Income statement · {title}
         </h2>
@@ -143,7 +143,7 @@ export function FinancialStatement() {
           <div tabIndex={0} role="region" aria-label="Income statement table" className="relative -mx-1 mt-3 overflow-x-auto px-1">
             <table className="w-full min-w-[520px] text-sm">
               <thead>
-                <tr className="border-b border-tint text-xs text-muted">
+                <tr className="border-b border-soft text-xs text-muted">
                   <th scope="col" className="py-2 pr-3 text-left font-normal">
                     <span className="sr-only">Line</span>
                   </th>
@@ -186,7 +186,7 @@ export function FinancialStatement() {
         {!empty && prevPartial && <p className="mt-2 text-xs text-muted">Previous month is partial, so there is no change to show.</p>}
       </section>
 
-      <section aria-labelledby="trend-title" className="min-w-0 rounded-2xl border border-tint bg-surface px-5 py-4 md:px-[22px]">
+      <section aria-labelledby="trend-title" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
         <h2 id="trend-title" className="font-heading text-[19px] font-medium">
           Last {trend.length} months
         </h2>

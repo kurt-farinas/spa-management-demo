@@ -51,22 +51,22 @@ export function Services() {
 
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
         {shown.map((c) => (
-          <section key={c} aria-label={c} className="rounded-2xl border border-tint bg-surface px-5 pt-5 pb-2 md:px-7 md:pt-6">
-            <h2 className="border-b border-lavender pb-3 font-heading text-[22px] font-medium">{c}</h2>
+          <section key={c} aria-label={c} className="rounded-2xl border border-soft bg-surface px-5 pt-5 pb-2 md:px-7 md:pt-6">
+            <h2 className="border-b border-line pb-3 font-heading text-[22px] font-medium">{c}</h2>
             <ul>
               {state.services
                 .filter((s) => s.category === c)
                 .map((s) => (
-                  <li key={s.id} className="border-b border-tint py-3.5 last:border-b-0">
+                  <li key={s.id} className="border-b border-soft py-3.5 last:border-b-0">
                     <div className="flex items-baseline gap-3">
                       <h3 className="font-heading text-[17px] font-medium">{s.name}</h3>
-                      <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-4px] border-b border-dotted border-lavender" />
+                      <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-4px] border-b border-dotted border-line" />
                       <span className="shrink-0 font-heading text-[17px] text-ink tabular-nums">{formatPeso(s.price)}</span>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
                       <span className="tabular-nums">{duration(s.durationMin)}</span>
                       {showRate && <span className="tabular-nums">Commission {Math.round(s.commissionRate * 100)}%</span>}
-                      {top.has(s.id) && <span className="rounded-full bg-warn-bg px-2.5 py-0.5 font-medium text-gold-text">Most booked this month</span>}
+                      {top.has(s.id) && <span className="rounded-full bg-warn-bg px-2.5 py-0.5 font-medium text-accent-ink">Most booked this month</span>}
                       <button
                         type="button"
                         aria-label={`Edit ${s.name}`}

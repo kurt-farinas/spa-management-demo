@@ -96,7 +96,7 @@ function AddClientDialog({ dialog, onAdded }) {
       onClose={reset}
       onMouseDown={(e) => (downOnBackdrop.current = e.target === dialog.current)}
       onClick={(e) => e.target === dialog.current && downOnBackdrop.current && dialog.current.close()}
-      className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl bg-surface p-0 text-ink backdrop:bg-plum-dark/60"
+      className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl bg-surface p-0 text-ink backdrop:bg-rail-active/60"
     >
       <form noValidate onSubmit={submit} className="flex flex-col gap-4 p-5 md:p-6">
         <h2 id="add-client-title" className="font-heading text-[22px] font-medium">
@@ -117,7 +117,7 @@ function AddClientDialog({ dialog, onAdded }) {
                 onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                 aria-invalid={errors[key] ? true : undefined}
                 aria-describedby={errors[key] ? `client-${key}-error` : undefined}
-                className={`${inputClass} ${multiline ? 'py-2.5' : 'h-11'} ${errors[key] ? '' : 'border-lavender'}`}
+                className={`${inputClass} ${multiline ? 'py-2.5' : 'h-11'} ${errors[key] ? '' : 'border-line'}`}
                 {...input}
               />
               {errors[key] && (
@@ -132,7 +132,7 @@ function AddClientDialog({ dialog, onAdded }) {
           <button type="button" onClick={() => dialog.current.close()} className="inline-flex h-11 items-center rounded-full px-5 text-sm text-muted hover:text-ink">
             Cancel
           </button>
-          <button type="submit" className="inline-flex h-11 items-center rounded-full bg-plum px-5 text-sm font-medium text-gold-on-plum hover:bg-plum-light">
+          <button type="submit" className="inline-flex h-11 items-center rounded-full bg-rail px-5 text-sm font-medium text-rail-ink hover:bg-rail-active">
             Save client
           </button>
         </div>
@@ -143,7 +143,7 @@ function AddClientDialog({ dialog, onAdded }) {
 
 function Preview({ client, history, today }) {
   return (
-    <section aria-label={`${client.name} profile`} className="rounded-2xl border border-tint bg-surface p-[22px] lg:sticky lg:top-6">
+    <section aria-label={`${client.name} profile`} className="rounded-2xl border border-soft bg-surface p-[22px] lg:sticky lg:top-6">
       <ClientHeading client={client} />
       <div className="mt-[18px]">
         <ClientFacts client={client} />
@@ -202,9 +202,9 @@ export function Clients() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-5">
-      <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
+      <header className="on-rail-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-rail px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
         <div>
-          <div className="text-xs text-lavender md:text-[13px] md:text-muted">
+          <div className="text-xs text-line md:text-[13px] md:text-muted">
             {all.length} {all.length === 1 ? 'client' : 'clients'} · {newCount} new in the last 30 days
           </div>
           <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">Clients</h1>
@@ -212,7 +212,7 @@ export function Clients() {
         <button
           type="button"
           onClick={() => dialog.current.showModal()}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-gold-on-plum px-5 text-sm font-medium text-plum hover:bg-white md:bg-plum md:text-gold-on-plum md:hover:bg-plum-light"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-rail-ink px-5 text-sm font-medium text-rail hover:bg-white md:bg-rail md:text-rail-ink md:hover:bg-rail-active"
         >
           <PiPlus aria-hidden="true" className="size-4" />
           Add client
@@ -229,7 +229,7 @@ export function Clients() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by name or phone"
-          className="h-11 min-w-0 flex-[1_1_260px] rounded-full border border-lavender bg-surface px-4 text-sm text-ink placeholder:text-muted"
+          className="h-11 min-w-0 flex-[1_1_260px] rounded-full border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted"
         />
         <div role="group" aria-label="Filter by tag" className="flex flex-wrap gap-2">
           {TAGS.map((t) => (
@@ -247,7 +247,7 @@ export function Clients() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
-        <section aria-label="Client list" className="min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface lg:col-span-2">
+        <section aria-label="Client list" className="min-w-0 overflow-x-auto rounded-2xl border border-soft bg-surface lg:col-span-2">
           {rows.length === 0 ? (
             <div className="px-5 py-12 text-center">
               {query.trim() ? (
@@ -256,7 +256,7 @@ export function Clients() {
                   <button
                     type="button"
                     onClick={() => setQuery('')}
-                    className="mt-3 inline-flex h-11 items-center rounded-full border border-lavender px-5 text-sm hover:border-plum-light"
+                    className="mt-3 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm hover:border-rail-active"
                   >
                     Clear search
                   </button>
@@ -283,7 +283,7 @@ export function Clients() {
                 {rows.map((c) => {
                   const current = c.id === selected?.id
                   return (
-                    <tr key={c.id} className={`relative border-t border-tint hover:bg-page ${current ? 'lg:bg-page' : ''}`}>
+                    <tr key={c.id} className={`relative border-t border-soft hover:bg-page ${current ? 'lg:bg-page' : ''}`}>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2.5">
                           <Avatar name={c.name} />

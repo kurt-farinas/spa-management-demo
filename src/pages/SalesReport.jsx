@@ -30,14 +30,14 @@ const rangeLabel = (from, to) =>
 const share = (part, whole) => (whole ? `${((part / whole) * 100).toFixed(1)}%` : '0%')
 const sumOf = (rows, key) => rows.reduce((t, r) => t + r[key], 0)
 
-const dateInput = 'h-11 rounded-full border bg-surface px-4 text-sm text-ink tabular-nums hover:border-plum-light aria-invalid:border-danger'
+const dateInput = 'h-11 rounded-full border bg-surface px-4 text-sm text-ink tabular-nums hover:border-rail-active aria-invalid:border-danger'
 const cell = 'px-3 py-2.5 text-right tabular-nums whitespace-nowrap'
 
 // several figures under one label, each with its share of their sum
 function SplitCard({ label, parts }) {
   const whole = sumOf(parts.map(([, value]) => ({ value })), 'value')
   return (
-    <div className="col-span-2 rounded-xl border border-tint bg-surface p-3.5 md:col-span-3 md:rounded-2xl md:px-5 md:py-[18px]">
+    <div className="col-span-2 rounded-xl border border-soft bg-surface p-3.5 md:col-span-3 md:rounded-2xl md:px-5 md:py-[18px]">
       <div className="text-xs text-muted md:text-[13px]">{label}</div>
       <dl className="mt-1.5 flex flex-wrap gap-x-6 gap-y-2">
         {parts.map(([name, value]) => (
@@ -89,8 +89,8 @@ export function SalesReport() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
-      <header className="on-plum-mobile -mx-4 bg-plum px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
-        <div className="text-xs text-lavender tabular-nums md:text-[13px] md:text-muted">{invalid ? 'Pick a date range' : rangeLabel(from, to)}</div>
+      <header className="on-rail-mobile -mx-4 bg-rail px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
+        <div className="text-xs text-line tabular-nums md:text-[13px] md:text-muted">{invalid ? 'Pick a date range' : rangeLabel(from, to)}</div>
         <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">Sales report</h1>
       </header>
 
@@ -128,7 +128,7 @@ export function SalesReport() {
                   aria-invalid={invalid}
                   aria-describedby={invalid ? 'range-error' : undefined}
                   onChange={(e) => e.target.value && update({ [key]: e.target.value, preset: null })}
-                  className={`${dateInput} ${invalid ? '' : 'border-lavender'}`}
+                  className={`${dateInput} ${invalid ? '' : 'border-line'}`}
                 />
               </label>
             ))}
@@ -157,7 +157,7 @@ export function SalesReport() {
             <SplitCard label="Payment mix" parts={[['Cash', totals.byPayment.cash], ['Card', totals.byPayment.card], ['GCash', totals.byPayment.gcash]]} />
           </section>
 
-          <section aria-labelledby="report-title" className="min-w-0 rounded-2xl border border-tint bg-surface px-5 py-4 md:px-[22px]">
+          <section aria-labelledby="report-title" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 id="report-title" className="font-heading text-[19px] font-medium">
                 Sales by {groupLabel.toLowerCase()}
@@ -191,7 +191,7 @@ export function SalesReport() {
                     </thead>
                     <tbody>
                       {rows.map((r) => (
-                        <tr key={r.key} className="border-t border-tint">
+                        <tr key={r.key} className="border-t border-soft">
                           <th scope="row" className="px-5 py-2.5 text-left font-normal md:pl-[22px]">{r.label}</th>
                           <td className={`${cell} text-muted`}>{r.count}</td>
                           <td className={`${cell} font-medium`}>{formatPeso(r.total)}</td>
@@ -200,7 +200,7 @@ export function SalesReport() {
                       ))}
                     </tbody>
                     <tfoot>
-                      <tr className="border-t-2 border-lavender font-semibold">
+                      <tr className="border-t-2 border-line font-semibold">
                         <th scope="row" className="px-5 py-3 text-left md:pl-[22px]">Total</th>
                         <td className={cell}>{sumOf(rows, 'count')}</td>
                         <td className={cell}>{formatPeso(grand)}</td>

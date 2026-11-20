@@ -17,7 +17,7 @@ function WorkingDays({ schedule }) {
       {WEEK.map((d) => {
         const on = schedule.includes(d)
         return (
-          <span key={d} className={`w-9 rounded-md border border-transparent py-1 text-center text-[11px] ${on ? 'bg-tint font-medium text-plum-light' : 'border border-dashed border-lavender text-muted'}`}>
+          <span key={d} className={`w-9 rounded-md border border-transparent py-1 text-center text-[11px] ${on ? 'bg-soft font-medium text-rail-active' : 'border border-dashed border-line text-muted'}`}>
             {d}
           </span>
         )
@@ -58,7 +58,7 @@ export function Employees() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name"
-            className="h-11 w-full rounded-full border border-lavender bg-surface pr-4 pl-10 text-sm placeholder:text-muted"
+            className="h-11 w-full rounded-full border border-line bg-surface pr-4 pl-10 text-sm placeholder:text-muted"
           />
         </label>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by role">
@@ -70,7 +70,7 @@ export function Employees() {
         </div>
       </div>
 
-      <section aria-label="Employee list" className="relative min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface">
+      <section aria-label="Employee list" className="relative min-w-0 overflow-x-auto rounded-2xl border border-soft bg-surface">
         {list.length === 0 ? (
           <p className="px-5 py-8 text-sm text-muted">No employees match that search.</p>
         ) : (
@@ -86,7 +86,7 @@ export function Employees() {
             </thead>
             <tbody>
               {list.map((e) => (
-                <tr key={e.id} className="border-t border-tint">
+                <tr key={e.id} className="border-t border-soft">
                   <td className="px-5 py-3">
                     <Link to={`/employees/${e.id}`} className="group flex min-h-11 items-center gap-2.5">
                       <Avatar name={e.name} />

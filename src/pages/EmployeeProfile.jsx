@@ -13,7 +13,7 @@ import { BackLink } from '../components/BackLink.jsx'
 
 const PILL = {
   done: ['Done', 'bg-success-bg text-success'],
-  booked: ['Booked', 'bg-tint text-plum-light'],
+  booked: ['Booked', 'bg-soft text-rail-active'],
   cancelled: ['Cancelled', 'bg-muted/10 text-muted'],
   'no-show': ['No-show', 'bg-muted/10 text-muted'],
 }
@@ -49,12 +49,12 @@ export function EmployeeProfile() {
       <BackLink to="/employees">All employees</BackLink>
 
       <div className="flex flex-col gap-4 md:gap-5">
-        <section aria-label={`${employee.name} details`} className="flex flex-wrap items-start gap-x-12 gap-y-5 rounded-2xl border border-tint bg-surface p-[22px]">
+        <section aria-label={`${employee.name} details`} className="flex flex-wrap items-start gap-x-12 gap-y-5 rounded-2xl border border-soft bg-surface p-[22px]">
           <div className="flex items-center gap-3.5">
             <Avatar name={employee.name} large />
             <div className="min-w-0">
               <h1 className="font-heading text-[24px] leading-tight font-medium">{employee.name}</h1>
-              <div className="mt-0.5 text-[13px] text-gold-text">
+              <div className="mt-0.5 text-[13px] text-accent-ink">
                 {employee.role} · On the team since {since}
               </div>
             </div>
@@ -73,7 +73,7 @@ export function EmployeeProfile() {
               {WEEK.map((d) => {
                 const on = employee.schedule.includes(d)
                 return (
-                  <li key={d} className={`rounded-lg px-0.5 py-2 text-center ${on ? 'bg-tint text-plum-light' : 'bg-page text-muted'}`}>
+                  <li key={d} className={`rounded-lg px-0.5 py-2 text-center ${on ? 'bg-soft text-rail-active' : 'bg-page text-muted'}`}>
                     <span className="block text-xs font-medium">{d}</span>
                     <span className="mt-0.5 block text-[10px]">{on ? 'In' : 'Off'}</span>
                   </li>
@@ -94,7 +94,7 @@ export function EmployeeProfile() {
             </div>
           </section>
 
-          <section aria-label="Appointments this month" className="min-w-0 rounded-2xl border border-tint bg-surface px-5 py-4 md:px-[22px]">
+          <section aria-label="Appointments this month" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
             <h2 className="flex min-h-11 items-center font-heading text-[19px] font-medium">Appointments this month</h2>
             {appointments.length === 0 ? (
               <p className="py-6 text-sm text-muted">No appointments this month</p>
@@ -103,7 +103,7 @@ export function EmployeeProfile() {
                 {appointments.map((a) => {
                   const [label, pill] = PILL[a.status] ?? PILL.booked
                   return (
-                    <li key={a.id} className="flex items-center gap-3.5 border-b border-tint py-2.5 last:border-b-0">
+                    <li key={a.id} className="flex items-center gap-3.5 border-b border-soft py-2.5 last:border-b-0">
                       <span className="w-[92px] shrink-0 text-[13px] tabular-nums">
                         <span className="block font-semibold">{dayLabel(a.start.slice(0, 10))}</span>
                         <span className="block text-xs text-muted">{clock(a.start.slice(11))}</span>

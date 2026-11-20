@@ -11,7 +11,7 @@ export default function App() {
         <HashRouter>
           <AppRoutes />
         </HashRouter>
-        <Toaster position="top-center" toastOptions={{ style: { background: 'var(--color-plum)', color: 'var(--color-gold-on-plum)' } }} />
+        <Toaster position="top-center" toastOptions={{ style: { background: 'var(--color-rail)', color: 'var(--color-rail-ink)' } }} />
       </DemoStoreProvider>
     </RoleProvider>
   )

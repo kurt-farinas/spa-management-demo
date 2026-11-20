@@ -16,9 +16,10 @@ npm run build    # static files in dist/
 ## Re-skin for a prospect (about 15 minutes)
 
 1. Edit `src/config/spa.config.js`: `name`, `tagline`, `logoText`, `subtitle`, `staff` names, `theme` colours, `fonts` (any Google Fonts family) and the `services` menu with prices.
+   Theme keys: `rail`, `railInk`, `railActive`, `page`, `surface`, `line`, `soft`, `text`, `muted`, `accent`, `accentInk`, `highlight`, `warnBg`, `warnText`, `successBg`, `success`, `danger`, `catMassage`, `catFacial`, `catBody`, `catNails`, `catPackage`.
 2. For link previews on chat apps and social sites, also update the static copies, because those sites don't run JavaScript:
    - `index.html`: `<title>`, `description` and `og:` tags
-   - `public/favicon.svg`: the two colours
+   - `public/favicon.svg`: the two colours (`rail` and `highlight`)
 3. Run `npm test` and `npm run dev`, then check the login page and the dashboard.
 
 Keep text readable: dark text on light colours needs at least 4.5:1 contrast.

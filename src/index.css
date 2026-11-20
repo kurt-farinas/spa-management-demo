@@ -1,25 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-plum: var(--brand-primary);
-  --color-plum-dark: var(--brand-primary-dark);
-  --color-gold: var(--brand-accent);
-  --color-gold-text: var(--brand-accent-text);
-  --color-gold-on-plum: var(--brand-gold-on-plum);
+  --color-rail: var(--brand-rail);
+  --color-rail-ink: var(--brand-rail-ink);
+  --color-rail-active: var(--brand-rail-active);
   --color-page: var(--brand-page);
   --color-surface: var(--brand-surface);
+  --color-line: var(--brand-line);
+  --color-soft: var(--brand-soft);
   --color-ink: var(--brand-text);
   --color-muted: var(--brand-muted);
-  --color-tint: var(--brand-tint);
-  --color-plum-light: var(--brand-primary-light);
-  --color-lavender: var(--brand-lavender);
+  --color-accent: var(--brand-accent);
+  --color-accent-ink: var(--brand-accent-ink);
+  --color-highlight: var(--brand-highlight);
   --color-warn-bg: var(--brand-warn-bg);
   --color-warn-ink: var(--brand-warn-text);
   --color-success-bg: var(--brand-success-bg);
   --color-success: var(--brand-success);
   --color-danger: var(--brand-danger);
-  --font-heading: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --color-cat-massage: var(--brand-cat-massage);
+  --color-cat-facial: var(--brand-cat-facial);
+  --color-cat-body: var(--brand-cat-body);
+  --color-cat-nails: var(--brand-cat-nails);
+  --color-cat-package: var(--brand-cat-package);
+  --font-heading: 'Figtree', system-ui, sans-serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
 }
 
 body {
@@ -29,23 +34,23 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-lavender);
+  background-color: var(--color-line);
   color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-plum-light);
+  outline: 2px solid var(--color-rail);
   outline-offset: 2px;
 }
 
-/* dark plum areas need the light ring */
-.on-plum :focus-visible {
-  outline-color: var(--color-gold-on-plum);
+/* dark rail areas need the light ring */
+.on-rail :focus-visible {
+  outline-color: var(--color-rail-ink);
 }
 
-/* same, but the area is only plum below the md breakpoint (48rem) */
+/* same, but the area is only rail below the md breakpoint (48rem) */
 @media (width < 48rem) {
-  .on-plum-mobile :focus-visible {
-    outline-color: var(--color-gold-on-plum);
+  .on-rail-mobile :focus-visible {
+    outline-color: var(--color-rail-ink);
   }
 }

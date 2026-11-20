@@ -28,7 +28,7 @@ const fullDay = (date) => {
 }
 const works = (employee, date) => employee.schedule?.includes(weekdayOf(date))
 const span = (a) => `${clock(a.start.slice(11))} – ${clock(addMinutes(a.start, a.durationMin).slice(11))}`
-const iconButton = 'inline-flex size-11 items-center justify-center rounded-full border border-lavender bg-surface text-ink hover:border-plum-light'
+const iconButton = 'inline-flex size-11 items-center justify-center rounded-full border border-line bg-surface text-ink hover:border-rail-active'
 const inputClass = 'h-11 w-full rounded-xl border bg-surface px-3.5 text-sm text-ink aria-invalid:border-danger'
 
 // side-by-side lanes for blocks that overlap (a booking over a cancelled one); each cluster shares its lane count
@@ -66,7 +66,7 @@ function Modal({ dialog, labelledBy, onClose, children }) {
       onClose={onClose}
       onMouseDown={(e) => (downOnBackdrop.current = e.target === dialog.current)}
       onClick={(e) => e.target === dialog.current && downOnBackdrop.current && dialog.current.close()}
-      className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl bg-surface p-0 text-ink backdrop:bg-plum-dark/60"
+      className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl bg-surface p-0 text-ink backdrop:bg-rail-active/60"
     >
       {children}
     </dialog>
@@ -81,12 +81,12 @@ function StatusPill({ status }) {
 // columns: [{ key, label, sub, today, off, items }]; time runs down, 10:00 to 20:00
 function TimeGrid({ label, columns, onOpen, highlightId }) {
   return (
-    <section aria-label={label} className="overflow-x-auto rounded-2xl border border-tint bg-surface">
+    <section aria-label={label} className="overflow-x-auto rounded-2xl border border-soft bg-surface">
       <div className="grid min-w-[720px]" style={{ gridTemplateColumns: `56px repeat(${columns.length}, minmax(0, 1fr))` }}>
-        <div className="border-b border-tint" />
+        <div className="border-b border-soft" />
         {columns.map((c) => (
-          <div key={c.key} className={`border-b border-l border-tint px-2 py-2.5 text-center ${c.today ? 'bg-tint' : ''}`}>
-            <div className={`truncate text-[13px] ${c.today ? 'font-semibold text-plum' : 'font-medium'}`}>{c.label}</div>
+          <div key={c.key} className={`border-b border-l border-soft px-2 py-2.5 text-center ${c.today ? 'bg-soft' : ''}`}>
+            <div className={`truncate text-[13px] ${c.today ? 'font-semibold text-rail' : 'font-medium'}`}>{c.label}</div>
             {c.sub && <div className="text-xs text-muted tabular-nums">{c.sub}</div>}
           </div>
         ))}
@@ -100,7 +100,7 @@ function TimeGrid({ label, columns, onOpen, highlightId }) {
         {columns.map((c) => (
           <div
             key={c.key}
-            className={`relative border-l border-tint bg-[repeating-linear-gradient(to_bottom,var(--color-tint)_0_1px,transparent_1px_48px)] ${c.off ? 'bg-page' : ''}`}
+            className={`relative border-l border-soft bg-[repeating-linear-gradient(to_bottom,var(--color-soft)_0_1px,transparent_1px_48px)] ${c.off ? 'bg-page' : ''}`}
             style={{ height: GRID_HEIGHT }}
           >
             {c.off && <span className="absolute inset-x-0 top-4 text-center text-xs text-muted">Off</span>}
@@ -115,7 +115,7 @@ function TimeGrid({ label, columns, onOpen, highlightId }) {
                   aria-label={`${fullDay(a.start.slice(0, 10))}, ${a.employeeName}, ${clock(a.start.slice(11))}, ${a.clientName}, ${a.serviceName}, ${status}`}
                   onClick={() => onOpen(a)}
                   className={`absolute overflow-hidden rounded-lg px-2 py-1 text-left text-xs leading-snug hover:brightness-95 ${colours} ${
-                    a.id === highlightId ? 'z-10 ring-2 ring-plum ring-offset-1 ring-offset-surface' : ''
+                    a.id === highlightId ? 'z-10 ring-2 ring-rail ring-offset-1 ring-offset-surface' : ''
                   }`}
                   style={{
                     top: (minutes(a.start.slice(11)) - OPEN_MIN) * PX_PER_MIN + 1,
@@ -169,7 +169,7 @@ function BookDialog({ dialog, form, setForm, onBooked }) {
     onChange: (e) => setForm({ ...form, [name]: e.target.value }),
     'aria-invalid': errors[name] ? true : undefined,
     'aria-describedby': errors[name] ? `book-${name}-error` : name === 'time' && service && form.time ? 'book-time-hint' : undefined,
-    className: `${inputClass} ${errors[name] ? '' : 'border-lavender'}`,
+    className: `${inputClass} ${errors[name] ? '' : 'border-line'}`,
   })
   const field = (name, label, input) => (
     <div className="flex flex-col gap-1.5">
@@ -252,7 +252,7 @@ function BookDialog({ dialog, form, setForm, onBooked }) {
           <button type="button" onClick={() => dialog.current.close()} className="inline-flex h-11 items-center rounded-full px-5 text-sm text-muted hover:text-ink">
             Cancel
           </button>
-          <button type="submit" className="inline-flex h-11 items-center rounded-full bg-plum px-5 text-sm font-medium text-gold-on-plum hover:bg-plum-light">
+          <button type="submit" className="inline-flex h-11 items-center rounded-full bg-rail px-5 text-sm font-medium text-rail-ink hover:bg-rail-active">
             Book
           </button>
         </div>
@@ -263,7 +263,7 @@ function BookDialog({ dialog, form, setForm, onBooked }) {
 
 function DetailsDialog({ dialog, appointment: a }) {
   const fact = (label, value) => (
-    <div className="flex justify-between gap-4 border-b border-tint py-2.5 text-sm last:border-b-0">
+    <div className="flex justify-between gap-4 border-b border-soft py-2.5 text-sm last:border-b-0">
       <dt className="text-muted">{label}</dt>
       <dd className="text-right">{value}</dd>
     </div>
@@ -295,10 +295,10 @@ function DetailsDialog({ dialog, appointment: a }) {
               </button>
               {a.status === 'booked' && (
                 <>
-                  <button type="button" onClick={demoOnly} className="inline-flex h-11 items-center rounded-full border border-lavender px-4 text-sm hover:border-plum-light">
+                  <button type="button" onClick={demoOnly} className="inline-flex h-11 items-center rounded-full border border-line px-4 text-sm hover:border-rail-active">
                     Cancel booking
                   </button>
-                  <button type="button" onClick={demoOnly} className="inline-flex h-11 items-center rounded-full bg-plum px-5 text-sm font-medium text-gold-on-plum hover:bg-plum-light">
+                  <button type="button" onClick={demoOnly} className="inline-flex h-11 items-center rounded-full bg-rail px-5 text-sm font-medium text-rail-ink hover:bg-rail-active">
                     Mark done
                   </button>
                 </>
@@ -374,9 +374,9 @@ export function Appointments() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-5">
-      <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
+      <header className="on-rail-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-rail px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
         <div>
-          <div className="text-xs text-lavender md:text-[13px] md:text-muted">
+          <div className="text-xs text-line md:text-[13px] md:text-muted">
             {live} {live === 1 ? 'appointment' : 'appointments'} {week.includes(today) ? 'this week' : `for ${monthDay(week[0])} – ${monthDay(week[6])}`}
           </div>
           <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">Appointments</h1>
@@ -384,7 +384,7 @@ export function Appointments() {
         <button
           type="button"
           onClick={() => openBooking()}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-gold-on-plum px-5 text-sm font-medium text-plum hover:bg-white md:bg-plum md:text-gold-on-plum md:hover:bg-plum-light"
+          className="inline-flex h-11 items-center gap-2 rounded-full bg-rail-ink px-5 text-sm font-medium text-rail hover:bg-white md:bg-rail md:text-rail-ink md:hover:bg-rail-active"
         >
           <PiPlus aria-hidden="true" className="size-4" />
           Book appointment
@@ -411,7 +411,7 @@ export function Appointments() {
           <select
             value={therapistId}
             onChange={(e) => setTherapistId(e.target.value)}
-            className="h-11 cursor-pointer appearance-none rounded-full border border-lavender bg-surface pr-9 pl-4 text-sm text-ink hover:border-plum-light"
+            className="h-11 cursor-pointer appearance-none rounded-full border border-line bg-surface pr-9 pl-4 text-sm text-ink hover:border-rail-active"
           >
             <option value="">All therapists</option>
             {therapists.map((t) => (
@@ -433,10 +433,10 @@ export function Appointments() {
             aria-pressed={d === day}
             onClick={() => setDay(d)}
             className={`flex min-h-14 flex-col items-center justify-center rounded-xl text-xs transition-colors ${
-              d === day ? 'bg-plum text-white' : 'border border-lavender bg-surface text-ink hover:border-plum-light'
+              d === day ? 'bg-rail text-white' : 'border border-line bg-surface text-ink hover:border-rail-active'
             }`}
           >
-            <span className={d === today && d !== day ? 'font-semibold text-plum' : ''}>{d === today ? 'Today' : weekdayOf(d)}</span>
+            <span className={d === today && d !== day ? 'font-semibold text-rail' : ''}>{d === today ? 'Today' : weekdayOf(d)}</span>
             <span className="text-base font-semibold tabular-nums">{Number(d.slice(8))}</span>
           </button>
         ))}
@@ -444,7 +444,7 @@ export function Appointments() {
 
       <div className="hidden lg:block">
         {columns.length === 0 ? (
-          <p className="rounded-2xl border border-tint bg-surface px-5 py-12 text-center text-sm text-muted">No therapists work on {longDay(day)}</p>
+          <p className="rounded-2xl border border-soft bg-surface px-5 py-12 text-center text-sm text-muted">No therapists work on {longDay(day)}</p>
         ) : (
           <TimeGrid
             label={therapist ? `${therapist.name}, week of ${monthDay(week[0])}` : `All therapists, ${longDay(day)}`}
@@ -455,20 +455,20 @@ export function Appointments() {
         )}
       </div>
 
-      <section aria-label="Day list" className="rounded-2xl border border-tint bg-surface px-4 py-2 lg:hidden">
+      <section aria-label="Day list" className="rounded-2xl border border-soft bg-surface px-4 py-2 lg:hidden">
         <h2 className="py-2 text-[13px] font-semibold">{day === today ? `Today, ${longDay(day)}` : longDay(day)}</h2>
         {dayItems.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted">No appointments</p>
         ) : (
           <ul>
             {dayItems.map((a) => (
-              <li key={a.id} className="border-t border-tint">
+              <li key={a.id} className="border-t border-soft">
                 <button
                   type="button"
                   data-appt={a.id}
                   data-highlight={a.id === highlightId || undefined}
                   onClick={() => openDetails(a)}
-                  className={`flex w-full items-center gap-3 rounded-lg py-3 text-left ${a.id === highlightId ? 'bg-tint px-2' : ''}`}
+                  className={`flex w-full items-center gap-3 rounded-lg py-3 text-left ${a.id === highlightId ? 'bg-soft px-2' : ''}`}
                 >
                   <span className="w-[68px] shrink-0 text-[13px] font-semibold tabular-nums">{clock(a.start.slice(11))}</span>
                   <span className="min-w-0 flex-1">

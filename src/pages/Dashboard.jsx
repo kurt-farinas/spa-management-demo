@@ -15,7 +15,7 @@ const FIRST_NAME = { owner: spaConfig.staff.ownerName, receptionist: spaConfig.s
 
 const greeting = (hour) => (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening')
 
-function Panel({ title, action, className = 'border border-tint bg-surface', titleClass = '', children }) {
+function Panel({ title, action, className = 'border border-soft bg-surface', titleClass = '', children }) {
   return (
     <section aria-label={title} className={`min-w-0 rounded-2xl px-5 py-4 md:px-[22px] ${className}`}>
       <div className="flex min-h-11 items-center justify-between gap-3">
@@ -42,9 +42,9 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
-      <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
+      <header className="on-rail-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-rail px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
         <div>
-          <div className="text-xs text-lavender md:text-[13px] md:text-muted">
+          <div className="text-xs text-line md:text-[13px] md:text-muted">
             {now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           </div>
           <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">
@@ -53,7 +53,7 @@ export function Dashboard() {
         </div>
         <Link
           to="/pos"
-          className="inline-flex h-11 items-center rounded-full bg-gold-on-plum px-5 text-sm font-medium text-plum hover:bg-white md:bg-plum md:text-gold-on-plum md:hover:bg-plum-light"
+          className="inline-flex h-11 items-center rounded-full bg-rail-ink px-5 text-sm font-medium text-rail hover:bg-white md:bg-rail md:text-rail-ink md:hover:bg-rail-active"
         >
           New sale
         </Link>
@@ -69,7 +69,7 @@ export function Dashboard() {
       </section>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Panel title="Sales, last 14 days" className="self-start border border-tint bg-surface" action={canSee(role, 'sales-report') && <Link to="/sales-report" className={linkClass}>Sales report</Link>}>
+        <Panel title="Sales, last 14 days" className="self-start border border-soft bg-surface" action={canSee(role, 'sales-report') && <Link to="/sales-report" className={linkClass}>Sales report</Link>}>
           <SalesBarChart days={days} />
         </Panel>
 
@@ -81,7 +81,7 @@ export function Dashboard() {
               {list.slice(0, 6).map((a) => {
                 const [label, pill] = PILL[a.status] ?? PILL.booked
                 return (
-                  <li key={a.id} className="flex items-center gap-3.5 border-b border-tint py-2.5 last:border-b-0">
+                  <li key={a.id} className="flex items-center gap-3.5 border-b border-soft py-2.5 last:border-b-0">
                     <span className="w-[68px] shrink-0 text-[13px] font-semibold tabular-nums">{clock(a.time)}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium">{a.clientName}</span>

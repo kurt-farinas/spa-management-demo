@@ -5,13 +5,13 @@ export function Brand({ large = false }) {
     <div className={`flex items-center ${large ? 'flex-col gap-4 text-center' : 'gap-2.5'}`}>
       <div
         aria-hidden="true"
-        className={`flex shrink-0 items-center justify-center rounded-full border-[1.5px] border-gold-on-plum font-heading text-gold-on-plum ${large ? 'size-16 text-3xl' : 'size-9 text-lg'}`}
+        className={`flex shrink-0 items-center justify-center rounded-full border-[1.5px] border-rail-ink font-heading text-rail-ink ${large ? 'size-16 text-3xl' : 'size-9 text-lg'}`}
       >
         {spaConfig.logoText[0]}
       </div>
       <div>
-        <div className={`font-heading text-gold-on-plum ${large ? 'text-4xl' : 'text-[19px]'}`}>{spaConfig.logoText}</div>
-        <div className={`tracking-[0.12em] text-lavender ${large ? 'mt-1 text-xs' : 'text-[11px]'}`}>{spaConfig.subtitle}</div>
+        <div className={`font-heading text-rail-ink ${large ? 'text-4xl' : 'text-[19px]'}`}>{spaConfig.logoText}</div>
+        <div className={`tracking-[0.12em] text-line ${large ? 'mt-1 text-xs' : 'text-[11px]'}`}>{spaConfig.subtitle}</div>
       </div>
     </div>
   )

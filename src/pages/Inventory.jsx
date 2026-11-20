@@ -58,14 +58,14 @@ export function Inventory() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by name or category"
-          className="h-11 min-w-0 flex-[1_1_260px] rounded-full border border-lavender bg-surface px-4 text-sm text-ink placeholder:text-muted"
+          className="h-11 min-w-0 flex-[1_1_260px] rounded-full border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted"
         />
         <button type="button" aria-pressed={lowOnly} onClick={() => setLowOnly(!lowOnly)} className={pillClass(lowOnly)}>
           Low stock only
         </button>
       </div>
 
-      <section aria-label="Products" className="relative min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface">
+      <section aria-label="Products" className="relative min-w-0 overflow-x-auto rounded-2xl border border-soft bg-surface">
         {rows.length === 0 ? (
           <p className="px-5 py-12 text-center text-sm text-muted">{q ? `No products match "${query.trim()}"` : 'Nothing is low on stock'}</p>
         ) : (
@@ -88,7 +88,7 @@ export function Inventory() {
               {rows.map((p) => {
                 const [label, badge] = BADGES[stockStatus(p)]
                 return (
-                  <tr key={p.id} className="border-t border-tint">
+                  <tr key={p.id} className="border-t border-soft">
                     <td className="px-5 py-3 font-medium">{p.name}</td>
                     <td className="px-3 py-3 whitespace-nowrap text-muted">{p.category}</td>
                     <td className={cell}>{formatPeso(p.price)}</td>

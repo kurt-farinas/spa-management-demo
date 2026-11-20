@@ -16,7 +16,7 @@ const PAYMENTS = [
 const LOW_HINT = 3 // warn once the sale comes within this many of the shelf count
 const selectClass = 'h-11 w-full rounded-xl border bg-surface px-3 text-sm text-ink aria-invalid:border-danger'
 const roundButton =
-  'inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-lavender bg-surface text-ink hover:border-plum-light disabled:border-tint disabled:text-muted'
+  'inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink hover:border-rail-active disabled:border-soft disabled:text-muted'
 
 function Tile({ item, meta, out, inSale, onAdd }) {
   return (
@@ -25,14 +25,14 @@ function Tile({ item, meta, out, inSale, onAdd }) {
       disabled={out}
       onClick={onAdd}
       className={`flex min-h-[104px] flex-col items-start rounded-[14px] bg-surface text-left text-ink disabled:cursor-not-allowed disabled:bg-page ${
-        inSale ? 'border-2 border-gold p-[15px]' : 'border border-tint p-4 hover:border-lavender'
+        inSale ? 'border-2 border-accent p-[15px]' : 'border border-soft p-4 hover:border-line'
       }`}
     >
       <span className="text-xs text-muted">{out ? 'Out of stock' : meta}</span>
       <span className="mt-1 font-medium">{item.name}</span>
       <span className="mt-auto flex w-full items-baseline justify-between gap-2 pt-2.5">
-        <span className={`font-semibold tabular-nums ${out ? 'text-muted' : 'text-gold-text'}`}>{formatPeso(item.price)}</span>
-        {inSale && <span className="text-xs text-gold-text">{inSale}</span>}
+        <span className={`font-semibold tabular-nums ${out ? 'text-muted' : 'text-accent-ink'}`}>{formatPeso(item.price)}</span>
+        {inSale && <span className="text-xs text-accent-ink">{inSale}</span>}
       </span>
     </button>
   )
@@ -63,7 +63,7 @@ function Receipt({ sale, state, onNew }) {
           </>
         )}
       </dl>
-      <ul className="border-t border-tint pt-1.5">
+      <ul className="border-t border-soft pt-1.5">
         {sale.lines.map((l) => (
           <li key={`${l.type}-${l.id}`} className="flex justify-between gap-3 py-1.5 text-sm">
             <span className="min-w-0">
@@ -74,7 +74,7 @@ function Receipt({ sale, state, onNew }) {
           </li>
         ))}
       </ul>
-      <div className="flex items-baseline justify-between border-t border-tint pt-3.5">
+      <div className="flex items-baseline justify-between border-t border-soft pt-3.5">
         <span className="text-sm text-muted">Paid by {payment}</span>
         <span className="font-heading text-[30px] tabular-nums">{formatPeso(sale.total)}</span>
       </div>
@@ -174,11 +174,11 @@ export function Pos() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${tab.toLowerCase()}`}
-            className="h-11 min-w-0 flex-[1_1_200px] rounded-full border border-lavender bg-surface px-4 text-sm text-ink placeholder:text-muted"
+            className="h-11 min-w-0 flex-[1_1_200px] rounded-full border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted"
           />
         </div>
         {items.length === 0 ? (
-          <p className="rounded-2xl border border-tint bg-surface px-5 py-10 text-center text-sm text-muted">
+          <p className="rounded-2xl border border-soft bg-surface px-5 py-10 text-center text-sm text-muted">
             {q ? `No ${tab.toLowerCase()} match "${query.trim()}"` : `No ${tab.toLowerCase()} yet`}
           </p>
         ) : (
@@ -205,7 +205,7 @@ export function Pos() {
       <aside
         ref={panel}
         aria-label="Current sale"
-        className="flex scroll-mt-4 flex-col gap-3.5 rounded-2xl border border-tint bg-surface p-[22px] lg:sticky lg:top-6"
+        className="flex scroll-mt-4 flex-col gap-3.5 rounded-2xl border border-soft bg-surface p-[22px] lg:sticky lg:top-6"
       >
         {sale ? (
           <Receipt key={sale.id} sale={sale} state={state} onNew={() => {
@@ -221,7 +221,7 @@ export function Pos() {
               <label htmlFor="pos-client" className="text-xs text-muted">
                 Client
               </label>
-              <select id="pos-client" value={clientId} onChange={(e) => setClientId(e.target.value)} className={`${selectClass} border-lavender`}>
+              <select id="pos-client" value={clientId} onChange={(e) => setClientId(e.target.value)} className={`${selectClass} border-line`}>
                 <option value="">Walk-in</option>
                 {clients.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -244,7 +244,7 @@ export function Pos() {
                 }}
                 aria-invalid={errors.therapist ? true : undefined}
                 aria-describedby={errors.therapist ? 'pos-therapist-error' : undefined}
-                className={`${selectClass} ${errors.therapist ? '' : 'border-lavender'}`}
+                className={`${selectClass} ${errors.therapist ? '' : 'border-line'}`}
               >
                 <option value="">{lines.some((l) => l.type === 'service') ? 'Choose a therapist' : 'None (products only)'}</option>
                 {therapists.map((e) => (
@@ -260,7 +260,7 @@ export function Pos() {
               )}
             </div>
 
-            <div className="border-t border-tint pt-1.5">
+            <div className="border-t border-soft pt-1.5">
               {lines.length === 0 ? (
                 <p className="py-3 text-sm text-muted">Tap a service or product to add it.</p>
               ) : (
@@ -297,7 +297,7 @@ export function Pos() {
                           <span className="w-[4.5rem] shrink-0 text-right tabular-nums">{formatPeso(l.qty * item.price)}</span>
                         </div>
                         {l.type === 'product' && item.stock - l.qty <= LOW_HINT && (
-                          <p className="text-xs text-gold-text">Only {item.stock} left in stock</p>
+                          <p className="text-xs text-accent-ink">Only {item.stock} left in stock</p>
                         )}
                       </li>
                     )
@@ -306,7 +306,7 @@ export function Pos() {
               )}
             </div>
 
-            <div className="flex items-baseline justify-between border-t border-tint pt-3.5">
+            <div className="flex items-baseline justify-between border-t border-soft pt-3.5">
               <span className="text-sm text-muted">Total</span>
               <span className="font-heading text-[30px] tabular-nums">{formatPeso(total)}</span>
             </div>
@@ -324,7 +324,7 @@ export function Pos() {
                       setErrors(({ payment, ...rest }) => rest)
                     }}
                     className={`h-11 rounded-xl text-sm text-ink ${
-                      payment === key ? 'border-2 border-plum bg-tint font-medium' : `border bg-surface hover:border-plum-light ${errors.payment ? 'border-danger' : 'border-lavender'}`
+                      payment === key ? 'border-2 border-rail bg-soft font-medium' : `border bg-surface hover:border-rail-active ${errors.payment ? 'border-danger' : 'border-line'}`
                     }`}
                   >
                     {label}
@@ -346,7 +346,7 @@ export function Pos() {
             <button
               type="button"
               onClick={complete}
-              className="h-[52px] rounded-full bg-plum text-base font-semibold text-gold-on-plum tabular-nums hover:bg-plum-light"
+              className="h-[52px] rounded-full bg-rail text-base font-semibold text-rail-ink tabular-nums hover:bg-rail-active"
             >
               Complete sale · {formatPeso(total)}
             </button>
@@ -358,7 +358,7 @@ export function Pos() {
         <button
           type="button"
           onClick={viewSale}
-          className="fixed inset-x-4 bottom-[4.75rem] z-10 h-12 rounded-full bg-plum text-sm font-semibold text-gold-on-plum tabular-nums shadow-[0_6px_16px_-4px] shadow-plum-dark/40 md:hidden"
+          className="fixed inset-x-4 bottom-[4.75rem] z-10 h-12 rounded-full bg-rail text-sm font-semibold text-rail-ink tabular-nums shadow-[0_6px_16px_-4px] shadow-rail-active/40 md:hidden"
         >
           View sale ({count}) · {formatPeso(total)}
         </button>
