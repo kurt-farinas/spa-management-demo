@@ -55,4 +55,23 @@ describe('Services', () => {
     expect(el.textContent).not.toMatch(/commission/i)
     act(() => root.unmount())
   })
+
+  it('gives a Massage service row its category band', () => {
+    const el = document.createElement('div')
+    const root = createRoot(el)
+    act(() =>
+      root.render(
+        <RoleProvider initialRole="owner">
+          <DemoStoreProvider initialState={state}>
+            <MemoryRouter>
+              <Services />
+            </MemoryRouter>
+          </DemoStoreProvider>
+        </RoleProvider>,
+      ),
+    )
+    const row = [...el.querySelectorAll('li')].find((li) => li.querySelector('h3')?.textContent === 'Swedish massage')
+    expect(row.querySelector('.bg-cat-massage')).not.toBeNull()
+    act(() => root.unmount())
+  })
 })

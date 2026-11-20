@@ -6,13 +6,24 @@ import { inventorySummary, stockStatus } from '../data/selectors.js'
 import { formatPeso } from '../lib/money.js'
 import { demoOnly } from '../components/demoOnly.js'
 import { StatCard } from '../components/StatCard.jsx'
+import { PiMagnifyingGlass, PiPlus, PiWarningBold } from 'react-icons/pi'
 import { pillClass, primaryButton, textButton } from '../components/ui.js'
 
-// Out badge: white on danger is 7.07:1 (needs 4.5:1)
+// low and out carry a warning mark as well as the word; out is a stamp, danger on surface 7.07:1
 const BADGES = {
   ok: ['OK', 'bg-success-bg text-success'],
   low: ['Low', 'bg-warn-bg text-warn-ink'],
-  out: ['Out', 'bg-danger text-white'],
+  out: ['Out', 'border border-danger bg-surface text-danger'],
+}
+
+function StockBadge({ status }) {
+  const [label, badge] = BADGES[status]
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge}`}>
+      {status !== 'ok' && <PiWarningBold aria-hidden="true" className="size-3" />}
+      {label}
+    </span>
+  )
 }
 
 export function Inventory() {
@@ -26,85 +37,115 @@ export function Inventory() {
   const rows = state.products.filter(
     (p) => (!lowOnly || stockStatus(p) !== 'ok') && (!q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)),
   )
-  const cell = 'px-3 py-3 text-right tabular-nums'
+  const cell = 'px-2 py-3 text-right tabular-nums md:px-3'
 
   return (
-    <div className="flex flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex flex-col gap-4 md:gap-5">
+      <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-[13px] text-muted">
+          <h1 className="text-2xl font-bold">Inventory</h1>
+          <p className="text-[13px] text-muted tabular-nums">
             {summary.products} products · {summary.lowStock} at or below reorder point
-          </div>
-          <h1 className="mt-1 font-heading text-[26px] font-medium md:text-[32px]">Inventory</h1>
+          </p>
         </div>
         <button type="button" className={primaryButton} onClick={demoOnly}>
-          + Add product
+          <PiPlus aria-hidden="true" className="size-4" />
+          Add product
         </button>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6">
         <StatCard label="Products" value={summary.products} note="In the catalog" />
         <StatCard label="Low stock" value={summary.lowStock} note="Out of stock counted" />
-        {showCost && <StatCard dark label="Stock value at cost" value={formatPeso(summary.stockValueAtCost)} note="Owner only" />}
+        {showCost && <StatCard label="Stock value at cost" value={formatPeso(summary.stockValueAtCost)} note="Owner only" />}
       </div>
 
       <div className="flex flex-wrap items-center gap-2.5">
-        <label htmlFor="inventory-search" className="sr-only">
-          Search products
-        </label>
-        <input
-          id="inventory-search"
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by name or category"
-          className="h-11 min-w-0 flex-[1_1_260px] rounded-full border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted"
-        />
+        <div className="relative min-w-0 flex-[1_1_260px] sm:max-w-sm">
+          <label htmlFor="inventory-search" className="sr-only">
+            Search products
+          </label>
+          <PiMagnifyingGlass aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
+          <input
+            id="inventory-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name or category"
+            className="h-11 w-full rounded-md border border-line bg-surface pr-3 pl-9 text-sm text-ink placeholder:text-muted"
+          />
+        </div>
         <button type="button" aria-pressed={lowOnly} onClick={() => setLowOnly(!lowOnly)} className={pillClass(lowOnly)}>
           Low stock only
         </button>
       </div>
 
-      <section aria-label="Products" className="relative min-w-0 overflow-x-auto rounded-2xl border border-soft bg-surface">
+      <section aria-label="Products" className="relative min-w-0 overflow-x-auto rounded-lg border border-line bg-surface">
         {rows.length === 0 ? (
           <p className="px-5 py-12 text-center text-sm text-muted">{q ? `No products match "${query.trim()}"` : 'Nothing is low on stock'}</p>
         ) : (
-          <table className="w-full min-w-[680px] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm md:min-w-[680px]">
             <thead>
-              <tr className="text-left text-xs text-muted">
-                <th scope="col" className="px-5 py-3 font-medium">Product</th>
-                <th scope="col" className="px-3 py-3 font-medium">Category</th>
-                <th scope="col" className="px-3 py-3 text-right font-medium">Price</th>
-                {showCost && <th scope="col" className="px-3 py-3 text-right font-medium">Cost</th>}
-                <th scope="col" className="px-3 py-3 text-right font-medium">Stock</th>
-                <th scope="col" className="px-3 py-3 text-right font-medium">Reorder at</th>
-                <th scope="col" className="px-3 py-3 font-medium">Status</th>
-                <th scope="col" className="px-5 py-3">
+              <tr className="border-b border-line text-left text-xs text-muted">
+                <th scope="col" className="py-3 pr-3 pl-3.5 font-semibold md:px-5">
+                  Product
+                </th>
+                <th scope="col" className="hidden px-3 py-3 font-semibold md:table-cell">
+                  Category
+                </th>
+                <th scope="col" className="px-2 py-3 text-right font-semibold md:px-3">
+                  Price
+                </th>
+                {showCost && (
+                  <th scope="col" className="px-2 py-3 text-right font-semibold md:px-3">
+                    Cost
+                  </th>
+                )}
+                <th scope="col" className="px-2 py-3 text-right font-semibold md:px-3">
+                  Stock
+                </th>
+                <th scope="col" className="hidden px-3 py-3 text-right font-semibold md:table-cell">
+                  Reorder at
+                </th>
+                <th scope="col" className="hidden px-3 py-3 font-semibold md:table-cell">
+                  Status
+                </th>
+                <th scope="col" className="py-3 pr-1.5 md:px-5">
                   <span className="sr-only">Actions</span>
                 </th>
               </tr>
             </thead>
             <tbody>
               {rows.map((p) => {
-                const [label, badge] = BADGES[stockStatus(p)]
+                const status = stockStatus(p)
                 return (
-                  <tr key={p.id} className="border-t border-soft">
-                    <td className="px-5 py-3 font-medium">{p.name}</td>
-                    <td className="px-3 py-3 whitespace-nowrap text-muted">{p.category}</td>
+                  <tr key={p.id} className="border-t border-line first:border-t-0">
+                    <td className="py-3 pr-3 pl-3.5 font-medium md:px-5">
+                      {p.name}
+                      {/* below md the Status column is hidden, so low and out show under the name */}
+                      {status !== 'ok' && (
+                        <div className="mt-1 md:hidden">
+                          <StockBadge status={status} />
+                        </div>
+                      )}
+                    </td>
+                    <td className="hidden px-3 py-3 whitespace-nowrap text-muted md:table-cell">{p.category}</td>
                     <td className={cell}>{formatPeso(p.price)}</td>
                     {showCost && <td className={cell}>{formatPeso(p.cost)}</td>}
                     <td className={`${cell} font-medium`}>{p.stock}</td>
-                    <td className={`${cell} text-muted`}>{p.reorderAt}</td>
-                    <td className="px-3 py-3">
-                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${badge}`}>{label}</span>
+                    <td className={`${cell} hidden text-muted md:table-cell`}>{p.reorderAt}</td>
+                    <td className="hidden px-3 py-3 md:table-cell">
+                      <StockBadge status={status} />
                     </td>
-                    <td className="px-5 py-1.5 text-right whitespace-nowrap">
-                      <button type="button" aria-label={`Restock ${p.name}`} className={textButton} onClick={demoOnly}>
-                        Restock
-                      </button>
-                      <button type="button" aria-label={`Edit ${p.name}`} className={textButton} onClick={demoOnly}>
-                        Edit
-                      </button>
+                    <td className="py-1.5 pr-1.5 md:px-5">
+                      <div className="flex flex-col items-end md:flex-row md:justify-end">
+                        <button type="button" aria-label={`Restock ${p.name}`} className={textButton} onClick={demoOnly}>
+                          Restock
+                        </button>
+                        <button type="button" aria-label={`Edit ${p.name}`} className={textButton} onClick={demoOnly}>
+                          Edit
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )

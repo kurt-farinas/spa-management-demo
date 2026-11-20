@@ -6,7 +6,8 @@ import { toDateStr } from '../data/dates.js'
 import { formatPeso } from '../lib/money.js'
 import { duration } from '../lib/format.js'
 import { demoOnly } from '../components/demoOnly.js'
-import { pillClass, primaryButton, textButton } from '../components/ui.js'
+import { PiPlus } from 'react-icons/pi'
+import { categoryBand, pillClass, primaryButton, textButton } from '../components/ui.js'
 
 // top 3 service ids by qty sold this month; services nobody booked get no badge
 function mostBooked(sales, month) {
@@ -28,16 +29,17 @@ export function Services() {
   const shown = categories.filter((c) => category === 'All' || c === category)
 
   return (
-    <div className="flex flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex flex-col gap-4 md:gap-5">
+      <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-[13px] text-muted">
+          <h1 className="text-2xl font-bold">Services</h1>
+          <p className="text-[13px] text-muted tabular-nums">
             {state.services.length} services · {categories.length} categories
-          </div>
-          <h1 className="mt-1 font-heading text-[26px] font-medium md:text-[32px]">Services</h1>
+          </p>
         </div>
         <button type="button" className={primaryButton} onClick={demoOnly}>
-          + Add service
+          <PiPlus aria-hidden="true" className="size-4" />
+          Add service
         </button>
       </header>
 
@@ -49,33 +51,35 @@ export function Services() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-4 md:gap-6 lg:grid-cols-2">
         {shown.map((c) => (
-          <section key={c} aria-label={c} className="rounded-2xl border border-soft bg-surface px-5 pt-5 pb-2 md:px-7 md:pt-6">
-            <h2 className="border-b border-line pb-3 font-heading text-[22px] font-medium">{c}</h2>
+          <section key={c} aria-label={c} className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface">
+            <div className="flex min-h-11 items-center gap-2 border-b border-line px-3.5 md:min-h-14 md:px-5">
+              <span aria-hidden="true" className={`size-2.5 rounded-sm ${categoryBand(c)}`} />
+              <h2 className="text-[15px] font-semibold">{c}</h2>
+            </div>
             <ul>
               {state.services
                 .filter((s) => s.category === c)
                 .map((s) => (
-                  <li key={s.id} className="border-b border-soft py-3.5 last:border-b-0">
-                    <div className="flex items-baseline gap-3">
-                      <h3 className="font-heading text-[17px] font-medium">{s.name}</h3>
-                      <span aria-hidden="true" className="min-w-6 flex-1 translate-y-[-4px] border-b border-dotted border-line" />
-                      <span className="shrink-0 font-heading text-[17px] text-ink tabular-nums">{formatPeso(s.price)}</span>
+                  <li key={s.id} className="flex gap-3 border-b border-line pr-1.5 last:border-b-0 md:gap-4 md:pr-3">
+                    <span aria-hidden="true" className={`w-1 shrink-0 ${categoryBand(c)}`} />
+                    <div className="min-w-0 flex-1 py-3">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <h3 className="text-[15px] font-semibold">{s.name}</h3>
+                        <span className="shrink-0 text-[15px] font-semibold tabular-nums">{formatPeso(s.price)}</span>
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
+                        <span className="tabular-nums">{duration(s.durationMin)}</span>
+                        {showRate && <span className="tabular-nums">Commission {Math.round(s.commissionRate * 100)}%</span>}
+                        {top.has(s.id) && (
+                          <span className="rounded-full bg-highlight/45 px-2.5 py-0.5 text-xs font-semibold text-ink">Most booked this month</span>
+                        )}
+                      </div>
                     </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-                      <span className="tabular-nums">{duration(s.durationMin)}</span>
-                      {showRate && <span className="tabular-nums">Commission {Math.round(s.commissionRate * 100)}%</span>}
-                      {top.has(s.id) && <span className="rounded-full bg-warn-bg px-2.5 py-0.5 font-medium text-accent-ink">Most booked this month</span>}
-                      <button
-                        type="button"
-                        aria-label={`Edit ${s.name}`}
-                        className={`${textButton} ml-auto`}
-                        onClick={demoOnly}
-                      >
-                        Edit
-                      </button>
-                    </div>
+                    <button type="button" aria-label={`Edit ${s.name}`} className={`${textButton} self-center`} onClick={demoOnly}>
+                      Edit
+                    </button>
                   </li>
                 ))}
             </ul>
