@@ -3,7 +3,8 @@ import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { PiList, PiX, PiSignOut, PiCaretDown } from 'react-icons/pi'
 import { useRole } from '../auth/RoleProvider.jsx'
 import { PAGES, canSee } from '../auth/roles.js'
-import { Brand } from '../components/Brand.jsx'
+import { Brand, Leaf } from '../components/Brand.jsx'
+import { secondaryButton } from '../components/ui.js'
 import { spaConfig } from '../config/spa.config.js'
 
 const BOTTOM_NAV = [
@@ -22,8 +23,11 @@ function NavItems({ role, onNavigate }) {
       end
       onClick={onNavigate}
       className={({ isActive }) =>
-        `flex min-h-11 items-center gap-3 rounded-lg px-3.5 text-sm transition-colors ${
-          isActive ? 'bg-rail-active font-medium text-rail-ink' : 'text-line hover:bg-rail-active/50 hover:text-white'
+        // inactive rail-ink/90 on rail is 4.92:1
+        `flex min-h-11 items-center gap-3 rounded-md border-l-[3px] px-3 text-sm transition-colors ${
+          isActive
+            ? 'border-highlight bg-rail-active font-semibold text-rail-ink'
+            : 'border-transparent font-medium text-rail-ink/90 hover:bg-rail-active hover:text-rail-ink'
         }`
       }
     >
@@ -37,8 +41,7 @@ function NavItems({ role, onNavigate }) {
       {visible.filter((p) => !p.section).map(item)}
       {reports.length > 0 && (
         <>
-          <div className="mx-3 my-3.5 h-px bg-rail-active" />
-          <div className="px-3.5 pb-1.5 text-[11px] tracking-[0.1em] text-line">REPORTS</div>
+          <div className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-[0.14em] text-rail-ink/90">REPORTS</div>
           {reports.map(item)}
         </>
       )}
@@ -46,30 +49,39 @@ function NavItems({ role, onNavigate }) {
   )
 }
 
-function RoleSwitch({ role, login, dark }) {
+function RoleSwitch({ role, login }) {
   return (
-    <label className="relative inline-flex items-center">
+    <label className="inline-flex items-center gap-2 text-[13px] text-muted">
       <span className="sr-only">Viewing as</span>
-      <select
-        value={role}
-        onChange={(e) => login(e.target.value)}
-        className={`h-11 cursor-pointer appearance-none rounded-full border pr-9 pl-4 text-sm ${
-          dark ? 'border-rail-active bg-rail text-line' : 'border-line bg-surface text-ink'
-        }`}
-      >
-        <option value="owner">Owner</option>
-        <option value="receptionist">Receptionist</option>
-      </select>
-      <PiCaretDown aria-hidden="true" className={`pointer-events-none absolute right-3.5 size-4 ${dark ? 'text-line' : 'text-muted'}`} />
+      <span aria-hidden="true" className="hidden md:inline">
+        Role
+      </span>
+      <span className="relative inline-flex items-center">
+        <select
+          value={role}
+          onChange={(e) => login(e.target.value)}
+          className="h-11 cursor-pointer appearance-none rounded-md border border-line bg-surface pr-8 pl-3 text-sm font-medium text-ink"
+        >
+          <option value="owner">Owner</option>
+          <option value="receptionist">Receptionist</option>
+        </select>
+        <PiCaretDown aria-hidden="true" className="pointer-events-none absolute right-2.5 size-4 text-muted" />
+      </span>
     </label>
   )
 }
 
 function DemoNote({ onDismiss, className }) {
   return (
-    <p className={`flex items-center gap-1 text-xs ${className}`}>
+    <p className={`flex items-center gap-2 text-[13px] text-muted ${className}`}>
+      <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-accent" />
       Demo · sample data, resets on reload
-      <button type="button" aria-label="Dismiss demo note" onClick={onDismiss} className="-my-2 inline-flex size-11 items-center justify-center rounded-full">
+      <button
+        type="button"
+        aria-label="Dismiss demo note"
+        onClick={onDismiss}
+        className="inline-flex size-11 shrink-0 items-center justify-center rounded-md hover:text-ink"
+      >
         <PiX aria-hidden="true" className="size-3.5" />
       </button>
     </p>
@@ -88,42 +100,45 @@ export function AppShell() {
     navigate('/login')
   }
   const closeMenu = () => menu.current?.close()
+  const dismissNote = () => setDemoNote(false)
 
   return (
     <div className="flex min-h-dvh">
-      <nav aria-label="Main" className="on-rail sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-1 overflow-y-auto bg-rail px-4 py-7 md:flex">
-        <div className="px-3 pb-7">
+      <nav aria-label="Main" className="on-rail sticky top-0 hidden h-dvh w-58 shrink-0 flex-col gap-1 overflow-y-auto bg-rail px-4 py-6 md:flex">
+        <div className="px-2 pb-6">
           <Brand />
         </div>
         <NavItems role={role} />
       </nav>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* phone top bar; the page header below continues its rail band */}
-        <header className="on-rail flex flex-wrap items-center justify-between gap-2 bg-rail px-4 pt-4 pb-3 md:hidden">
+        <header className="on-rail flex h-14 items-center gap-1 bg-rail pr-3 pl-1 md:hidden">
           <button
             type="button"
             aria-label="Open menu"
             onClick={() => menu.current?.showModal()}
-            className="inline-flex size-11 items-center justify-center rounded-full border border-rail-active text-rail-ink"
+            className="inline-flex size-11 items-center justify-center rounded-md text-rail-ink"
           >
-            <PiList aria-hidden="true" className="size-5" />
+            <PiList aria-hidden="true" className="size-[22px]" />
           </button>
-          <span className="font-heading text-xl text-rail-ink">{spaConfig.logoText}</span>
-          <RoleSwitch role={role} login={login} dark />
-          {demoNote && <DemoNote onDismiss={() => setDemoNote(false)} className="basis-full justify-center text-line" />}
-        </header>
-
-        <div className="hidden items-center justify-end gap-2 px-10 pt-6 md:flex">
-          {demoNote && <DemoNote onDismiss={() => setDemoNote(false)} className="mr-auto text-muted" />}
+          <span className="mr-auto flex items-center gap-1.5 text-lg font-bold text-rail-ink">
+            <Leaf className="size-5" />
+            {spaConfig.logoText}
+          </span>
           <RoleSwitch role={role} login={login} />
-          <button type="button" onClick={signOut} className="inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm text-muted hover:text-ink">
+        </header>
+        {demoNote && <DemoNote onDismiss={dismissNote} className="h-11 border-b border-line bg-surface pl-4 md:hidden [&>button]:ml-auto" />}
+
+        <div className="hidden h-14 items-center justify-end gap-2 border-b border-line px-8 md:flex">
+          {demoNote && <DemoNote onDismiss={dismissNote} className="mr-auto" />}
+          <RoleSwitch role={role} login={login} />
+          <button type="button" onClick={signOut} className={secondaryButton}>
             <PiSignOut aria-hidden="true" className="size-4" />
             Log out
           </button>
         </div>
 
-        <main className="flex-1 px-4 pb-28 md:px-10 md:pb-12">
+        <main className="flex-1 px-4 pt-4 pb-28 md:px-8 md:pt-6 md:pb-12">
           <Suspense fallback={<p role="status" className="py-16 text-center text-sm text-muted">Loading…</p>}>
             <Outlet />
           </Suspense>
@@ -134,41 +149,48 @@ export function AppShell() {
         ref={menu}
         aria-label="Menu"
         onClick={(e) => e.target === menu.current && closeMenu()}
-        className="on-rail m-0 h-dvh max-h-none w-72 max-w-[85vw] bg-rail p-0 text-line backdrop:bg-rail-active/60"
+        className="on-rail m-0 h-dvh max-h-none w-72 max-w-[85vw] bg-rail p-0 text-rail-ink backdrop:bg-rail-active/60"
       >
         <div className="flex h-full flex-col gap-1 px-4 py-5">
-          <div className="flex items-center justify-between pb-5 pl-3">
+          <div className="flex items-center justify-between pb-5 pl-2">
             <Brand />
-            <button type="button" aria-label="Close menu" onClick={closeMenu} className="inline-flex size-11 items-center justify-center rounded-full text-rail-ink">
+            <button type="button" aria-label="Close menu" onClick={closeMenu} className="inline-flex size-11 items-center justify-center rounded-md text-rail-ink">
               <PiX aria-hidden="true" className="size-5" />
             </button>
           </div>
           <NavItems role={role} onNavigate={closeMenu} />
-          <button type="button" onClick={signOut} className="mt-auto flex min-h-11 items-center gap-3 rounded-lg px-3.5 text-sm text-line hover:bg-rail-active/50">
+          <button
+            type="button"
+            onClick={signOut}
+            className="mt-auto flex min-h-11 items-center gap-3 rounded-md px-3.5 text-sm font-medium text-rail-ink/90 hover:bg-rail-active hover:text-rail-ink"
+          >
             <PiSignOut aria-hidden="true" className="size-[18px]" />
             Log out
           </button>
         </div>
       </dialog>
 
-      <nav aria-label="Quick" className="fixed inset-x-0 bottom-0 grid grid-cols-4 border-t border-soft bg-surface px-1 pt-1.5 pb-3.5 md:hidden">
-        {BOTTOM_NAV.filter(([key]) => canSee(role, key)).map(([key, label]) => (
-          <NavLink
-            key={key}
-            to={PAGES.find((p) => p.key === key).path}
-            end
-            className={({ isActive }) =>
-              `flex min-h-12 flex-col items-center justify-center gap-1 text-[11px] ${isActive ? 'font-semibold text-ink' : 'text-muted'}`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <span aria-hidden="true" className={`size-1.5 rounded-full ${isActive ? 'bg-accent' : 'bg-transparent'}`} />
-                {label}
-              </>
-            )}
-          </NavLink>
-        ))}
+      <nav aria-label="Quick" className="fixed inset-x-0 bottom-0 grid h-16 grid-cols-4 border-t border-line bg-surface md:hidden">
+        {BOTTOM_NAV.filter(([key]) => canSee(role, key)).map(([key, label]) => {
+          const page = PAGES.find((p) => p.key === key)
+          return (
+            <NavLink
+              key={key}
+              to={page.path}
+              end
+              className={({ isActive }) => `flex flex-col items-center justify-center gap-0.5 text-xs ${isActive ? 'font-bold text-ink' : 'font-medium text-muted'}`}
+            >
+              {({ isActive }) => (
+                <>
+                  <span aria-hidden="true" className={`grid h-7 w-13 place-items-center rounded-full ${isActive ? 'bg-highlight' : ''}`}>
+                    <page.icon className="size-5" />
+                  </span>
+                  {label}
+                </>
+              )}
+            </NavLink>
+          )
+        })}
       </nav>
     </div>
   )

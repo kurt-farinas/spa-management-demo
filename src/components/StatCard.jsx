@@ -1,9 +1,10 @@
 export function StatCard({ label, value, note, dark = false }) {
+  const sub = dark ? 'text-rail-ink/90' : 'text-muted'
   return (
-    <div className={`rounded-xl p-3.5 md:rounded-2xl md:px-5 md:py-[18px] ${dark ? 'bg-rail' : 'border border-soft bg-surface'}`}>
-      <div className={`text-xs md:text-[13px] ${dark ? 'text-line' : 'text-muted'}`}>{label}</div>
-      <div className={`mt-1 font-heading text-[22px] tabular-nums md:mt-1.5 md:text-[30px] ${dark ? 'text-rail-ink' : 'text-ink'}`}>{value}</div>
-      {note && <div className={`mt-1 hidden text-xs md:block ${dark ? 'text-line' : 'text-muted'}`}>{note}</div>}
+    <div className={`rounded-lg border px-3.5 py-3 md:px-5 md:py-4 ${dark ? 'border-rail bg-rail' : 'border-line bg-surface'}`}>
+      <div className={`text-[13px] font-semibold ${sub}`}>{label}</div>
+      <div className={`mt-0.5 text-2xl font-semibold tabular-nums md:mt-1 md:text-[28px] md:leading-9 ${dark ? 'text-rail-ink' : 'text-ink'}`}>{value}</div>
+      {note && <div className={`mt-0.5 text-xs md:mt-1 md:text-[13px] ${sub}`}>{note}</div>}
     </div>
   )
 }
