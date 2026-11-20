@@ -6,6 +6,14 @@ import { Login } from '../pages/Login.jsx'
 import { Dashboard } from '../pages/Dashboard.jsx'
 import { ComingSoon } from '../pages/ComingSoon.jsx'
 
+// One entry per built page; pages not listed here show ComingSoon.
+const PAGE_ELEMENTS = {
+  dashboard: <Dashboard />,
+}
+
+// Detail routes: { path, page (the PAGES key that guards it), element }.
+const DETAIL_ROUTES = []
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -15,8 +23,11 @@ export function AppRoutes() {
           <Route
             key={p.key}
             path={p.path}
-            element={<RequireRole page={p.key}>{p.key === 'dashboard' ? <Dashboard /> : <ComingSoon page={p} />}</RequireRole>}
+            element={<RequireRole page={p.key}>{PAGE_ELEMENTS[p.key] ?? <ComingSoon page={p} />}</RequireRole>}
           />
+        ))}
+        {DETAIL_ROUTES.map((r) => (
+          <Route key={r.path} path={r.path} element={<RequireRole page={r.page}>{r.element}</RequireRole>} />
         ))}
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
