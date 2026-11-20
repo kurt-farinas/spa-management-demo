@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { MemoryRouter } from 'react-router-dom'
@@ -31,14 +31,14 @@ const initialState = {
 }
 
 let mounted
-function render(url) {
+function render(url, state = initialState) {
   const el = document.createElement('div')
   document.body.append(el)
   const root = createRoot(el)
   act(() =>
     root.render(
       <RoleProvider initialRole="receptionist">
-        <DemoStoreProvider initialState={initialState}>
+        <DemoStoreProvider initialState={state}>
           <MemoryRouter initialEntries={[url]}>
             <SalesReport />
           </MemoryRouter>
@@ -50,6 +50,7 @@ function render(url) {
   return el
 }
 afterEach(() => {
+  vi.useRealTimers()
   act(() => mounted.root.unmount())
   mounted.el.remove()
 })
@@ -73,5 +74,44 @@ describe('SalesReport', () => {
   it('a start after the end shows the range error', () => {
     const el = render('/sales-report?from=2026-11-20&to=2026-11-18')
     expect(el.textContent).toContain('Start date must be before end date')
+  })
+
+  it('with Group by service the retail products get a row, so the totals row is the Total sales tile', () => {
+    const mixed = {
+      ...initialState,
+      sales: [
+        { id: 'M1', date: '2026-11-18T10:00', clientId: 'c1', employeeId: 'e1', payment: 'cash', total: 1900, lines: [line('s1', 'Swedish massage', 1200), { type: 'product', id: 'p1', name: 'Massage oil', qty: 2, unitPrice: 350 }] },
+      ],
+    }
+    const el = render('/sales-report?from=2026-11-18&to=2026-11-18&group=service', mixed)
+    const rows = [...el.querySelectorAll('tbody tr')].map((tr) => [...tr.children].map((c) => c.textContent))
+    expect(rows).toEqual([
+      ['Swedish massage', '1', formatPeso(1200), '63.2%'],
+      ['Retail products', '2', formatPeso(700), '36.8%'],
+    ])
+    expect(el.textContent).toContain(`Total sales${formatPeso(1900)}`)
+    expect([...el.querySelectorAll('tfoot td')].map((td) => td.textContent)).toEqual(['3', formatPeso(1900), '100%'])
+  })
+
+  it('a range with only product sales shows the retail row, not an empty table', () => {
+    const retail = { ...initialState, sales: [{ id: 'R1', date: '2026-11-18T10:00', clientId: 'c1', employeeId: null, payment: 'cash', total: 350, lines: [{ type: 'product', id: 'p1', name: 'Massage oil', qty: 1, unitPrice: 350 }] }] }
+    const el = render('/sales-report?from=2026-11-18&to=2026-11-18&group=service', retail)
+    expect([...el.querySelectorAll('tbody tr')].map((tr) => tr.firstChild.textContent)).toEqual(['Retail products'])
+    expect([...el.querySelectorAll('tfoot td')].map((td) => td.textContent)).toEqual(['1', formatPeso(350), '100%'])
+  })
+
+  it('a range over 2 years shows the error and builds no table', () => {
+    const el = render('/sales-report?from=2024-11-18&to=2026-11-20&group=day')
+    expect(el.textContent).toContain('Pick a range of 2 years or less')
+    expect(el.querySelector('table')).toBeNull()
+    expect(el.querySelector('[aria-label="Totals for this period"]')).toBeNull()
+  })
+
+  it('keeps the clicked preset highlighted when two presets give the same dates', () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-11-01T12:00'))
+    const pressed = (el) => [...el.querySelectorAll('[aria-label="Date range"] button[aria-pressed="true"]')].map((b) => b.textContent)
+    expect(pressed(render('/sales-report?from=2026-11-01&to=2026-11-01&preset=month'))).toEqual(['This month'])
+    expect(pressed(render('/sales-report?from=2026-11-01&to=2026-11-01'))).toEqual(['Today'])
   })
 })

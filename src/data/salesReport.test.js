@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { rangePreset, salesTotals, salesInRange, fillPeriods, salesSummary } from './selectors.js'
+import { rangePreset, rangeTooLong, salesTotals, salesInRange, fillPeriods, salesSummary } from './selectors.js'
 
 const friday = new Date('2026-11-20T12:00')
 
@@ -70,6 +70,14 @@ describe('fillPeriods', () => {
       ['2025-12', 'Dec 2025', 0],
       ['2026-01', 'Jan 2026', 0],
     ])
+  })
+
+  it('gives no rows past 2 years, and still fills exactly 731 days', () => {
+    expect(fillPeriods([], { from: '2024-11-19', to: '2026-11-20', groupBy: 'day' })).toHaveLength(732)
+    expect(fillPeriods([], { from: '2024-11-18', to: '2026-11-20', groupBy: 'day' })).toEqual([])
+    expect(fillPeriods([], { from: '0001-01-01', to: '2026-11-20', groupBy: 'month' })).toEqual([])
+    expect(rangeTooLong('2024-11-19', '2026-11-20')).toBe(false)
+    expect(rangeTooLong('2024-11-18', '2026-11-20')).toBe(true)
   })
 
   it('leaves service and therapist rows as they are', () => {

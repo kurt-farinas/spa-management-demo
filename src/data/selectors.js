@@ -276,9 +276,14 @@ export function salesTotals(sales) {
   }
 }
 
-// day and month rows get every period from..to, missing ones at 0 (labels as salesSummary makes them); other groupings pass through
+// custom ranges stop at 2 years (731 days), so a typed year 0001 cannot build a million rows
+export const MAX_RANGE_DAYS = 731
+export const rangeTooLong = (from, to) => Math.round((new Date(`${to}T00:00`) - new Date(`${from}T00:00`)) / 864e5) > MAX_RANGE_DAYS
+
+// day and month rows get every period from..to, missing ones at 0 (labels as salesSummary makes them); other groupings pass through; a range past the cap gives no rows
 export function fillPeriods(rows, { from, to, groupBy }) {
   if (groupBy !== 'day' && groupBy !== 'month') return rows
+  if (rangeTooLong(from, to)) return []
   const keys = []
   if (groupBy === 'day') for (let d = new Date(`${from}T00:00`); toDateStr(d) <= to; d = addDays(d, 1)) keys.push(toDateStr(d))
   else for (let d = new Date(`${from.slice(0, 7)}-01T00:00`); toDateStr(d) <= to; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) keys.push(toDateStr(d).slice(0, 7))

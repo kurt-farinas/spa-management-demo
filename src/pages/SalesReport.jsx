@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useDemoStore } from '../data/DemoStore.jsx'
-import { salesInRange, salesTotals, salesSummary, fillPeriods, rangePreset } from '../data/selectors.js'
+import { salesInRange, salesTotals, salesSummary, fillPeriods, rangePreset, rangeTooLong } from '../data/selectors.js'
 import { formatPeso } from '../lib/money.js'
 import { monthDay } from '../lib/format.js'
 import { StatCard } from '../components/StatCard.jsx'
@@ -62,19 +62,30 @@ export function SalesReport() {
   const from = isDate(params.get('from')) ? params.get('from') : fallback.from
   const to = isDate(params.get('to')) ? params.get('to') : fallback.to
   const [groupKey, groupLabel, groupBy] = GROUPS.find((g) => g[0] === params.get('group')) ?? GROUPS[0]
-  const update = (next) => setParams({ from, to, group: groupKey, ...next }, { replace: true })
+  // a null value leaves that key out of the URL
+  const update = (next) =>
+    setParams(Object.fromEntries(Object.entries({ from, to, group: groupKey, preset: params.get('preset'), ...next }).filter(([, v]) => v != null)), { replace: true })
 
-  const preset = PRESETS.find(([name]) => {
-    const r = rangePreset(name, today)
-    return r.from === from && r.to === to
-  })?.[0]
-  const custom = customOpen || !preset
-  const invalid = from > to
+  // the clicked pill is kept in the URL, as two presets can give the same dates; matching dates is only for links without one
+  const named = PRESETS.find(([name]) => name === params.get('preset'))?.[0]
+  const preset =
+    named ??
+    PRESETS.find(([name]) => {
+      const r = rangePreset(name, today)
+      return r.from === from && r.to === to
+    })?.[0]
+  const error = from > to ? 'Start date must be before end date' : rangeTooLong(from, to) ? 'Pick a range of 2 years or less' : null
+  const invalid = error !== null
+  const custom = customOpen || !preset || invalid
   const sales = invalid ? [] : salesInRange(state.sales, from, to)
   const totals = salesTotals(sales)
-  const rows = fillPeriods(salesSummary(sales, { groupBy }, state), { from, to, groupBy })
+  const byService = groupBy === 'service'
+  const periods = fillPeriods(salesSummary(sales, { groupBy }, state), { from, to, groupBy })
+  // retail has no service, so it gets its own row and the rows still add up to the total sales
+  const retailQty = sumOf(sales.flatMap((s) => s.lines.filter((l) => l.type === 'product')), 'qty')
+  const rows = byService && totals.products ? [...periods, { key: 'retail', label: 'Retail products', total: totals.products, count: retailQty }].sort((a, b) => b.total - a.total) : periods
   const grand = sumOf(rows, 'total')
-  const countLabel = groupBy === 'service' ? 'Booked' : 'Sales'
+  const countLabel = byService ? 'Sold' : 'Sales'
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
@@ -93,7 +104,7 @@ export function SalesReport() {
               className={pillClass(!custom && preset === name)}
               onClick={() => {
                 setCustomOpen(false)
-                update(rangePreset(name, today))
+                update({ ...rangePreset(name, today), preset: name })
               }}
             >
               {label}
@@ -116,14 +127,14 @@ export function SalesReport() {
                   value={value}
                   aria-invalid={invalid}
                   aria-describedby={invalid ? 'range-error' : undefined}
-                  onChange={(e) => e.target.value && update({ [key]: e.target.value })}
+                  onChange={(e) => e.target.value && update({ [key]: e.target.value, preset: null })}
                   className={`${dateInput} ${invalid ? '' : 'border-lavender'}`}
                 />
               </label>
             ))}
             {invalid && (
               <p id="range-error" role="alert" className="flex min-h-11 items-center text-sm text-danger">
-                Start date must be before end date
+                {error}
               </p>
             )}
           </div>
@@ -164,7 +175,7 @@ export function SalesReport() {
               <p className="py-12 text-center text-sm text-muted">No sales in this period</p>
             ) : (
               <>
-                <SalesReportChart rows={rows} ranked={groupBy === 'service' || groupBy === 'employee'} unit={groupBy === 'service' ? ['booked', 'booked'] : undefined} />
+                <SalesReportChart rows={rows} ranked={groupBy === 'service' || groupBy === 'employee'} unit={byService ? ['sold', 'sold'] : undefined} />
                 <div className="-mx-5 mt-4 overflow-x-auto md:-mx-[22px]">
                   <table className="w-full min-w-[420px] border-collapse text-sm">
                     <caption className="sr-only">
