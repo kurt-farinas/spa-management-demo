@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lumière Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#1F6F6B;--mag:#B8336A;--saf:#E8A33D;--plum:#6B3E7A;--leaf:#3F7D4E;--ground:#FBF8F2;--ink:#2A2320;--muted:#5E5650;--line:#E7E0D5;--hour:124px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--ground);color:var(--ink);font:14px/1.45 "Hanken Grotesk",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.top{height:56px;background:var(--teal);color:#fff;display:flex;align-items:center;padding:0 24px;gap:32px}
+.logo{font-size:19px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}.logo small{font-size:11px;font-weight:600;letter-spacing:.14em;margin-left:4px}
+nav{display:flex;gap:4px;flex:1}nav a{color:#E3F0EE;text-decoration:none;padding:17px 10px 15px;border-bottom:3px solid transparent;font-weight:500}
+nav a.on{color:#fff;font-weight:700;border-color:var(--saf)}
+.acct{display:flex;align-items:center;gap:16px}
+select{font:inherit;font-size:13px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 26px 5px 10px}
+.top select{border-color:#fff}.top .out{color:#fff;font-weight:600;text-decoration:none}
+.weave{height:4px;background:repeating-linear-gradient(90deg,var(--mag) 0 14px,var(--saf) 14px 28px,var(--teal) 28px 42px)}
+.demo{height:26px;line-height:26px;padding:0 24px;font-size:12px;color:var(--muted)}
+main{padding:2px 24px 0}
+.head{display:flex;align-items:flex-end;justify-content:space-between;height:52px}
+h1{font-size:24px;font-weight:700;line-height:1.15;letter-spacing:-.01em}.head p{color:var(--muted)}
+.btns{display:flex;gap:10px}
+.btn{font:inherit;font-weight:600;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:7px;border:1px solid #D5CCBF;background:#fff;color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--mag);border-color:var(--mag);color:#fff}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px}
+.sched{margin-top:14px;padding:12px 16px 14px;height:392px}
+.ch{display:flex;align-items:center;justify-content:space-between;height:36px}
+h2{font-size:15px;font-weight:700}h2 span{font-weight:400;color:var(--muted);margin-left:8px;font-size:13px}
+.legend{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.grid{position:relative;margin-top:4px}
+.hours{display:flex;height:28px;padding-left:120px;font-size:12px;color:var(--muted);font-weight:500}
+.hours div{width:var(--hour);padding:5px 0 0 6px;border-left:1px solid var(--line)}
+.row{display:flex;height:60px;border-top:1px solid var(--line)}
+.row:nth-child(odd){background:#FDFBF7}
+.who{width:120px;padding:10px 0 0;display:flex;gap:9px}
+.who b{width:10px;height:10px;border-radius:3px;background:var(--c);margin-top:5px}
+.who strong{display:block;font-weight:600;line-height:1.2}.who small{font-size:12px;color:var(--muted)}
+.lane{position:relative;flex:1;overflow:hidden;background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px var(--hour))}
+.b{position:absolute;top:9px;height:42px;left:calc(var(--s)*var(--hour) + 3px);width:calc(var(--d)*var(--hour) - 5px);border-radius:6px;padding:4px 9px;background:var(--c);color:#fff;font-size:12px;line-height:16px;white-space:nowrap;overflow:hidden}
+.b strong,.b span{display:block;overflow:hidden;text-overflow:ellipsis}.b strong{font-size:13px;font-weight:600;line-height:17px}
+.b.done{background:var(--t);color:var(--ink);box-shadow:inset 3px 0 0 var(--c)}.b.done span{color:var(--muted)}
+.sf .b{color:var(--ink)}
+.b.ns{background:repeating-linear-gradient(135deg,#fff 0 6px,var(--t) 6px 10px);color:var(--ink);border:1px dashed var(--c)}.b.ns strong{text-decoration:line-through}
+.now{position:absolute;top:0;bottom:0;left:calc(120px + 4.25*var(--hour));width:2px;background:var(--mag)}
+.now em{position:absolute;top:3px;left:-30px;width:62px;text-align:center;background:var(--mag);color:#fff;font-style:normal;font-size:11px;font-weight:700;border-radius:4px;line-height:18px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+.kpi{padding:12px 16px;height:84px}.kpi p{font-size:13px;color:var(--muted);font-weight:500}
+.kpi strong{display:block;font-size:24px;font-weight:700;line-height:1.2;letter-spacing:-.01em}.kpi small{font-size:12px;color:var(--muted)}.kpi small.up{color:var(--leaf);font-weight:600}
+.panels{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:14px}
+.panel{padding:12px 16px;height:206px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:112px;margin-top:10px;border-bottom:1px solid var(--line)}
+.bars div{flex:1;background:var(--teal);border-radius:3px 3px 0 0;opacity:.85}.bars div.today{background:var(--mag);opacity:1}
+.axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);padding:6px 0;border-bottom:1px solid var(--line)}
+td{padding:10px 0;border-bottom:1px solid var(--line)}td.n{font-weight:700;color:var(--mag);text-align:right;padding-right:14px}th.n{text-align:right;padding-right:14px}
+.sm{height:28px;padding:0 10px;font-size:12px}
+a.link{color:var(--teal);font-weight:600;text-decoration:none;font-size:13px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">Lumière<small>· DAY SPA</small></div>
+  <nav><a class="on" href="#">Dashboard</a><a href="#">Appointments</a><a href="#">Clients</a><a href="#">Employees</a><a href="#">Services</a><a href="#">Inventory</a><a href="#">Point of Sale</a><a href="#">Reports</a></nav>
+  <div class="acct"><select aria-label="Role"><option>Owner</option><option>Front desk</option><option>Therapist</option></select><a class="out" href="#">Log out</a></div>
+</header>
+<div class="weave"></div>
+<div class="demo">Demo · sample data, resets on reload</div>
+<main>
+  <div class="head">
+    <div><h1>Good afternoon, Carla</h1><p>Friday, 20 November 2026</p></div>
+    <div class="btns">
+      <button class="btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5"/><path d="M1.5 6h11M4.5 1v3M9.5 1v3"/></svg>New booking</button>
+      <button class="btn pri"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 2v10M2 7h10"/></svg>New sale</button>
+    </div>
+  </div>
+
+  <section class="card sched">
+    <div class="ch">
+      <h2>Today's schedule<span>5 therapists · 20 bookings</span></h2>
+      <div class="legend"><span><i style="background:#E2EFED;box-shadow:inset 3px 0 0 #1F6F6B"></i>Done</span><span><i style="background:#1F6F6B"></i>Booked</span><span><i style="background:repeating-linear-gradient(135deg,#fff 0 3px,#C9DEDB 3px 5px);border:1px dashed #1F6F6B"></i>No-show</span><a class="link" href="#">Open appointments</a></div>
+    </div>
+    <div class="grid">
+      <div class="hours"><div>10 AM</div><div>11 AM</div><div>12 PM</div><div>1 PM</div><div>2 PM</div><div>3 PM</div><div>4 PM</div><div>5 PM</div><div>6 PM</div><div>7 PM</div></div>
+      <div class="row" style="--c:#1F6F6B;--t:#E2EFED"><div class="who"><b></b><div><strong>Ana</strong><small>Massage</small></div></div><div class="lane">
+        <div class="b done" style="--s:3;--d:1"><strong>Miguel Santos</strong><span>Swedish massage · done</span></div>
+        <div class="b ns" style="--s:5;--d:1.5"><strong>Paolo Reyes</strong><span>Hot stone · No-show</span></div></div></div>
+      <div class="row" style="--c:#B8336A;--t:#F6E3EB"><div class="who"><b></b><div><strong>Joy</strong><small>Facials</small></div></div><div class="lane">
+        <div class="b done" style="--s:.5;--d:1"><strong>Grace Villanueva</strong><span>Foot reflexology · done</span></div>
+        <div class="b" style="--s:4;--d:1.25"><strong>Liezel Ramos</strong><span>Gold facial · 2:00–3:15</span></div>
+        <div class="b" style="--s:7.5;--d:3"><strong>Rosalie Dizon</strong><span>Couples retreat · 5:30–8:30</span></div></div></div>
+      <div class="row sf" style="--c:#E8A33D;--t:#FBEBD2"><div class="who"><b></b><div><strong>Mae</strong><small>Nails</small></div></div><div class="lane">
+        <div class="b done" style="--s:0;--d:1.5"><strong>Jenny Bautista</strong><span>Gel manicure · done</span></div>
+        <div class="b" style="--s:4.5;--d:.84"><strong>Andrea Cruz</strong><span>Spa pedicure</span></div></div></div>
+      <div class="row" style="--c:#6B3E7A;--t:#ECE2F0"><div class="who"><b></b><div><strong>Rina</strong><small>Body</small></div></div><div class="lane">
+        <div class="b done" style="--s:1;--d:1"><strong>Kristine Mendoza</strong><span>Aromatherapy · done</span></div>
+        <div class="b" style="--s:6;--d:.75"><strong>Carla Aquino</strong><span>Coffee scrub</span></div></div></div>
+      <div class="row" style="--c:#3F7D4E;--t:#E3EFE6"><div class="who"><b></b><div><strong>Ben</strong><small>Massage</small></div></div><div class="lane">
+        <div class="b done" style="--s:.5;--d:1"><strong>Mark Dela Cruz</strong><span>Sports massage · done</span></div>
+        <div class="b" style="--s:7.5;--d:3"><strong>Couples retreat</strong><span>with Joy · 5:30–8:30</span></div></div></div>
+      <div class="now"><em>2:15 PM</em></div>
+    </div>
+  </section>
+
+  <section class="kpis">
+    <div class="card kpi"><p>Today's sales</p><strong>₱15,760</strong><small class="up">Up from ₱13,900 last Friday</small></div>
+    <div class="card kpi"><p>Bookings today</p><strong>20</strong><small>6 to come</small></div>
+    <div class="card kpi"><p>In the spa now</p><strong>4</strong><small>Clients checked in</small></div>
+    <div class="card kpi"><p>Profit this month</p><strong>₱151,290</strong><small>November so far</small></div>
+  </section>
+
+  <section class="panels">
+    <div class="card panel">
+      <div class="ch" style="height:24px"><h2>Sales, last 14 days<span>Peak ₱17,400 · Sat 14 Nov</span></h2><a class="link" href="#">Reports</a></div>
+      <div class="bars" aria-label="Daily sales bar chart">
+        <div style="height:108px"></div><div style="height:99px"></div><div style="height:56px"></div><div style="height:61px"></div><div style="height:69px"></div><div style="height:75px"></div><div style="height:93px"></div>
+        <div style="height:112px"></div><div style="height:101px"></div><div style="height:59px"></div><div style="height:64px"></div><div style="height:72px"></div><div style="height:81px"></div><div class="today" style="height:105px"></div>
+      </div>
+      <div class="axis"><span>Sat 7 Nov</span><span>Fri 13 Nov</span><span>Today</span></div>
+    </div>
+    <div class="card panel">
+      <div class="ch" style="height:24px"><h2>Running low</h2><a class="link" href="#">Inventory</a></div>
+      <table><thead><tr><th>Item</th><th class="n">Left</th><th></th></tr></thead>
+        <tbody><tr><td>Lavender oil 500ml</td><td class="n">2 left</td><td style="text-align:right"><button class="btn sm">Reorder</button></td></tr>
+        <tr><td>Gold facial mask</td><td class="n">3 left</td><td style="text-align:right"><button class="btn sm">Reorder</button></td></tr></tbody></table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

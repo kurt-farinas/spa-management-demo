@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390"><title>Lumière Dashboard Phone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pandan:#2E6B4F;--ground:#F5F7F0;--surface:#FFF;--ink:#1D2A23;--cal:#D9E46B;--amber:#E39B3A;--muted:#55635A;--rule:#DDE3D6;--coffee:#7A5235;--gumamela:#C2413B}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;position:relative;background:var(--ground);color:var(--ink);font:400 14px/20px Figtree,sans-serif}
+.num{font-weight:600;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.top{height:56px;background:var(--pandan);color:#FFF;display:flex;align-items:center;gap:4px;padding:0 12px 0 4px}
+.icon{width:44px;height:44px;display:grid;place-items:center;border-radius:8px}
+.logo{display:flex;align-items:center;gap:6px;font-size:18px;font-weight:700;margin-right:auto}
+select{font:500 14px Figtree;color:var(--ink);height:44px;padding:0 30px 0 12px;border:1px solid var(--rule);border-radius:8px;background:#FFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2355635A' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 11px center;appearance:none}
+.demo{height:44px;background:var(--surface);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:8px;padding-left:16px;color:var(--muted);font-size:13px}
+.demo i{width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.demo button{margin-left:auto;width:44px;height:44px;font-size:20px;color:var(--muted)}
+.wrap{padding:16px}
+h1{font-size:22px;line-height:28px;font-weight:700}
+.date{color:var(--muted);margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;min-height:104px}
+.kpi h3{font-size:13px;line-height:18px;font-weight:600;color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px}
+.kpi .num{font-size:24px;line-height:32px;margin:2px 0}
+.kpi p{font-size:12px;line-height:16px;color:var(--muted)}
+.up{color:var(--pandan);font-weight:600}
+.tag{font-size:10px;line-height:16px;font-weight:600;border:1px solid var(--rule);border-radius:4px;padding:0 4px;white-space:nowrap}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.ph{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--rule)}
+.ph h2{font-size:15px;font-weight:600}
+.ph a{color:var(--pandan);font-weight:600;font-size:13px;text-decoration:none;height:44px;display:flex;align-items:center}
+.row{display:flex;align-items:center;gap:12px;height:60px;padding-right:14px;border-bottom:1px solid var(--rule)}
+.band{width:4px;align-self:stretch}
+.t{width:58px;font-size:13px}
+.who{flex:1;min-width:0}.who b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{display:block;font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px}
+.done{background:#E3EFE7;color:#245840}.booked{background:#EEF3BF;color:var(--ink)}
+.ns .t,.ns .who b,.ns .who span{color:var(--muted);text-decoration:line-through}
+.stamp{font-size:11px;font-weight:700;letter-spacing:.08em;color:#A8332E;border:1.5px solid #A8332E;border-radius:3px;padding:0 6px;transform:rotate(-3deg)}
+.fab{position:absolute;right:16px;bottom:80px;height:48px;padding:0 20px 0 16px;border-radius:24px;background:var(--amber);color:var(--ink);font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(29,42,35,.18)}
+nav{position:absolute;left:0;right:0;bottom:0;height:64px;background:var(--surface);border-top:1px solid var(--rule);display:flex}
+nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:500;color:var(--muted);text-decoration:none}
+nav a span{width:52px;height:28px;border-radius:14px;display:grid;place-items:center}
+nav a.on{color:var(--pandan);font-weight:700}nav a.on span{background:var(--cal)}
+nav svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav a.on svg{stroke:var(--ink)}
+</style></head><body>
+<header class="top">
+ <button class="icon" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="#FFF" stroke-width="2" stroke-linecap="round"/></svg></button>
+ <div class="logo"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2C5 7 5 15 11 20 17 15 17 7 11 2Z" fill="none" stroke="#D9E46B" stroke-width="1.6"/><path d="M11 6v13" stroke="#D9E46B" stroke-width="1.4"/></svg>Lumière</div>
+ <select aria-label="Role"><option>Owner</option><option>Manager</option><option>Front desk</option></select>
+</header>
+<div class="demo"><i></i>Demo · sample data, resets on reload<button aria-label="Dismiss demo note">&times;</button></div>
+<main class="wrap">
+ <h1>Good afternoon, Carla</h1>
+ <p class="date">Friday, 20 November 2026</p>
+ <div class="kpis">
+  <div class="kpi"><h3>Today's sales</h3><div class="num">₱15,760</div><p><span class="up">&#9650; ₱1,860</span> vs ₱13,900 last Friday</p></div>
+  <div class="kpi"><h3>Bookings today</h3><div class="num">20</div><p>6 still to come</p></div>
+  <div class="kpi"><h3>In the spa now</h3><div class="num">4</div><p>Clients being served</p></div>
+  <div class="kpi"><h3>Profit this month<span class="tag">Owner only</span></h3><div class="num">₱151,290</div><p>1 – 20 November</p></div>
+ </div>
+ <section class="panel">
+  <div class="ph"><h2>Today's appointments</h2><a href="#">See all 20</a></div>
+  <div class="row"><i class="band" style="background:var(--pandan)"></i><span class="t num">1:00 PM</span><div class="who"><b>Miguel Santos</b><span>Swedish massage · Ana</span></div><span class="pill done">Done</span></div>
+  <div class="row"><i class="band" style="background:var(--cal)"></i><span class="t num">2:00 PM</span><div class="who"><b>Liezel Ramos</b><span>Gold facial · Joy</span></div><span class="pill booked">Booked</span></div>
+  <div class="row"><i class="band" style="background:var(--gumamela)"></i><span class="t num">2:30 PM</span><div class="who"><b>Andrea Cruz</b><span>Spa pedicure · Mae</span></div><span class="pill booked">Booked</span></div>
+  <div class="row ns"><i class="band" style="background:var(--pandan)"></i><span class="t num">3:00 PM</span><div class="who"><b>Paolo Reyes</b><span>Hot stone massage · Ana</span></div><span class="stamp">NO-SHOW</span></div>
+  <div class="row"><i class="band" style="background:var(--coffee)"></i><span class="t num">4:00 PM</span><div class="who"><b>Carla Aquino</b><span>Coffee body scrub · Rina</span></div><span class="pill booked">Booked</span></div>
+ </section>
+</main>
+<button class="fab"><svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="#1D2A23" stroke-width="2"/></svg>New sale</button>
+<nav aria-label="Main">
+ <a class="on" href="#" aria-current="page"><span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9l7-6 7 6v8H12v-5H8v5H3z"/></svg></span>Home</a>
+ <a href="#"><span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M3 8h14M7 2v4M13 2v4"/></svg></span>Bookings</a>
+ <a href="#"><span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M2 17c0-3 3-5 6-5s6 2 6 5M14 4a3 3 0 010 6M15 12c2 .5 3 2.5 3 5"/></svg></span>Clients</a>
+ <a href="#"><span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2h7v7l-8 8-7-7z"/><circle cx="13.5" cy="5.5" r="1.2"/></svg></span>Sell</a>
+</nav>
+</body></html>
