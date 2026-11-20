@@ -52,8 +52,8 @@ export function EmployeeProfile() {
         <PiArrowLeft aria-hidden="true" /> All employees
       </Link>
 
-      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <section aria-label={`${employee.name} details`} className="rounded-2xl border border-tint bg-surface p-[22px]">
+      <div className="flex flex-col gap-4 md:gap-5">
+        <section aria-label={`${employee.name} details`} className="flex flex-wrap items-start gap-x-12 gap-y-5 rounded-2xl border border-tint bg-surface p-[22px]">
           <div className="flex items-center gap-3.5">
             <span className="inline-flex size-14 shrink-0 items-center justify-center rounded-full bg-plum font-heading text-xl text-gold-on-plum">
               {initials(employee.name)}
@@ -66,29 +66,33 @@ export function EmployeeProfile() {
             </div>
           </div>
 
-          <h2 className="mt-6 text-[13px] font-semibold">Contact</h2>
-          <a href={`tel:${employee.phone.replaceAll(' ', '')}`} className="mt-1 inline-flex min-h-11 items-center gap-2 text-sm tabular-nums underline-offset-4 hover:underline">
-            <PiPhone aria-hidden="true" className="text-muted" /> {employee.phone}
-          </a>
+          <div>
+            <h2 className="text-[13px] font-semibold">Contact</h2>
+            <a href={`tel:${employee.phone.replaceAll(' ', '')}`} className="inline-flex min-h-11 items-center gap-2 text-sm tabular-nums underline-offset-4 hover:underline">
+              <PiPhone aria-hidden="true" className="text-muted" /> {employee.phone}
+            </a>
+          </div>
 
-          <h2 className="mt-4 text-[13px] font-semibold">Weekly schedule</h2>
-          <ul className="mt-2 grid grid-cols-7 gap-1">
-            {WEEK.map((d) => {
-              const on = employee.schedule.includes(d)
-              return (
-                <li key={d} className={`rounded-lg px-0.5 py-2 text-center ${on ? 'bg-tint text-plum-light' : 'bg-page text-muted'}`}>
-                  <span className="block text-xs font-medium">{d}</span>
-                  <span className="mt-0.5 block text-[10px]">{on ? 'In' : 'Off'}</span>
-                </li>
-              )
-            })}
-          </ul>
+          <div className="w-full max-w-[320px]">
+            <h2 className="text-[13px] font-semibold">Weekly schedule</h2>
+            <ul className="mt-2 grid grid-cols-7 gap-1">
+              {WEEK.map((d) => {
+                const on = employee.schedule.includes(d)
+                return (
+                  <li key={d} className={`rounded-lg px-0.5 py-2 text-center ${on ? 'bg-tint text-plum-light' : 'bg-page text-muted'}`}>
+                    <span className="block text-xs font-medium">{d}</span>
+                    <span className="mt-0.5 block text-[10px]">{on ? 'In' : 'Off'}</span>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </section>
 
         <div className="flex min-w-0 flex-col gap-4">
           <section aria-label="This month" className="flex flex-col gap-2.5">
             <h2 className="font-heading text-[19px] font-medium">{monthName}</h2>
-            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-[repeat(auto-fit,minmax(160px,1fr))] md:gap-4">
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-[repeat(auto-fit,minmax(190px,1fr))] md:gap-4">
               <StatCard label="Appointments" value={stats.appointments} note="Not counting cancelled" />
               <StatCard label="Services done" value={stats.servicesDone} note="From paid sales" />
               <StatCard label="Service sales" value={formatPeso(stats.serviceSales)} />
