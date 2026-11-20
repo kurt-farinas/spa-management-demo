@@ -40,14 +40,14 @@ const initialState = {
 }
 
 let mounted
-function render(url = '/appointments?client=c1') {
+function render(url = '/appointments?client=c1', state = initialState) {
   const el = document.createElement('div')
   document.body.append(el)
   const root = createRoot(el)
   act(() =>
     root.render(
       <RoleProvider initialRole="receptionist">
-        <DemoStoreProvider initialState={initialState}>
+        <DemoStoreProvider initialState={state}>
           <MemoryRouter initialEntries={[url]}>
             <Appointments />
           </MemoryRouter>
@@ -69,6 +69,17 @@ function choose(select, value) {
     select.dispatchEvent(new Event('change', { bubbles: true }))
   })
 }
+// a massage service and a no-show alongside the booked A-1
+const withNoShow = {
+  ...initialState,
+  clients: [...initialState.clients, { id: 'c3', name: 'Paolo Reyes', phone: '0915 220 1187', joinedOn: '2025-02-01', tags: [] }],
+  services: [{ ...initialState.services[0], category: 'Massage' }],
+  appointments: [
+    ...initialState.appointments,
+    { id: 'A-2', clientId: 'c3', employeeId: 'e1', serviceId: 's1', start: `${today}T15:00`, durationMin: 60, status: 'no-show' },
+  ],
+}
+const dayGrid = (el) => el.querySelector('section[aria-label^="All therapists"]')
 const dayList = (el) => el.querySelector('section[aria-label="Day list"]').textContent
 
 describe('Appointments', () => {
@@ -128,6 +139,18 @@ describe('Appointments', () => {
     expect(form.closest('dialog').open).toBe(false)
     expect(dayList(el)).toContain('Ana Reyes')
     expect(dayList(el)).toContain('11:00 AM')
+  })
+
+  it('keeps a no-show visible in the day view with its stamp', () => {
+    const el = render('/appointments', withNoShow)
+    const block = dayGrid(el).querySelector('button[data-appt="A-2"]')
+    expect(block.textContent).toContain('Paolo Reyes')
+    expect(block.textContent).toContain('No-show')
+  })
+
+  it('bands each block in its service category colour', () => {
+    const el = render('/appointments', withNoShow)
+    expect(dayGrid(el).querySelector('button[data-appt="A-1"] .bg-cat-massage')).not.toBeNull()
   })
 
   it('offers therapists only', () => {
