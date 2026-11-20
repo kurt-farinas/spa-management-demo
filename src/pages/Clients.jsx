@@ -42,7 +42,7 @@ function SortHeader({ column, sort, setSort, className }) {
       <button
         type="button"
         onClick={() => setSort({ key: column, dir: flip })}
-        className={`inline-flex min-h-11 items-center gap-1 rounded hover:text-ink ${active ? 'text-ink' : ''}`}
+        className={`inline-flex min-h-11 items-center gap-1 rounded whitespace-nowrap hover:text-ink ${active ? 'text-ink' : ''}`}
       >
         {label}
         <Icon aria-hidden="true" className={`size-3 ${active ? '' : 'opacity-40'}`} />
@@ -293,8 +293,9 @@ export function Clients() {
                               {c.name}
                             </Link>
                             <TagLabel tags={c.tags} />
+                            {/* wrap between tokens, never inside a date */}
                             <span className="block text-xs text-muted tabular-nums md:hidden">
-                              {c.phone} · {visitDate(c.lastVisit, today)}
+                              <span className="whitespace-nowrap">{c.phone}</span> <span className="whitespace-nowrap">· {visitDate(c.lastVisit, today)}</span>
                             </span>
                           </span>
                         </div>
