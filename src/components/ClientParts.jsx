@@ -55,7 +55,7 @@ export function ClientFacts({ client }) {
         ))}
       </dl>
       {client.notes ? (
-        <p className="mt-4 rounded-md border border-l-4 border-accent bg-warn-bg px-3 py-2.5 text-[13px] text-warn-ink">Note: {client.notes}</p>
+        <p className="mt-4 rounded-md border border-accent/50 bg-warn-bg px-3 py-2.5 text-[13px] text-warn-ink">Note: {client.notes}</p>
       ) : (
         <p className="mt-4 rounded-md border border-dashed border-line px-3 py-2.5 text-[13px] text-muted">No notes yet</p>
       )}

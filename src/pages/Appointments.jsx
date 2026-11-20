@@ -316,7 +316,7 @@ function BookDialog({ dialog, form, setForm, onBooked }) {
           )}
         </div>
         {clash && errors.time && (
-          <div className="rounded-md border border-l-4 border-accent bg-warn-bg px-3 py-2.5 text-[13px] text-warn-ink">
+          <div className="rounded-md border border-accent/50 bg-warn-bg px-3 py-2.5 text-[13px] text-warn-ink">
             <strong className="block font-semibold">Time clash</strong>
             <p id="book-time-error">{errors.time}</p>
           </div>
