@@ -4,3 +4,4 @@ dist
 .playwright-cli
 .claude/worktrees
 .vite
+.impeccable/review/

@@ -8,6 +8,6 @@ export function applyTheme(theme) {
 
 export function applyFonts(fonts) {
   const style = document.documentElement.style
-  style.setProperty('--font-heading', `'${fonts.heading}', Georgia, serif`)
+  style.setProperty('--font-heading', `'${fonts.heading}', system-ui, sans-serif`)
   style.setProperty('--font-body', `'${fonts.body}', system-ui, sans-serif`)
 }

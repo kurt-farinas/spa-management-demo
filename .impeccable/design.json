@@ -1,0 +1,597 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T10:59:48.538Z",
+  "title": "Design System: Lumière Day Spa (spa demo)",
+  "extensions": {
+    "themeSource": "src/config/spa.config.js theme -> applyTheme() sets --brand-<kebab> on :root -> src/index.css @theme maps --color-<role> to var(--brand-...). Values are the current Lumière skin; roles are the system.",
+    "contrastGuard": "src/config/themeContrast.test.js asserts at least 4.5:1 for every text/ground pair in use.",
+    "colorMeta": {
+      "rail": {
+        "role": "primary",
+        "displayName": "Pandan Rail",
+        "canonical": "#2E6B4F",
+        "cssVar": "--color-rail",
+        "oklch": "oklch(47.9% 0.079 161.4)",
+        "tonalRamp": [
+          "#001006",
+          "#002D1A",
+          "#104B33",
+          "#2E6B4F",
+          "#558E72",
+          "#81B198",
+          "#B3D4C2",
+          "#E6F2EB"
+        ]
+      },
+      "rail-ink": {
+        "role": "primary",
+        "displayName": "Rail Ink",
+        "canonical": "#EEF4EF",
+        "cssVar": "--color-rail-ink",
+        "oklch": "oklch(96.1% 0.009 150.7)",
+        "tonalRamp": [
+          "#0A0C0A",
+          "#222522",
+          "#3D413D",
+          "#5A5F5B",
+          "#7D827D",
+          "#A1A6A2",
+          "#C8CBC9",
+          "#EEEFEE"
+        ]
+      },
+      "rail-active": {
+        "role": "primary",
+        "displayName": "Rail Active",
+        "canonical": "#24573F",
+        "cssVar": "--color-rail-active",
+        "oklch": "oklch(41.4% 0.069 160.7)",
+        "tonalRamp": [
+          "#000F06",
+          "#052C1B",
+          "#1B4A34",
+          "#376A51",
+          "#5C8D73",
+          "#86B099",
+          "#B7D2C3",
+          "#E7F1EC"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Coconut Page",
+        "canonical": "#F5F7F0",
+        "cssVar": "--color-page",
+        "oklch": "oklch(97.3% 0.009 119.6)",
+        "tonalRamp": [
+          "#0B0B09",
+          "#232521",
+          "#3F403B",
+          "#5D5E59",
+          "#7F817B",
+          "#A4A5A0",
+          "#CACBC7",
+          "#EEEFED"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#FFFFFF",
+        "cssVar": "--color-surface",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#808080",
+          "#A4A4A4",
+          "#CACACA",
+          "#EEEEEE"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#DDE3D6",
+        "cssVar": "--color-line",
+        "oklch": "oklch(90.8% 0.019 127.2)",
+        "tonalRamp": [
+          "#0A0C08",
+          "#22251E",
+          "#3D4238",
+          "#5B6055",
+          "#7D8277",
+          "#A2A69D",
+          "#C9CCC5",
+          "#EEEFEC"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "Soft",
+        "canonical": "#EAF0E2",
+        "cssVar": "--color-soft",
+        "oklch": "oklch(94.7% 0.020 125.8)",
+        "tonalRamp": [
+          "#0A0C08",
+          "#22251E",
+          "#3D4237",
+          "#5B6054",
+          "#7D8276",
+          "#A2A69C",
+          "#C9CCC4",
+          "#EEEFEC"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1D2A23",
+        "cssVar": "--color-ink",
+        "oklch": "oklch(27.0% 0.022 160.9)",
+        "tonalRamp": [
+          "#070D0A",
+          "#1D2721",
+          "#36433C",
+          "#53625A",
+          "#76847C",
+          "#9BA8A1",
+          "#C4CDC8",
+          "#ECEFED"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#55635A",
+        "cssVar": "--color-muted",
+        "oklch": "oklch(48.5% 0.022 157.3)",
+        "tonalRamp": [
+          "#070D09",
+          "#1D2721",
+          "#37433B",
+          "#546259",
+          "#76847B",
+          "#9CA8A0",
+          "#C4CDC7",
+          "#ECEFED"
+        ]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Amber",
+        "canonical": "#E39B3A",
+        "cssVar": "--color-accent",
+        "oklch": "oklch(74.4% 0.138 70.2)",
+        "tonalRamp": [
+          "#1C0300",
+          "#421400",
+          "#682D00",
+          "#8D4B00",
+          "#B17000",
+          "#D19851",
+          "#EAC396",
+          "#FAECDC"
+        ]
+      },
+      "accent-ink": {
+        "role": "secondary",
+        "displayName": "Amber Ink",
+        "canonical": "#7A4E0E",
+        "cssVar": "--color-accent-ink",
+        "oklch": "oklch(46.3% 0.094 69.8)",
+        "tonalRamp": [
+          "#170600",
+          "#391C00",
+          "#5D3500",
+          "#7F5315",
+          "#A37640",
+          "#C49D70",
+          "#E1C5A7",
+          "#F7EDE2"
+        ]
+      },
+      "highlight": {
+        "role": "tertiary",
+        "displayName": "Calamansi",
+        "canonical": "#D9E46B",
+        "cssVar": "--color-highlight",
+        "oklch": "oklch(88.6% 0.146 113.7)",
+        "tonalRamp": [
+          "#0C0D00",
+          "#252700",
+          "#414500",
+          "#5F6400",
+          "#808800",
+          "#A4AD50",
+          "#CAD196",
+          "#EEF1DC"
+        ]
+      },
+      "warn-bg": {
+        "role": "state",
+        "displayName": "Warn Ground",
+        "canonical": "#FAEEDA",
+        "cssVar": "--color-warn-bg",
+        "oklch": "oklch(95.3% 0.029 80.7)",
+        "tonalRamp": [
+          "#0E0B05",
+          "#2A2317",
+          "#473E2F",
+          "#665C4B",
+          "#897F6E",
+          "#ACA394",
+          "#D0CABF",
+          "#F0EEEA"
+        ]
+      },
+      "warn-ink": {
+        "role": "state",
+        "displayName": "Warn Ink",
+        "canonical": "#633806",
+        "cssVar": "--color-warn-ink",
+        "oklch": "oklch(38.6% 0.084 62.5)",
+        "tonalRamp": [
+          "#170600",
+          "#391B00",
+          "#5C3508",
+          "#7F5226",
+          "#A3754C",
+          "#C49C78",
+          "#E1C5AD",
+          "#F7ECE4"
+        ]
+      },
+      "success-bg": {
+        "role": "state",
+        "displayName": "Success Ground",
+        "canonical": "#EAF3DE",
+        "cssVar": "--color-success-bg",
+        "oklch": "oklch(95.2% 0.029 126.0)",
+        "tonalRamp": [
+          "#0A0C06",
+          "#21261A",
+          "#3C4333",
+          "#59614F",
+          "#7C8471",
+          "#A1A898",
+          "#C8CDC2",
+          "#EDEFEB"
+        ]
+      },
+      "success": {
+        "role": "state",
+        "displayName": "Success",
+        "canonical": "#3B6D11",
+        "cssVar": "--color-success",
+        "oklch": "oklch(48.1% 0.130 134.7)",
+        "tonalRamp": [
+          "#011000",
+          "#092D00",
+          "#1F4C00",
+          "#3B6D11",
+          "#5F903F",
+          "#88B36F",
+          "#B7D5A7",
+          "#E8F3E2"
+        ]
+      },
+      "danger": {
+        "role": "state",
+        "displayName": "Danger",
+        "canonical": "#A32D2D",
+        "cssVar": "--color-danger",
+        "oklch": "oklch(48.0% 0.154 25.1)",
+        "tonalRamp": [
+          "#230000",
+          "#4F0001",
+          "#7A0812",
+          "#A32D2D",
+          "#C95651",
+          "#E8847C",
+          "#FCB6AF",
+          "#FFE7E5"
+        ]
+      },
+      "cat-massage": {
+        "role": "category",
+        "displayName": "Massage (pandan)",
+        "canonical": "#2E6B4F",
+        "cssVar": "--color-cat-massage",
+        "oklch": "oklch(47.9% 0.079 161.4)",
+        "tonalRamp": [
+          "#001006",
+          "#002D1A",
+          "#104B33",
+          "#2E6B4F",
+          "#558E72",
+          "#81B198",
+          "#B3D4C2",
+          "#E6F2EB"
+        ]
+      },
+      "cat-facial": {
+        "role": "category",
+        "displayName": "Facial (calamansi, inset ink hairline)",
+        "canonical": "#D9E46B",
+        "cssVar": "--color-cat-facial",
+        "oklch": "oklch(88.6% 0.146 113.7)",
+        "tonalRamp": [
+          "#0C0D00",
+          "#252700",
+          "#414500",
+          "#5F6400",
+          "#808800",
+          "#A4AD50",
+          "#CAD196",
+          "#EEF1DC"
+        ]
+      },
+      "cat-body": {
+        "role": "category",
+        "displayName": "Body (coffee)",
+        "canonical": "#7A5235",
+        "cssVar": "--color-cat-body",
+        "oklch": "oklch(47.6% 0.069 56.2)",
+        "tonalRamp": [
+          "#160700",
+          "#371C07",
+          "#59361C",
+          "#7B5336",
+          "#9F765A",
+          "#C09C83",
+          "#DEC5B4",
+          "#F6ECE6"
+        ]
+      },
+      "cat-nails": {
+        "role": "category",
+        "displayName": "Nails (gumamela)",
+        "canonical": "#C2413B",
+        "cssVar": "--color-cat-nails",
+        "oklch": "oklch(55.8% 0.166 26.6)",
+        "tonalRamp": [
+          "#250000",
+          "#520000",
+          "#7E0007",
+          "#A72625",
+          "#CE524A",
+          "#ED8177",
+          "#FFB4AC",
+          "#FFE7E3"
+        ]
+      },
+      "cat-package": {
+        "role": "category",
+        "displayName": "Package (amber)",
+        "canonical": "#E39B3A",
+        "cssVar": "--color-cat-package",
+        "oklch": "oklch(74.4% 0.138 70.2)",
+        "tonalRamp": [
+          "#1C0300",
+          "#421400",
+          "#682D00",
+          "#8D4B00",
+          "#B17000",
+          "#D19851",
+          "#EAC396",
+          "#FAECDC"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Login logo word only (48px phone, 88px desktop)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "One page title per screen (22px phone, 24px desktop)."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "StatCard values, tabular."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Panel and section headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Tables, buttons, nav items, inputs."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "StatCard labels, links, pills, calendar client names."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Notes, calendar meta, bottom-nav labels."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Status pills and stamps, rail group label. The 11px floor."
+      }
+    },
+    "shadows": [
+      {
+        "name": "float",
+        "value": "0 2px 6px color-mix(in srgb, var(--color-ink) 18%, transparent)",
+        "purpose": "Phone floating New sale pill."
+      },
+      {
+        "name": "tooltip",
+        "value": "0 4px 12px color-mix(in srgb, var(--brand-rail) 12%, transparent)",
+        "purpose": "Chart tooltips."
+      },
+      {
+        "name": "sticky-bar",
+        "value": "0 6px 16px -4px color-mix(in srgb, var(--color-rail-active) 40%, transparent)",
+        "purpose": "Phone POS checkout bar above the bottom nav."
+      }
+    ],
+    "focus": [
+      {
+        "name": "focus-ring",
+        "value": "outline: 2px solid var(--color-rail); outline-offset: 2px",
+        "purpose": "All focusable elements on light ground."
+      },
+      {
+        "name": "focus-ring-on-rail",
+        "value": "outline-color: var(--color-rail-ink)",
+        "purpose": "Inside .on-rail areas, and .on-rail-mobile below 48rem."
+      }
+    ],
+    "motion": [
+      {
+        "name": "colors",
+        "value": "transition-colors 150ms (Tailwind default)",
+        "purpose": "Hover fills on nav items and pills; no other motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "768px",
+        "purpose": "Side rail and header actions from here up; green top bar, bottom nav and floating New sale below."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Amber fill, ink text; the one main action per view (New sale, Checkout, Book).",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 256 256\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M224 128a8 8 0 0 1-8 8h-80v80a8 8 0 0 1-16 0v-80H40a8 8 0 0 1 0-16h80V40a8 8 0 0 1 16 0v80h80a8 8 0 0 1 8 8Z\"/></svg>New sale</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border:0;border-radius:6px;background:var(--color-accent);color:var(--color-ink);font:600 14px/20px Figtree,system-ui,sans-serif;cursor:pointer}.ds-btn-primary:hover{filter:brightness(.95)}.ds-btn-primary:focus-visible{outline:2px solid var(--color-rail);outline-offset:2px}"
+    },
+    {
+      "name": "Floating New Sale (phone)",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The primary button as a 48px pill floating above the bottom nav on phones.",
+      "html": "<button class=\"ds-fab\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 256 256\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M224 128a8 8 0 0 1-8 8h-80v80a8 8 0 0 1-16 0v-80H40a8 8 0 0 1 0-16h80V40a8 8 0 0 1 16 0v80h80a8 8 0 0 1 8 8Z\"/></svg>New sale</button>",
+      "css": ".ds-fab{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 20px 0 16px;border:0;border-radius:9999px;background:var(--color-accent);color:var(--color-ink);font:600 15px Figtree,system-ui,sans-serif;box-shadow:0 2px 6px color-mix(in srgb,var(--color-ink) 18%,transparent);cursor:pointer}.ds-fab:hover{filter:brightness(.95)}.ds-fab:focus-visible{outline:2px solid var(--color-rail);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Surface with a hairline border; every other button.",
+      "html": "<button class=\"ds-btn-secondary\">Log out</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border:1px solid var(--color-line);border-radius:6px;background:var(--color-surface);color:var(--color-ink);font:600 14px/20px Figtree,system-ui,sans-serif;cursor:pointer}.ds-btn-secondary:hover{background:var(--color-soft)}.ds-btn-secondary:focus-visible{outline:2px solid var(--color-rail);outline-offset:2px}"
+    },
+    {
+      "name": "Filter Pills",
+      "kind": "chip",
+      "refersTo": "pill-on",
+      "description": "Round 44px filter pills; selected is rail green.",
+      "html": "<div class=\"ds-pills\"><button class=\"ds-pill ds-pill-on\">All</button><button class=\"ds-pill\">Massage</button><button class=\"ds-pill\">Facial</button></div>",
+      "css": ".ds-pills{display:flex;gap:8px}.ds-pill{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:9999px;border:1px solid var(--color-line);background:var(--color-surface);color:var(--color-ink);font:400 13px Figtree,system-ui,sans-serif;cursor:pointer;transition:border-color .15s,background .15s}.ds-pill:hover{border-color:var(--color-rail-active)}.ds-pill-on{border-color:transparent;background:var(--color-rail);color:var(--color-rail-ink);font-weight:600}.ds-pill:focus-visible{outline:2px solid var(--color-rail);outline-offset:2px}"
+    },
+    {
+      "name": "Status Pills and Stamps",
+      "kind": "chip",
+      "refersTo": "status-booked",
+      "description": "Booked and Done are round pills; Cancelled and No-show stay visible as tilted bordered stamps.",
+      "html": "<div class=\"ds-status\"><span class=\"ds-st ds-st-booked\">Booked</span><span class=\"ds-st ds-st-done\">Done</span><span class=\"ds-stamp ds-stamp-cancel\">Cancelled</span><span class=\"ds-stamp ds-stamp-noshow\">No-show</span></div>",
+      "css": ".ds-status{display:flex;gap:8px;align-items:center;font-family:Figtree,system-ui,sans-serif}.ds-st{border-radius:9999px;padding:0 8px;font-size:11px;line-height:18px;font-weight:600}.ds-st-booked{background:color-mix(in srgb,var(--color-highlight) 45%,transparent);color:var(--color-ink)}.ds-st-done{background:var(--color-success-bg);color:var(--color-success)}.ds-stamp{border:1px solid;background:var(--color-surface);border-radius:4px;padding:0 6px;font-size:11px;line-height:16px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;transform:rotate(-2deg)}.ds-stamp-cancel{border-color:var(--color-muted);color:var(--color-muted)}.ds-stamp-noshow{border-color:var(--color-danger);color:var(--color-danger)}"
+    },
+    {
+      "name": "StatCard",
+      "kind": "card",
+      "refersTo": "stat-card",
+      "description": "KPI tile: muted label, tabular figure, optional note; dark rail variant leads a row.",
+      "html": "<div class=\"ds-stats\"><div class=\"ds-stat\"><div class=\"ds-stat-l\">Today's sales</div><div class=\"ds-stat-v\">₱18,450</div><div class=\"ds-stat-n\">12 sales so far</div></div><div class=\"ds-stat ds-stat-dark\"><div class=\"ds-stat-l\">Net income</div><div class=\"ds-stat-v\">₱212,300</div><div class=\"ds-stat-n\">Month so far</div></div></div>",
+      "css": ".ds-stats{display:flex;gap:12px;font-family:Figtree,system-ui,sans-serif}.ds-stat{border:1px solid var(--color-line);background:var(--color-surface);border-radius:8px;padding:16px 20px;min-width:180px}.ds-stat-l{font-size:13px;font-weight:600;color:var(--color-muted)}.ds-stat-v{margin-top:4px;font-size:28px;line-height:36px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--color-ink)}.ds-stat-n{margin-top:4px;font-size:13px;color:var(--color-muted)}.ds-stat-dark{background:var(--color-rail);border-color:var(--color-rail)}.ds-stat-dark .ds-stat-l,.ds-stat-dark .ds-stat-v,.ds-stat-dark .ds-stat-n{color:var(--color-rail-ink)}"
+    },
+    {
+      "name": "Appointment Rows with Category Band",
+      "kind": "custom",
+      "refersTo": "cat-massage",
+      "description": "4px category band at the row edge with the service named beside it; the Facial band carries an inset ink hairline.",
+      "html": "<div class=\"ds-rows\"><div class=\"ds-row\"><span class=\"ds-band ds-band-massage\"></span><span class=\"ds-time\">10:00</span><span><b>Maria Santos</b><br><small>Swedish massage</small></span></div><div class=\"ds-row\"><span class=\"ds-band ds-band-facial\"></span><span class=\"ds-time\">11:30</span><span><b>Ana Reyes</b><br><small>Gold facial</small></span></div></div>",
+      "css": ".ds-rows{border:1px solid var(--color-line);border-radius:8px;background:var(--color-surface);overflow:hidden;font-family:Figtree,system-ui,sans-serif;color:var(--color-ink);min-width:280px}.ds-row{display:flex;gap:12px;align-items:stretch;padding:10px 20px 10px 0;border-top:1px solid var(--color-line)}.ds-row:first-child{border-top:0}.ds-band{width:4px;flex-shrink:0}.ds-band-massage{background:var(--color-cat-massage)}.ds-band-facial{background:var(--color-cat-facial);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-ink) 25%,transparent)}.ds-time{width:56px;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;padding-left:12px}.ds-row b{font-size:14px}.ds-row small{font-size:12px;color:var(--color-muted)}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "44px surface field with hairline border.",
+      "html": "<input class=\"ds-input\" placeholder=\"Search clients\">",
+      "css": ".ds-input{height:44px;padding:0 12px;border:1px solid var(--color-line);border-radius:6px;background:var(--color-surface);color:var(--color-ink);font:400 14px Figtree,system-ui,sans-serif;min-width:260px}.ds-input::placeholder{color:var(--color-muted)}.ds-input:focus-visible{outline:2px solid var(--color-rail);outline-offset:2px}"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Green side rail; active item filled rail-active with a 3px calamansi marker.",
+      "html": "<nav class=\"ds-rail\"><a class=\"ds-nav ds-nav-on\" href=\"#\">Dashboard</a><a class=\"ds-nav\" href=\"#\">Appointments</a><a class=\"ds-nav\" href=\"#\">Clients</a><div class=\"ds-group\">REPORTS</div><a class=\"ds-nav\" href=\"#\">Sales report</a></nav>",
+      "css": ".ds-rail{display:flex;flex-direction:column;gap:4px;width:232px;padding:24px 16px;background:var(--color-rail);font-family:Figtree,system-ui,sans-serif}.ds-nav{display:flex;align-items:center;min-height:44px;padding:0 12px;border-left:3px solid transparent;border-radius:6px;color:var(--color-rail-ink);font-size:14px;font-weight:500;text-decoration:none;transition:background .15s}.ds-nav:hover{background:var(--color-rail-active)}.ds-nav-on{background:var(--color-rail-active);border-left-color:var(--color-highlight);font-weight:600}.ds-nav:focus-visible{outline:2px solid var(--color-rail-ink);outline-offset:2px}.ds-group{padding:24px 12px 8px;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--color-rail-ink)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Botanical Label",
+    "overview": "The front desk reads like a fresh local product label: pandan green, calamansi yellow-green, coconut white, amber. It is a working tool first. White panels sit on a pale green-white ground, separated by thin hairlines instead of shadows, and colour appears only where it does a job: the rail you navigate with, the one action you take, the booking you are looking at, the category of a service, the state of an appointment. It must not read as a purple-on-grey admin template, nor as a cream-and-serif \"luxury\" page, and it must never be dark or heavy.\n\nThe theme is re-skinned per prospect. Every value below is the current Lumière skin, set in `src/config/spa.config.js` and pushed into CSS variables (`--brand-*`) by `applyTheme`; `src/index.css` maps those into Tailwind tokens (`bg-rail`, `text-ink`, `border-line`, ...). The roles are the system; the hex values are one skin. A new skin changes the values, never the roles.\n\nDensity is medium: 44px tap targets everywhere, 13–15px working text, tabular figures for every number a spa owner would compare.",
+    "keyCharacteristics": [
+      "Green side rail on desktop, green top bar plus white bottom nav on phones.",
+      "Flat white panels with 1px hairlines; shadow only on things that float.",
+      "One family (Figtree) at several weights; tabular numbers.",
+      "Amber is the single primary action, always with ink text.",
+      "Status is shown by words and shape, colour only reinforces it."
+    ],
+    "rules": [
+      {
+        "name": "The Roles Not Hex Rule",
+        "body": "Components never hard-code a colour. They use the role tokens (`bg-rail`, `text-ink`, `border-line`, `bg-cat-*`) or `var(--color-*)` / `var(--brand-*)` inside arbitrary values, so a prospect's re-skin in `spa.config.js` reaches every pixel.",
+        "section": "colors"
+      },
+      {
+        "name": "The Guarded Pairs Rule",
+        "body": "`src/config/themeContrast.test.js` asserts 4.5:1 for every text-on-ground pair the UI uses: ink on page, surface, accent, highlight and soft; muted on page and surface; rail-ink on rail and rail-active; accent-ink on surface and page; warn-ink on warn-bg; success on success-bg; danger on surface. A new skin must pass it, and a new text-on-colour pairing gets added to it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink On Bright Rule",
+        "body": "Text on amber or calamansi is ink, never white.",
+        "section": "colors"
+      },
+      {
+        "name": "The Eleven Floor Rule",
+        "body": "Nothing is set below 11px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every money amount, count, time and date that sits in a column, tile or total uses tabular numbers.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Not Shadow Rule",
+        "body": "Panels, cards and tables separate with a 1px line border, never a resting shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** take every colour from a role token or `var(--color-*)`; add any new text-on-colour pair to `themeContrast.test.js`.",
+      "**Do** put ink text on amber and calamansi.",
+      "**Do** keep panels flat: surface, 1px line border, 8px corners.",
+      "**Do** make every tap target at least 44px.",
+      "**Do** use tabular numbers for money, counts, times and dates.",
+      "**Do** keep cancelled and no-show appointments visible as stamps.",
+      "**Do** pair every colour signal with words, a shape or an icon: status label or icon, category name beside its band."
+    ],
+    "donts": [
+      "**Don't** hard-code hex values in components.",
+      "**Don't** put white text on amber or calamansi.",
+      "**Don't** put coloured side-stripe borders on cards or panels; the 4px category band inside an appointment row or block is the only left-edge colour, and it is data.",
+      "**Don't** put eyebrow labels or kickers above headings.",
+      "**Don't** let colour be the only signal of a state or category.",
+      "**Don't** add a second type family or set text below 11px.",
+      "**Don't** give resting panels a shadow, or turn the page ground beige."
+    ]
+  }
+}

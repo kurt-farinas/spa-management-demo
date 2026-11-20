@@ -4,7 +4,7 @@ Kanban card: #141
 
 ## 1. Status, goal and success criteria
 
-**Status:** Ready for implementation. Phase 1 (screen mockups) starts now.
+**Status:** All 5 phases built and reviewed; deployed 2026-11-20 (see DEPLOYMENTS.md).
 
 **Goal:** replace the plum-and-gold look with a fresh, warm, local look so a mid-range day spa owner sees a modern product made for a spa like theirs, not a template.
 
