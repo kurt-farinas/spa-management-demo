@@ -7,6 +7,7 @@ import { toDateStr } from '../data/dates.js'
 import { spaConfig } from '../config/spa.config.js'
 import { formatPeso } from '../lib/money.js'
 import { StatCard } from '../components/StatCard.jsx'
+import { linkClass } from '../components/ui.js'
 import { SalesBarChart } from '../components/charts/SalesBarChart.jsx'
 
 const FIRST_NAME = { owner: spaConfig.staff.ownerName, receptionist: spaConfig.staff.receptionistName }
@@ -16,7 +17,6 @@ const PILL = {
   cancelled: ['Cancelled', 'bg-muted/10 text-muted'],
   'no-show': ['No-show', 'bg-muted/10 text-muted'],
 }
-const linkClass = 'inline-flex min-h-11 items-center text-[13px] text-gold-text underline-offset-4 hover:underline'
 
 const greeting = (hour) => (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening')
 const clock = (hhmm) => new Date(`2000-01-01T${hhmm}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })

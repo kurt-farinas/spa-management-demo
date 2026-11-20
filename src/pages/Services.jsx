@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import toast from 'react-hot-toast'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
 import { toDateStr } from '../data/dates.js'
 import { formatPeso } from '../lib/money.js'
-import { DEMO_ONLY, pillClass, primaryButton } from './Employees.jsx'
+import { demoOnly } from '../components/demoOnly.js'
+import { pillClass, primaryButton, textButton } from '../components/ui.js'
 
 const duration = (min) => (min < 60 ? `${min} min` : `${Math.floor(min / 60)} hr${min % 60 ? ` ${min % 60} min` : ''}`)
 
@@ -37,7 +37,7 @@ export function Services() {
           </div>
           <h1 className="mt-1 font-heading text-[32px] font-medium">Services</h1>
         </div>
-        <button type="button" className={primaryButton} onClick={() => toast(DEMO_ONLY)}>
+        <button type="button" className={primaryButton} onClick={demoOnly}>
           + Add service
         </button>
       </header>
@@ -71,8 +71,8 @@ export function Services() {
                       <button
                         type="button"
                         aria-label={`Edit ${s.name}`}
-                        className="ml-auto inline-flex min-h-11 items-center text-[13px] text-gold-text underline-offset-4 hover:underline"
-                        onClick={() => toast(DEMO_ONLY)}
+                        className={`${textButton} ml-auto`}
+                        onClick={demoOnly}
                       >
                         Edit
                       </button>

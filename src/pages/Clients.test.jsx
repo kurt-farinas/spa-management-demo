@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import { RoleProvider } from '../auth/RoleProvider.jsx'
 import { DemoStoreProvider } from '../data/DemoStore.jsx'
 import { Clients } from './Clients.jsx'
+import { toDateStr, addDays } from '../data/dates.js'
 
 vi.mock('react-hot-toast', () => ({ default: Object.assign(vi.fn(), { success: vi.fn() }) }))
 
@@ -34,14 +35,14 @@ const initialState = {
 }
 
 let mounted
-function render() {
+function render(state = initialState) {
   const el = document.createElement('div')
   document.body.append(el)
   const root = createRoot(el)
   act(() =>
     root.render(
       <RoleProvider initialRole="receptionist">
-        <DemoStoreProvider initialState={initialState}>
+        <DemoStoreProvider initialState={state}>
           <MemoryRouter>
             <Clients />
           </MemoryRouter>
@@ -106,5 +107,57 @@ describe('Clients', () => {
     expect(first.textContent).toContain('New')
     expect(first.textContent).toContain('0939 664 0185')
     expect(first.querySelectorAll('td')[3].textContent).toBe('0')
+  })
+
+  it('the name is a real link to the profile; Preview selects the client for the side panel', () => {
+    const el = render()
+    const row = el.querySelectorAll('tbody tr')[1]
+    expect(row.querySelector('a').getAttribute('href')).toBe('/clients/c2')
+    const panel = () => el.querySelector('section[aria-label$="profile"]').getAttribute('aria-label')
+    expect(panel()).toBe('Ana Reyes profile')
+    click(row.querySelector('button[aria-label="Preview Carlo Mendoza"]'))
+    expect(panel()).toBe('Carlo Mendoza profile')
+    expect(row.querySelector('a').getAttribute('href')).toBe('/clients/c2')
+  })
+
+  it('Book again links to the appointments page with the client', () => {
+    const el = render()
+    const link = [...el.querySelectorAll('a')].find((a) => a.textContent === 'Book again')
+    expect(link.getAttribute('href')).toBe('/appointments?client=c1')
+  })
+
+  it('the header count and the New filter use the same rule', () => {
+    const today = new Date()
+    const day = (n) => toDateStr(addDays(today, -n))
+    const base = { phone: '0917 000 0000', email: '', birthday: '', notes: '' }
+    const el = render({
+      ...initialState,
+      clients: [
+        { ...base, id: 'n1', name: 'Joined today', joinedOn: day(0), tags: ['Regular'] },
+        { ...base, id: 'n2', name: 'Three days', joinedOn: day(3), tags: ['New'] },
+        { ...base, id: 'o1', name: 'Forty days', joinedOn: day(40), tags: ['New'] },
+      ],
+      sales: [],
+    })
+    expect(el.textContent).toContain('2 new in the last 30 days')
+    click(button(el, 'New'))
+    expect(rowNames(el)).toEqual(['Joined today', 'Three days'])
+  })
+
+  it('closes the add dialog on a backdrop click only when the press started on the backdrop', () => {
+    const el = render()
+    const dialog = el.querySelector('dialog')
+    const form = dialog.querySelector('form')
+    click(button(el, 'Add client'))
+    act(() => {
+      form.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+      dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+    expect(dialog.open).toBe(true)
+    act(() => {
+      dialog.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+      dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    })
+    expect(dialog.open).toBe(false)
   })
 })

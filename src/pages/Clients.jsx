@@ -1,13 +1,15 @@
 import { useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { PiPlus, PiCaretUp, PiCaretDown, PiArrowRight } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
-import { clientSummaries, clientHistory } from '../data/selectors.js'
-import { toDateStr } from '../data/dates.js'
+import { clientSummaries, clientHistory, isNewClient } from '../data/selectors.js'
 import { formatPeso } from '../lib/money.js'
 import { validateClient } from '../lib/validateClient.js'
-import { Avatar, ClientFacts, ClientHeading, TagLabel, linkClass, visitDate } from './ClientProfile.jsx'
+import { visitDate } from '../lib/format.js'
+import { Avatar } from '../components/Avatar.jsx'
+import { ClientFacts, ClientHeading, TagLabel } from '../components/ClientParts.jsx'
+import { linkClass, pillClass } from '../components/ui.js'
 
 const TAGS = ['All', 'VIP', 'Regular', 'New']
 // first click on a column: names A–Z, the rest biggest / newest first
@@ -16,7 +18,6 @@ const SORTS = {
   lastVisit: { label: 'Last visit', first: 'desc', value: (c) => c.lastVisit ?? '' },
   totalSpent: { label: 'Total spent', first: 'desc', value: (c) => c.totalSpent },
 }
-const WIDE = '(min-width: 64rem)' // Tailwind lg: the preview panel shows from here up
 
 function matches(client, q) {
   const text = q.trim().toLowerCase()
@@ -64,6 +65,7 @@ function AddClientDialog({ dialog, onAdded }) {
   const { addClient } = useDemoStore()
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
+  const downOnBackdrop = useRef(false) // a drag that starts inside the form and ends on the backdrop must not close it
 
   const reset = () => {
     setForm(EMPTY_FORM)
@@ -92,7 +94,8 @@ function AddClientDialog({ dialog, onAdded }) {
       ref={dialog}
       aria-labelledby="add-client-title"
       onClose={reset}
-      onClick={(e) => e.target === dialog.current && dialog.current.close()}
+      onMouseDown={(e) => (downOnBackdrop.current = e.target === dialog.current)}
+      onClick={(e) => e.target === dialog.current && downOnBackdrop.current && dialog.current.close()}
       className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl bg-surface p-0 text-ink backdrop:bg-plum-dark/60"
     >
       <form noValidate onSubmit={submit} className="flex flex-col gap-4 p-5 md:p-6">
@@ -161,7 +164,7 @@ function Preview({ client, history, today }) {
         </ul>
       )}
       <div className="mt-2 flex flex-wrap items-center justify-between gap-x-4">
-        <Link to="/appointments" className={linkClass}>
+        <Link to={`/appointments?client=${client.id}`} className={linkClass}>
           Book again
         </Link>
         <Link to={`/clients/${client.id}`} className={`${linkClass} gap-1.5`}>
@@ -175,7 +178,6 @@ function Preview({ client, history, today }) {
 
 export function Clients() {
   const { state } = useDemoStore()
-  const navigate = useNavigate()
   const dialog = useRef(null)
   const [query, setQuery] = useState('')
   const [tag, setTag] = useState('All')
@@ -189,15 +191,8 @@ export function Clients() {
     sort,
   )
   const selected = rows.find((c) => c.id === selectedId) ?? rows[0]
-  const month = toDateStr(today).slice(0, 7)
-  const newThisMonth = state.clients.filter((c) => c.joinedOn.startsWith(month)).length
+  const newCount = all.filter((c) => isNewClient(c, today)).length
 
-  // wide screens preview in the side panel; phones open the profile page
-  const openRow = (e, id) => {
-    if (!window.matchMedia?.(WIDE).matches) return
-    e.preventDefault()
-    setSelectedId(id)
-  }
   const added = (client) => {
     setQuery('')
     setTag('All')
@@ -210,7 +205,7 @@ export function Clients() {
       <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
         <div>
           <div className="text-xs text-lavender md:text-[13px] md:text-muted">
-            {all.length} {all.length === 1 ? 'client' : 'clients'} · {newThisMonth} new this month
+            {all.length} {all.length === 1 ? 'client' : 'clients'} · {newCount} new in the last 30 days
           </div>
           <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">Clients</h1>
         </div>
@@ -243,9 +238,7 @@ export function Clients() {
               type="button"
               aria-pressed={tag === t}
               onClick={() => setTag(t)}
-              className={`inline-flex h-11 items-center rounded-full px-4 text-[13px] md:h-9 md:px-3.5 ${
-                tag === t ? 'bg-plum text-white' : 'border border-lavender bg-surface text-ink hover:border-plum-light'
-              }`}
+              className={pillClass(tag === t)}
             >
               {t}
             </button>
@@ -281,6 +274,9 @@ export function Clients() {
                   <SortHeader column="lastVisit" sort={sort} setSort={setSort} className="px-3" />
                   <th scope="col" className="px-3 text-right font-medium">Visits</th>
                   <SortHeader column="totalSpent" sort={sort} setSort={setSort} className="px-5 text-right" />
+                  <th scope="col" className="hidden px-5 lg:table-cell">
+                    <span className="sr-only">Preview</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -295,8 +291,6 @@ export function Clients() {
                             {/* the link covers the whole row */}
                             <Link
                               to={`/clients/${c.id}`}
-                              onClick={(e) => openRow(e, c.id)}
-                              aria-current={current ? 'true' : undefined}
                               className="block font-medium after:absolute after:inset-0 after:content-['']"
                             >
                               {c.name}
@@ -309,6 +303,17 @@ export function Clients() {
                       <td className="px-3 py-3 whitespace-nowrap">{visitDate(c.lastVisit, today)}</td>
                       <td className="px-3 py-3 text-right tabular-nums">{c.visits}</td>
                       <td className="px-5 py-3 text-right font-medium tabular-nums">{formatPeso(c.totalSpent)}</td>
+                      <td className="relative hidden px-5 py-3 text-right lg:table-cell">
+                        <button
+                          type="button"
+                          aria-label={`Preview ${c.name}`}
+                          aria-pressed={current}
+                          onClick={() => setSelectedId(c.id)}
+                          className={`${linkClass} min-w-11 justify-center px-2`}
+                        >
+                          Preview
+                        </button>
+                      </td>
                     </tr>
                   )
                 })}

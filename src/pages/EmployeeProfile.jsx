@@ -1,5 +1,5 @@
-import { Link, useParams } from 'react-router-dom'
-import { PiArrowLeft, PiPhone } from 'react-icons/pi'
+import { useParams } from 'react-router-dom'
+import { PiPhone } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
@@ -7,7 +7,9 @@ import { employeeStats, employeeMonthAppointments } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
 import { formatPeso } from '../lib/money.js'
 import { StatCard } from '../components/StatCard.jsx'
-import { WEEK, initials } from './Employees.jsx'
+import { WEEK, nameOf } from '../lib/format.js'
+import { Avatar } from '../components/Avatar.jsx'
+import { BackLink } from '../components/BackLink.jsx'
 
 const PILL = {
   done: ['Done', 'bg-success-bg text-success'],
@@ -15,7 +17,6 @@ const PILL = {
   cancelled: ['Cancelled', 'bg-muted/10 text-muted'],
   'no-show': ['No-show', 'bg-muted/10 text-muted'],
 }
-const backLink = 'inline-flex min-h-11 items-center gap-1.5 self-start text-[13px] text-gold-text underline-offset-4 hover:underline'
 
 const clock = (hhmm) => new Date(`2000-01-01T${hhmm}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 const dayLabel = (day) => new Date(`${day}T00:00`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -31,9 +32,7 @@ export function EmployeeProfile() {
       <div className="flex flex-col gap-3 pt-6 md:pt-4">
         <h1 className="font-heading text-[32px] font-medium">Employee not found</h1>
         <p className="text-muted">There is no one on the team with that link.</p>
-        <Link to="/employees" className={backLink}>
-          <PiArrowLeft aria-hidden="true" /> Back to employees
-        </Link>
+        <BackLink to="/employees">Back to employees</BackLink>
       </div>
     )
   }
@@ -43,21 +42,16 @@ export function EmployeeProfile() {
   const monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
   const stats = employeeStats(state, employee.id, month)
   const appointments = employeeMonthAppointments(state, employee.id, month)
-  const nameOf = (list, key) => list.find((x) => x.id === key)?.name ?? ''
   const since = new Date(`${employee.hiredOn}T00:00`).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 
   return (
     <div className="flex flex-col gap-4 md:gap-5">
-      <Link to="/employees" className={backLink}>
-        <PiArrowLeft aria-hidden="true" /> All employees
-      </Link>
+      <BackLink to="/employees">All employees</BackLink>
 
       <div className="flex flex-col gap-4 md:gap-5">
         <section aria-label={`${employee.name} details`} className="flex flex-wrap items-start gap-x-12 gap-y-5 rounded-2xl border border-tint bg-surface p-[22px]">
           <div className="flex items-center gap-3.5">
-            <span className="inline-flex size-14 shrink-0 items-center justify-center rounded-full bg-plum font-heading text-xl text-gold-on-plum">
-              {initials(employee.name)}
-            </span>
+            <Avatar name={employee.name} large />
             <div className="min-w-0">
               <h1 className="font-heading text-[24px] leading-tight font-medium">{employee.name}</h1>
               <div className="mt-0.5 text-[13px] text-gold-text">

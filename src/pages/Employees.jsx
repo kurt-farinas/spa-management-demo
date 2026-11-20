@@ -1,23 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import toast from 'react-hot-toast'
 import { PiMagnifyingGlass } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { employeeStats } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
+import { WEEK } from '../lib/format.js'
+import { Avatar } from '../components/Avatar.jsx'
+import { demoOnly } from '../components/demoOnly.js'
+import { pillClass, primaryButton, textButton } from '../components/ui.js'
 
-export const DEMO_ONLY = 'Demo only: editing is turned off in this preview'
-export const WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const ROLES = ['All', 'Therapist', 'Receptionist', 'Manager']
-
-export const initials = (name) => name.split(' ').filter(Boolean).map((w) => w[0]).slice(0, 2).join('').toUpperCase()
-
-export const pillClass = (on) =>
-  `inline-flex min-h-11 items-center rounded-full px-4 text-[13px] transition-colors ${
-    on ? 'bg-plum text-white' : 'border border-lavender bg-surface text-ink hover:border-plum-light'
-  }`
-
-export const primaryButton = 'inline-flex h-11 items-center rounded-full bg-plum px-5 text-sm font-medium text-gold-on-plum hover:bg-plum-light'
 
 function WorkingDays({ schedule }) {
   return (
@@ -25,7 +17,7 @@ function WorkingDays({ schedule }) {
       {WEEK.map((d) => {
         const on = schedule.includes(d)
         return (
-          <span key={d} className={`w-9 rounded-md py-1 text-center text-[11px] ${on ? 'bg-tint font-medium text-plum-light' : 'text-muted/70'}`}>
+          <span key={d} className={`w-9 rounded-md border border-transparent py-1 text-center text-[11px] ${on ? 'bg-tint font-medium text-plum-light' : 'border border-dashed border-lavender text-muted'}`}>
             {d}
           </span>
         )
@@ -52,7 +44,7 @@ export function Employees() {
           </div>
           <h1 className="mt-1 font-heading text-[32px] font-medium">Employees</h1>
         </div>
-        <button type="button" className={primaryButton} onClick={() => toast(DEMO_ONLY)}>
+        <button type="button" className={primaryButton} onClick={demoOnly}>
           + Add employee
         </button>
       </header>
@@ -97,9 +89,7 @@ export function Employees() {
                 <tr key={e.id} className="border-t border-tint">
                   <td className="px-5 py-3">
                     <Link to={`/employees/${e.id}`} className="group flex items-center gap-2.5">
-                      <span className="inline-flex size-[34px] shrink-0 items-center justify-center rounded-full bg-tint text-xs font-semibold text-plum-light">
-                        {initials(e.name)}
-                      </span>
+                      <Avatar name={e.name} />
                       <span>
                         <span className="block font-medium underline-offset-4 group-hover:underline">{e.name}</span>
                         <span className="text-xs text-muted">{e.role}</span>
@@ -115,8 +105,8 @@ export function Employees() {
                     <button
                       type="button"
                       aria-label={`Edit ${e.name}`}
-                      className="inline-flex min-h-11 items-center text-[13px] text-gold-text underline-offset-4 hover:underline"
-                      onClick={() => toast(DEMO_ONLY)}
+                      className={textButton}
+                      onClick={demoOnly}
                     >
                       Edit
                     </button>
