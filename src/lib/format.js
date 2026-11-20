@@ -16,6 +16,9 @@ export const monthDay = (date) => `${MONTHS[date.slice(5, 7) - 1]} ${Number(date
 // 'YYYY-MM-…' → 'Nov 2026'
 export const monthYear = (date) => `${MONTHS[date.slice(5, 7) - 1]} ${date.slice(0, 4)}`
 
+// 'HH:mm' → '1:30 PM'
+export const clock = (hhmm) => new Date(`2000-01-01T${hhmm}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+
 // 'YYYY-MM-DD' → 'Today', 'Nov 14', or 'Nov 14, 2025' outside this year
 export function visitDate(date, today = new Date()) {
   if (!date) return 'No visits yet'

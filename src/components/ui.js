@@ -8,5 +8,13 @@ export const pillClass = (on) =>
 
 export const primaryButton = 'inline-flex h-11 items-center rounded-full bg-plum px-5 text-sm font-medium text-gold-on-plum hover:bg-plum-light'
 
+// appointment status → [label, pill and block colours]
+export const STATUS_PILL = {
+  done: ['Done', 'bg-success-bg text-success'],
+  booked: ['Booked', 'bg-tint text-plum-light'],
+  cancelled: ['Cancelled', 'bg-muted/10 text-muted'],
+  'no-show': ['No-show', 'bg-muted/10 text-muted'],
+}
+
 // text buttons: 44px square at least
 export const textButton = `${linkClass} min-w-11 justify-center px-2`

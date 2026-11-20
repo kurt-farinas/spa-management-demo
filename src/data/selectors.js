@@ -1,5 +1,5 @@
-import { toDateStr, addDays } from './dates.js'
-import { MONTHS, nameOf } from '../lib/format.js'
+import { toDateStr, addDays, addMinutes } from './dates.js'
+import { MONTHS, WEEK, nameOf, clock } from '../lib/format.js'
 
 const sum = (list, fn) => list.reduce((total, x) => total + fn(x), 0)
 const lineTotal = (l) => l.qty * l.unitPrice
@@ -165,4 +165,46 @@ export function employeeStats(state, employeeId, month) {
     serviceSales: sum(lines, lineTotal),
     commission: Math.round(sum(lines, (l) => lineTotal(l) * rate(l))),
   }
+}
+
+// 'YYYY-MM-DD' → the 7 days of its week, Monday first
+export function weekDays(anyDate) {
+  const d = new Date(`${anyDate}T00:00`)
+  const monday = addDays(d, -((d.getDay() + 6) % 7))
+  return Array.from({ length: 7 }, (_, i) => toDateStr(addDays(monday, i)))
+}
+
+// both ends included, sorted by start; leave employeeId out for every therapist
+export function appointmentsInRange(state, fromDate, toDate, employeeId) {
+  return state.appointments
+    .filter((a) => a.start.slice(0, 10) >= fromDate && a.start.slice(0, 10) <= toDate && (!employeeId || a.employeeId === employeeId))
+    .sort((a, b) => a.start.localeCompare(b.start) || a.employeeId.localeCompare(b.employeeId))
+    .map((a) => ({
+      ...a,
+      clientName: nameOf(state.clients, a.clientId),
+      employeeName: nameOf(state.employees, a.employeeId),
+      serviceName: nameOf(state.services, a.serviceId),
+    }))
+}
+
+export const SPA_OPEN = '10:00'
+export const SPA_CLOSE = '20:00'
+// 'YYYY-MM-DD' → 'Mon' … 'Sun', the form employee schedules use
+export const weekdayOf = (date) => WEEK[(new Date(`${date}T00:00`).getDay() + 6) % 7]
+
+// the form's own rules; overlaps are checked by the store's validateBooking
+export function validateBookingForm(state, { clientId, serviceId, employeeId, date, time }) {
+  const errors = {}
+  if (!clientId) errors.clientId = 'Choose a client'
+  if (!serviceId) errors.serviceId = 'Choose a service'
+  if (!date) errors.date = 'Choose a date'
+  if (!time) errors.time = 'Choose a time'
+  const employee = state.employees.find((e) => e.id === employeeId)
+  if (!employee) errors.employeeId = 'Choose a therapist'
+  else if (date && !employee.schedule?.includes(weekdayOf(date)))
+    errors.employeeId = `${employee.name} is off on ${new Date(`${date}T00:00`).toLocaleDateString('en-US', { weekday: 'long' })}`
+  const service = state.services.find((s) => s.id === serviceId)
+  if (service && date && time && addMinutes(`${date}T${time}`, service.durationMin) > `${date}T${SPA_CLOSE}`)
+    errors.time = `Ends after closing (${clock(SPA_CLOSE)})`
+  return errors
 }
