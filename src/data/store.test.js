@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { demoReducer, validateCheckout, validateBooking, buildSale } from './store.js'
-import { dashboardStats, salesSummary, incomeStatement } from './selectors.js'
+import { dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
 
 const swedish = { id: 'svc-swedish', name: 'Swedish massage', category: 'Massage', durationMin: 60, price: 800, commissionRate: 0.1 }
 
@@ -86,6 +86,13 @@ describe('selectors', () => {
       { key: '2026-11-19', label: 'Nov 19', total: 1800, count: 1 },
       { key: '2026-11-20', label: 'Nov 20', total: 1700, count: 2 },
     ])
+  })
+
+  it('dailySales fills every day, empty days as 0', () => {
+    const days = dailySales(fixture().sales, new Date('2026-11-20T12:00'), 14)
+    expect(days).toHaveLength(14)
+    expect(days[0]).toEqual({ key: '2026-11-07', label: 'Nov 7', total: 0, count: 0 })
+    expect(days.slice(-2).map((d) => d.total)).toEqual([1800, 1700])
   })
 
   it('dashboardStats', () => {

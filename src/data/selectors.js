@@ -1,4 +1,4 @@
-import { toDateStr } from './dates.js'
+import { toDateStr, addDays } from './dates.js'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const sum = (list, fn) => list.reduce((total, x) => total + fn(x), 0)
@@ -88,4 +88,16 @@ export function incomeStatement(state, month) {
     totalExpenses,
     netIncome: totalRevenue - costOfProducts - totalExpenses,
   }
+}
+
+// one row per day for the `days` days ending today; days with no sales are 0
+export function dailySales(sales, today, days) {
+  const first = addDays(today, 1 - days)
+  const rows = salesSummary(sales, { from: toDateStr(first), to: toDateStr(today), groupBy: 'day' })
+  const byDay = new Map(rows.map((r) => [r.key, r]))
+  return Array.from({ length: days }, (_, i) => {
+    const key = toDateStr(addDays(first, i))
+    const [, m, d] = key.split('-')
+    return byDay.get(key) ?? { key, label: `${MONTHS[m - 1]} ${Number(d)}`, total: 0, count: 0 }
+  })
 }
