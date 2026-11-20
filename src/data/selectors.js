@@ -17,8 +17,8 @@ export function dashboardStats(state, today) {
   }
   return {
     salesToday: sum(state.sales.filter((s) => s.date.startsWith(day)), (s) => s.total),
-    bookingsToday: state.appointments.filter((a) => a.start.startsWith(day) && isActiveBooking(a)).length,
-    newClientsThisMonth: state.clients.filter((c) => c.joinedOn.startsWith(month)).length,
+    // every appointment of the day, cancelled and no-show included: the same number as the dashboard list
+    bookingsToday: state.appointments.filter((a) => a.start.startsWith(day)).length,
     topServices: [...counts]
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
@@ -41,10 +41,11 @@ export function todaysAppointments(state, today) {
     .sort((a, b) => a.time.localeCompare(b.time))
 }
 
-// the dashboard list: appointments still to come first, then the rest (no-show and cancelled stay listed), each group by time
-export function agenda(appointments) {
-  return [...appointments.filter((a) => a.status === 'booked'), ...appointments.filter((a) => a.status !== 'booked')]
-}
+// state.appointments under way at `now` (start included, end not), booked or done, earliest first
+export const inSpaNow = (appointments, now) =>
+  appointments
+    .filter((a) => (a.status === 'booked' || a.status === 'done') && new Date(a.start) <= now && now < new Date(a.start).getTime() + a.durationMin * 60000)
+    .sort((a, b) => a.start.localeCompare(b.start))
 
 // from / to are 'YYYY-MM-DD', both included; leave one out for an open range
 export function salesSummary(sales, { from, to, groupBy }, state) {

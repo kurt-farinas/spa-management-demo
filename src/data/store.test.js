@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { demoReducer, validateCheckout, validateBooking, buildSale } from './store.js'
-import { agenda, isActiveBooking, dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
+import { inSpaNow, isActiveBooking, dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
 
 const swedish = { id: 'svc-swedish', name: 'Swedish massage', category: 'Massage', durationMin: 60, price: 800, commissionRate: 0.1 }
 
@@ -132,17 +132,26 @@ describe('selectors', () => {
     expect(days.slice(-2).map((d) => d.total)).toEqual([1800, 1700])
   })
 
-  it('agenda puts booked first, keeps cancelled and time order', () => {
-    const at = (id, time, status) => ({ id, time, status })
-    const rows = [at('a', '09:00', 'done'), at('b', '10:00', 'cancelled'), at('c', '11:00', 'booked'), at('d', '12:00', 'no-show'), at('e', '13:00', 'booked')]
-    expect(agenda(rows).map((r) => r.id)).toEqual(['c', 'e', 'a', 'b', 'd'])
+  it('inSpaNow counts booked or done appointments under way, not finished, future or no-show ones', () => {
+    const at = (id, clientId, start, status) => ({ id, clientId, start: `2026-11-20T${start}`, durationMin: 60, status })
+    const rows = [
+      at('in-progress', 'c1', '10:00', 'booked'),
+      at('finished', 'c2', '09:00', 'done'),
+      at('future', 'c3', '11:00', 'booked'),
+      at('no-show', 'c4', '10:00', 'no-show'),
+      at('done-early', 'c5', '10:15', 'done'),
+    ]
+    expect(inSpaNow(rows, new Date('2026-11-20T10:30')).map((a) => a.id)).toEqual(['in-progress', 'done-early'])
+    // start counts, start + duration does not
+    expect(inSpaNow([rows[0]], new Date('2026-11-20T10:00'))).toHaveLength(1)
+    expect(inSpaNow([rows[0]], new Date('2026-11-20T11:00'))).toHaveLength(0)
   })
 
   it('dashboardStats', () => {
     const stats = dashboardStats(fixture(), new Date('2026-11-20T12:00'))
     expect(stats.salesToday).toBe(1700)
-    expect(stats.bookingsToday).toBe(1)
-    expect(stats.newClientsThisMonth).toBe(1)
+    // every appointment of the day, cancelled and no-show included
+    expect(stats.bookingsToday).toBe(3)
     expect(stats.topServices[0]).toEqual({ name: 'Swedish massage', count: 2 })
   })
 })
