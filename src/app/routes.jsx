@@ -13,6 +13,7 @@ import { Services } from '../pages/Services.jsx'
 import { Appointments } from '../pages/Appointments.jsx'
 import { Pos } from '../pages/Pos.jsx'
 import { Inventory } from '../pages/Inventory.jsx'
+import { FinancialStatement } from '../pages/FinancialStatement.jsx'
 
 // One entry per built page; pages not listed here show ComingSoon.
 const PAGE_ELEMENTS = {
@@ -23,6 +24,7 @@ const PAGE_ELEMENTS = {
   services: <Services />,
   pos: <Pos />,
   inventory: <Inventory />,
+  'financial-statement': <FinancialStatement />,
 }
 
 // Detail routes: { path, page (the PAGES key that guards it), element }.
