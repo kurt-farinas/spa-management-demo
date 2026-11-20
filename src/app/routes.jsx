@@ -51,3 +51,7 @@ export function AppRoutes() {
     </Routes>
   )
 }
+
+// Phase 4 pages, added here to keep merges with the other report page simple; imports are hoisted
+import { SalesReport } from '../pages/SalesReport.jsx'
+PAGE_ELEMENTS['sales-report'] = <SalesReport />
