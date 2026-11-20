@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
-import { dashboardStats, todaysAppointments, dailySales, incomeStatement } from '../data/selectors.js'
+import { agenda, dashboardStats, todaysAppointments, dailySales, incomeStatement } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
 import { spaConfig } from '../config/spa.config.js'
 import { formatPeso } from '../lib/money.js'
@@ -42,7 +42,7 @@ export function Dashboard() {
   const stats = dashboardStats(state, now)
   const appointments = todaysAppointments(state, now)
   // still to come first, then the rest; cancelled and no-show stay listed
-  const list = [...appointments.filter((a) => a.status === 'booked'), ...appointments.filter((a) => a.status !== 'booked')]
+  const list = agenda(appointments)
   const serviceIdOf = new Map(state.appointments.map((a) => [a.id, a.serviceId]))
   const categoryById = (id) => state.services.find((s) => s.id === id)?.category
   const categoryByName = (name) => state.services.find((s) => s.name === name)?.category

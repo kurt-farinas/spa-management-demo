@@ -41,10 +41,9 @@ export function todaysAppointments(state, today) {
     .sort((a, b) => a.time.localeCompare(b.time))
 }
 
-// the dashboard list: cancelled left out, appointments still to come first, each group by time
+// the dashboard list: appointments still to come first, then the rest (no-show and cancelled stay listed), each group by time
 export function agenda(appointments) {
-  const live = appointments.filter((a) => a.status !== 'cancelled')
-  return [...live.filter((a) => a.status === 'booked'), ...live.filter((a) => a.status !== 'booked')]
+  return [...appointments.filter((a) => a.status === 'booked'), ...appointments.filter((a) => a.status !== 'booked')]
 }
 
 // from / to are 'YYYY-MM-DD', both included; leave one out for an open range

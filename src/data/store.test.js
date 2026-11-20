@@ -132,10 +132,10 @@ describe('selectors', () => {
     expect(days.slice(-2).map((d) => d.total)).toEqual([1800, 1700])
   })
 
-  it('agenda puts booked first, drops cancelled, keeps time order', () => {
+  it('agenda puts booked first, keeps cancelled and time order', () => {
     const at = (id, time, status) => ({ id, time, status })
     const rows = [at('a', '09:00', 'done'), at('b', '10:00', 'cancelled'), at('c', '11:00', 'booked'), at('d', '12:00', 'no-show'), at('e', '13:00', 'booked')]
-    expect(agenda(rows).map((r) => r.id)).toEqual(['c', 'e', 'a', 'd'])
+    expect(agenda(rows).map((r) => r.id)).toEqual(['c', 'e', 'a', 'b', 'd'])
   })
 
   it('dashboardStats', () => {
