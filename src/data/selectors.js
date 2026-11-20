@@ -167,7 +167,7 @@ export function employeeStats(state, employeeId, month) {
   }
 }
 
-// 'YYYY-MM-DD' â†’ the 7 days of its week, Monday first
+// 'YYYY-MM-DD' → the 7 days of its week, Monday first
 export function weekDays(anyDate) {
   const d = new Date(`${anyDate}T00:00`)
   const monday = addDays(d, -((d.getDay() + 6) % 7))
@@ -189,7 +189,7 @@ export function appointmentsInRange(state, fromDate, toDate, employeeId) {
 
 export const SPA_OPEN = '10:00'
 export const SPA_CLOSE = '20:00'
-// 'YYYY-MM-DD' â†’ 'Mon' â€¦ 'Sun', the form employee schedules use
+// 'YYYY-MM-DD' → 'Mon' … 'Sun', the form employee schedules use
 export const weekdayOf = (date) => WEEK[(new Date(`${date}T00:00`).getDay() + 6) % 7]
 
 // the form's own rules; overlaps are checked by the store's validateBooking
