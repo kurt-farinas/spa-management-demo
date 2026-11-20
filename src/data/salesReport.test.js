@@ -17,11 +17,11 @@ describe('rangePreset', () => {
     expect(rangePreset('week', friday)).toEqual({ from: '2026-11-16', to: '2026-11-20' })
     expect(rangePreset('month', friday)).toEqual({ from: '2026-11-01', to: '2026-11-20' })
     expect(rangePreset('last-month', friday)).toEqual({ from: '2026-10-01', to: '2026-10-31' })
-    expect(rangePreset('6-months', friday)).toEqual({ from: '2026-05-21', to: '2026-11-20' })
+    expect(rangePreset('6-months', friday)).toEqual({ from: '2026-05-20', to: '2026-11-20' })
   })
 
-  it('6 months back from a 31st clamps to the shorter month first', () => {
-    expect(rangePreset('6-months', new Date('2026-08-31T12:00'))).toEqual({ from: '2026-03-01', to: '2026-08-31' })
+  it('6 months back from a 31st clamps to the shorter month end', () => {
+    expect(rangePreset('6-months', new Date('2026-08-31T12:00'))).toEqual({ from: '2026-02-28', to: '2026-08-31' })
   })
 
   it('this week on a Sunday starts the Monday before', () => {

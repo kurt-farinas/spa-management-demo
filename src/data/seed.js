@@ -1,6 +1,6 @@
 import { spaConfig } from '../config/spa.config.js'
 import { createRandom, int, pick } from './random.js'
-import { pad, toDateStr, toDateTimeStr, addDays } from './dates.js'
+import { pad, toDateStr, toDateTimeStr, addDays, monthsBack } from './dates.js'
 
 const EMPLOYEES = [
   { id: 'e1', name: 'Ana Cruz', role: 'Therapist', phone: '0917 555 0101', hiredOn: '2021-03-15', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
@@ -51,7 +51,7 @@ export function buildSeed(seed = 42, today = new Date()) {
 
   const todayStr = toDateStr(today)
   const nowStr = toDateTimeStr(today)
-  const windowStart = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate())
+  const windowStart = monthsBack(today, 6)
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
 
   // Clients: most joined before the six-month window, some during it, a few this month

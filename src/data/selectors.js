@@ -1,4 +1,4 @@
-import { toDateStr, addDays, addMinutes } from './dates.js'
+import { toDateStr, addDays, addMinutes, monthsBack } from './dates.js'
 import { MONTHS, WEEK, nameOf, clock } from '../lib/format.js'
 
 const sum = (list, fn) => list.reduce((total, x) => total + fn(x), 0)
@@ -289,12 +289,12 @@ export function fillPeriods(rows, { from, to, groupBy }) {
 
 // name: 'today' | 'week' (Monday to today) | 'month' (1st to today) | 'last-month' | '6-months'
 export function rangePreset(name, today) {
-  const [y, m, d] = [today.getFullYear(), today.getMonth(), today.getDate()]
+  const [y, m] = [today.getFullYear(), today.getMonth()]
   const to = toDateStr(today)
   if (name === 'week') return { from: toDateStr(addDays(today, -((today.getDay() + 6) % 7))), to }
   if (name === 'month') return { from: toDateStr(new Date(y, m, 1)), to }
   if (name === 'last-month') return { from: toDateStr(new Date(y, m - 1, 1)), to: toDateStr(new Date(y, m, 0)) }
-  // the day after the same date 6 months back, clamped to that month's end: Nov 20 → May 21, Aug 31 → Mar 1
-  if (name === '6-months') return { from: toDateStr(addDays(new Date(y, m - 6, Math.min(d, new Date(y, m - 5, 0).getDate())), 1)), to }
+  // the same day 6 months back, as the seed window starts: Nov 20 → May 20, Aug 31 → Feb 28
+  if (name === '6-months') return { from: toDateStr(monthsBack(today, 6)), to }
   return { from: to, to }
 }
