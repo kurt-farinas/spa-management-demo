@@ -122,7 +122,10 @@ export function Inventory() {
                   <tr key={p.id} className="border-t border-line first:border-t-0">
                     <td className="py-3 pr-3 pl-3.5 font-medium md:px-5">
                       {p.name}
-                      {/* below md the Status column is hidden, so low and out show under the name */}
+                      {/* below md the Category, Reorder at and Status columns are hidden, so they show under the name */}
+                      <div className="mt-0.5 text-xs font-normal text-muted md:hidden">
+                        {p.category} · reorder at {p.reorderAt}
+                      </div>
                       {status !== 'ok' && (
                         <div className="mt-1 md:hidden">
                           <StockBadge status={status} />

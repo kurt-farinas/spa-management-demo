@@ -187,4 +187,23 @@ describe('ClientProfile', () => {
     expect(rows[0].textContent).toContain('No charge')
     expect(rows[1].textContent).toContain('Done')
   })
+
+  it('lists only this client’s missed bookings up to today, newest first by time', () => {
+    const appt = (id, clientId, start, status) => ({ id, clientId, employeeId: 'e1', serviceId: 's1', start, durationMin: 60, status })
+    const tomorrow = `${toDateStr(addDays(new Date(), 1))}T10:00`
+    const el = profile({
+      ...initialState,
+      services,
+      appointments: [
+        appt('A-1', 'c1', '2026-01-05T15:00', 'no-show'), // same day as the 10:00 sale, later, so listed above it
+        appt('A-2', 'c1', tomorrow, 'cancelled'), // future: left out
+        appt('A-3', 'c2', '2026-01-06T10:00', 'no-show'), // another client: left out
+        appt('A-4', 'c1', '2026-01-04T10:00', 'booked'), // not missed: left out
+      ],
+    })
+    const rows = [...history(el).querySelectorAll('li')]
+    expect(rows).toHaveLength(2)
+    expect(rows[0].textContent).toContain('No-show')
+    expect(rows[1].textContent).toContain('Done')
+  })
 })

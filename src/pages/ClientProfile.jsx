@@ -21,13 +21,15 @@ function StatusPill({ status }) {
 function visitHistory(state, clientId, today) {
   const service = (id) => state.services.find((s) => s.id === id)
   const sale = (h) => {
-    const line = state.sales.find((s) => s.id === h.id).lines.find((l) => l.type === 'service')
-    return { ...h, status: 'done', category: line && service(line.id)?.category }
+    const record = state.sales.find((s) => s.id === h.id)
+    const line = record.lines.find((l) => l.type === 'service')
+    return { ...h, at: record.date, status: 'done', category: line && service(line.id)?.category }
   }
   const missed = state.appointments
     .filter((a) => a.clientId === clientId && off(a.status) && a.start.slice(0, 10) <= today)
     .map((a) => ({
       id: a.id,
+      at: a.start,
       date: a.start.slice(0, 10),
       serviceNames: service(a.serviceId)?.name ?? '',
       therapistName: state.employees.find((e) => e.id === a.employeeId)?.name ?? '',
@@ -35,7 +37,7 @@ function visitHistory(state, clientId, today) {
       status: a.status,
       category: service(a.serviceId)?.category,
     }))
-  return [...clientHistory(state, clientId).map(sale), ...missed].sort((a, b) => b.date.localeCompare(a.date))
+  return [...clientHistory(state, clientId).map(sale), ...missed].sort((a, b) => b.at.localeCompare(a.at)) // newest first, by time within a day
 }
 
 const ROW = 'flex items-center gap-3 pr-3.5 md:gap-4 md:pr-5'
