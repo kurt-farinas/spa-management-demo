@@ -13,13 +13,13 @@ export function TagLabel({ tags, className = 'text-xs' }) {
 }
 
 // avatar, name, tag and since-line; the heading level differs between the panel and the page
-export function ClientHeading({ client, as: Heading = 'h2', size = 'text-[22px]' }) {
+export function ClientHeading({ client, as: Heading = 'h2', size = 'text-[22px]', subClass = '' }) {
   return (
     <div className="flex items-center gap-3.5">
       <Avatar name={client.name} large />
       <div className="min-w-0">
         <Heading className={`font-heading font-medium break-words ${size}`}>{client.name}</Heading>
-        <div className="text-[13px]">
+        <div className={`text-[13px] ${subClass}`}>
           <TagLabel tags={client.tags} className="" /> <span className="text-muted">· Client since {monthYear(client.joinedOn)}</span>
         </div>
       </div>

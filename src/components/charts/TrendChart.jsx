@@ -81,7 +81,9 @@ export function TrendChart({ months, partialMonth }) {
         </ResponsiveContainer>
       </div>
       {months.some((m) => m.month === partialMonth) && <p className="mt-2 text-xs text-muted">* This month so far</p>}
-      <table className="sr-only">
+      {/* sr-only on a div: a table ignores the 1px width and widens the page */}
+      <div className="sr-only">
+      <table>
         <caption>Revenue, total costs and net income per month, last {months.length} months</caption>
         <thead>
           <tr>
@@ -107,6 +109,7 @@ export function TrendChart({ months, partialMonth }) {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   )
 }

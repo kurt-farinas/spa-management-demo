@@ -42,7 +42,7 @@ export function Employees() {
           <div className="text-[13px] text-muted">
             {state.employees.length} on the team · {therapists} therapists
           </div>
-          <h1 className="mt-1 font-heading text-[32px] font-medium">Employees</h1>
+          <h1 className="mt-1 font-heading text-[26px] font-medium md:text-[32px]">Employees</h1>
         </div>
         <button type="button" className={primaryButton} onClick={demoOnly}>
           + Add employee
@@ -70,7 +70,7 @@ export function Employees() {
         </div>
       </div>
 
-      <section aria-label="Employee list" className="min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface">
+      <section aria-label="Employee list" className="relative min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface">
         {list.length === 0 ? (
           <p className="px-5 py-8 text-sm text-muted">No employees match that search.</p>
         ) : (
@@ -88,7 +88,7 @@ export function Employees() {
               {list.map((e) => (
                 <tr key={e.id} className="border-t border-tint">
                   <td className="px-5 py-3">
-                    <Link to={`/employees/${e.id}`} className="group flex items-center gap-2.5">
+                    <Link to={`/employees/${e.id}`} className="group flex min-h-11 items-center gap-2.5">
                       <Avatar name={e.name} />
                       <span>
                         <span className="block font-medium underline-offset-4 group-hover:underline">{e.name}</span>

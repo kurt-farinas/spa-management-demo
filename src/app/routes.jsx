@@ -1,20 +1,24 @@
+import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { PAGES } from '../auth/roles.js'
 import { RequireRole } from '../components/RequireRole.jsx'
 import { AppShell } from '../layout/AppShell.jsx'
 import { Login } from '../pages/Login.jsx'
-import { Dashboard } from '../pages/Dashboard.jsx'
 import { ComingSoon } from '../pages/ComingSoon.jsx'
-import { Clients } from '../pages/Clients.jsx'
-import { ClientProfile } from '../pages/ClientProfile.jsx'
-import { Employees } from '../pages/Employees.jsx'
-import { EmployeeProfile } from '../pages/EmployeeProfile.jsx'
-import { Services } from '../pages/Services.jsx'
-import { Appointments } from '../pages/Appointments.jsx'
-import { Pos } from '../pages/Pos.jsx'
-import { Inventory } from '../pages/Inventory.jsx'
-import { FinancialStatement } from '../pages/FinancialStatement.jsx'
-import { SalesReport } from '../pages/SalesReport.jsx'
+
+// pages load on first visit (AppShell's Suspense shows the fallback); they use named exports
+const named = (load, name) => lazy(() => load().then((m) => ({ default: m[name] })))
+const Dashboard = named(() => import('../pages/Dashboard.jsx'), 'Dashboard')
+const Clients = named(() => import('../pages/Clients.jsx'), 'Clients')
+const ClientProfile = named(() => import('../pages/ClientProfile.jsx'), 'ClientProfile')
+const Employees = named(() => import('../pages/Employees.jsx'), 'Employees')
+const EmployeeProfile = named(() => import('../pages/EmployeeProfile.jsx'), 'EmployeeProfile')
+const Services = named(() => import('../pages/Services.jsx'), 'Services')
+const Appointments = named(() => import('../pages/Appointments.jsx'), 'Appointments')
+const Pos = named(() => import('../pages/Pos.jsx'), 'Pos')
+const Inventory = named(() => import('../pages/Inventory.jsx'), 'Inventory')
+const FinancialStatement = named(() => import('../pages/FinancialStatement.jsx'), 'FinancialStatement')
+const SalesReport = named(() => import('../pages/SalesReport.jsx'), 'SalesReport')
 
 // One entry per built page; pages not listed here show ComingSoon.
 const PAGE_ELEMENTS = {

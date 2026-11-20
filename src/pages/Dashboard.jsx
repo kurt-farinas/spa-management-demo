@@ -73,7 +73,7 @@ export function Dashboard() {
           <SalesBarChart days={days} />
         </Panel>
 
-        <Panel title="Today's appointments" action={<Link to="/appointments" className={linkClass}>See all</Link>}>
+        <Panel title="Today's appointments" action={<Link to="/appointments" className={`${linkClass} min-w-11 justify-end`}>See all</Link>}>
           {list.length === 0 ? (
             <p className="py-6 text-sm text-muted">No appointments today</p>
           ) : (

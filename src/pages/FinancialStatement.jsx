@@ -140,7 +140,7 @@ export function FinancialStatement() {
         {empty ? (
           <p className="py-10 text-center text-sm text-muted">No sales this month</p>
         ) : (
-          <div tabIndex={0} role="region" aria-label="Income statement table" className="-mx-1 mt-3 overflow-x-auto px-1">
+          <div tabIndex={0} role="region" aria-label="Income statement table" className="relative -mx-1 mt-3 overflow-x-auto px-1">
             <table className="w-full min-w-[520px] text-sm">
               <thead>
                 <tr className="border-b border-tint text-xs text-muted">

@@ -65,7 +65,7 @@ export function Inventory() {
         </button>
       </div>
 
-      <section aria-label="Products" className="min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface">
+      <section aria-label="Products" className="relative min-w-0 overflow-x-auto rounded-2xl border border-tint bg-surface">
         {rows.length === 0 ? (
           <p className="px-5 py-12 text-center text-sm text-muted">{q ? `No products match "${query.trim()}"` : 'Nothing is low on stock'}</p>
         ) : (

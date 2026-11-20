@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { PiList, PiX, PiSignOut, PiCaretDown } from 'react-icons/pi'
 import { useRole } from '../auth/RoleProvider.jsx'
@@ -65,10 +65,22 @@ function RoleSwitch({ role, login, dark }) {
   )
 }
 
+function DemoNote({ onDismiss, className }) {
+  return (
+    <p className={`flex items-center gap-1 text-xs ${className}`}>
+      Demo · sample data, resets on reload
+      <button type="button" aria-label="Dismiss demo note" onClick={onDismiss} className="-my-2 inline-flex size-11 items-center justify-center rounded-full">
+        <PiX aria-hidden="true" className="size-3.5" />
+      </button>
+    </p>
+  )
+}
+
 export function AppShell() {
   const { role, login, logout } = useRole()
   const navigate = useNavigate()
   const menu = useRef(null)
+  const [demoNote, setDemoNote] = useState(true)
   if (!role) return <Navigate to="/login" replace />
 
   const signOut = () => {
@@ -88,7 +100,7 @@ export function AppShell() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* phone top bar; the page header below continues its plum band */}
-        <header className="on-plum flex items-center justify-between gap-2 bg-plum px-4 pt-4 pb-3 md:hidden">
+        <header className="on-plum flex flex-wrap items-center justify-between gap-2 bg-plum px-4 pt-4 pb-3 md:hidden">
           <button
             type="button"
             aria-label="Open menu"
@@ -99,9 +111,11 @@ export function AppShell() {
           </button>
           <span className="font-heading text-xl text-gold-on-plum">{spaConfig.logoText}</span>
           <RoleSwitch role={role} login={login} dark />
+          {demoNote && <DemoNote onDismiss={() => setDemoNote(false)} className="basis-full justify-center text-lavender" />}
         </header>
 
         <div className="hidden items-center justify-end gap-2 px-10 pt-6 md:flex">
+          {demoNote && <DemoNote onDismiss={() => setDemoNote(false)} className="mr-auto text-muted" />}
           <RoleSwitch role={role} login={login} />
           <button type="button" onClick={signOut} className="inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm text-muted hover:text-ink">
             <PiSignOut aria-hidden="true" className="size-4" />
@@ -110,7 +124,9 @@ export function AppShell() {
         </div>
 
         <main className="flex-1 px-4 pb-28 md:px-10 md:pb-12">
-          <Outlet />
+          <Suspense fallback={<p role="status" className="py-16 text-center text-sm text-muted">Loading…</p>}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
 

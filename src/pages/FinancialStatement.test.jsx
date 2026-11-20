@@ -127,16 +127,23 @@ describe('FinancialStatement review fixes', () => {
 })
 
 describe('financial-statement route', () => {
-  it('shows the real statement to the owner', () => {
+  // pages are lazy-loaded: let the import settle inside act before asserting
+  const loaded = (el, text) =>
+    vi.waitFor(async () => {
+      await act(async () => {})
+      expect(el.textContent).toContain(text)
+    })
+
+  it('shows the real statement to the owner', async () => {
     const { el, root } = render(<AppRoutes />, '/financial-statement?month=2026-10')
-    expect(el.textContent).toContain('Income statement · October 2026')
+    await loaded(el, 'Income statement · October 2026')
     act(() => root.unmount())
   })
 
-  it('sends a receptionist away from the statement', () => {
+  it('sends a receptionist away from the statement', async () => {
     const { el, root } = render(<AppRoutes />, '/financial-statement?month=2026-10', 'receptionist')
+    await loaded(el, 'Bookings today')
     expect(el.textContent).not.toContain('Income statement')
-    expect(el.textContent).toContain('Bookings today')
     act(() => root.unmount())
   })
 })

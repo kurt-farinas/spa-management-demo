@@ -34,7 +34,7 @@ export function Services() {
           <div className="text-[13px] text-muted">
             {state.services.length} services · {categories.length} categories
           </div>
-          <h1 className="mt-1 font-heading text-[32px] font-medium">Services</h1>
+          <h1 className="mt-1 font-heading text-[26px] font-medium md:text-[32px]">Services</h1>
         </div>
         <button type="button" className={primaryButton} onClick={demoOnly}>
           + Add service

@@ -32,7 +32,7 @@ export function ClientProfile() {
           All clients
         </BackLink>
         <div className="mt-1 flex flex-wrap items-center justify-between gap-4">
-          <ClientHeading client={client} as="h1" size="text-[26px] md:text-[32px]" />
+          <ClientHeading client={client} as="h1" size="text-[26px] md:text-[32px]" subClass="max-md:[&_span]:text-lavender" />
           <Link
             to={`/appointments?client=${client.id}`}
             className="inline-flex h-11 items-center rounded-full bg-gold-on-plum px-5 text-sm font-medium text-plum hover:bg-white md:bg-plum md:text-gold-on-plum md:hover:bg-plum-light"
