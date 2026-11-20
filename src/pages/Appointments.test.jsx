@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { RoleProvider } from '../auth/RoleProvider.jsx'
 import { DemoStoreProvider } from '../data/DemoStore.jsx'
-import { toDateStr } from '../data/dates.js'
+import { toDateStr, addDays } from '../data/dates.js'
 import { Appointments } from './Appointments.jsx'
 
 vi.mock('react-hot-toast', () => ({ default: Object.assign(vi.fn(), { success: vi.fn() }) }))
@@ -78,6 +78,38 @@ describe('Appointments', () => {
     expect(dialog.open).toBe(true)
     expect(dialog.querySelector('#book-clientId').value).toBe('c1')
     expect(dialog.querySelector('#book-date').value).toBe(today)
+    expect(dialog.querySelector('#book-date').min).toBe(today)
+  })
+
+  it('names each calendar block with day, therapist, time, client, service and status', () => {
+    const el = render('/appointments')
+    const block = el.querySelector('section[aria-label^="All therapists"] button[data-appt="A-1"]')
+    const weekday = new Date(`${today}T00:00`).toLocaleDateString('en-US', { weekday: 'long' })
+    const name = block.getAttribute('aria-label')
+    expect(name).toContain(weekday)
+    expect(name).toContain('Ana Cruz')
+    expect(name).toMatch(/10:00 AM, Carlo Mendoza, Swedish massage, Booked$/)
+  })
+
+  it('books on another day, moves the view there and highlights the new block', () => {
+    const el = render()
+    const form = el.querySelector('dialog[aria-labelledby="book-title"] form')
+    const nextWeek = toDateStr(addDays(new Date(`${today}T00:00`), 7))
+    choose(form.querySelector('#book-serviceId'), 's1')
+    choose(form.querySelector('#book-employeeId'), 'e1')
+    choose(form.querySelector('#book-time'), '11:00')
+    act(() => {
+      const date = form.querySelector('#book-date')
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(date, nextWeek)
+      date.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    act(() => form.requestSubmit())
+    expect(toast.success).toHaveBeenCalledWith('Booked Ana Reyes with Ana Cruz')
+    expect(el.querySelector('[role="group"][aria-label="Day"] [aria-pressed="true"]').textContent).toContain(String(Number(nextWeek.slice(8))))
+    expect(el.querySelector('[role="group"][aria-label="Week"]').textContent).not.toContain('This week')
+    const shown = el.querySelector('section[aria-label="Day list"] [data-highlight]')
+    expect(shown.textContent).toContain('Ana Reyes')
+    expect(el.querySelectorAll('[data-highlight]').length).toBe(2) // day list and grid
   })
 
   it('shows the overlap under the time, then books a free slot and lists it', () => {

@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { PiPlus, PiCaretLeft, PiCaretRight, PiCaretDown } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
-import { weekDays, appointmentsInRange, validateBookingForm, weekdayOf, SPA_OPEN, SPA_CLOSE } from '../data/selectors.js'
+import { weekDays, appointmentsInRange, validateBookingForm, isActiveBooking, weekdayOf, SPA_OPEN, SPA_CLOSE } from '../data/selectors.js'
 import { toDateStr, addDays, addMinutes } from '../data/dates.js'
 import { clock, monthDay, nameOf } from '../lib/format.js'
 import { demoOnly } from '../components/demoOnly.js'
@@ -21,6 +21,11 @@ const TIMES = Array.from({ length: (minutes(SPA_CLOSE) - OPEN_MIN) / 15 - 1 }, (
   return `${pad(Math.floor(m / 60))}:${pad(m % 60)}`
 })
 const longDay = (date) => new Date(`${date}T00:00`).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+// 'Monday 16 November'
+const fullDay = (date) => {
+  const d = new Date(`${date}T00:00`)
+  return `${d.toLocaleDateString('en-US', { weekday: 'long' })} ${d.getDate()} ${d.toLocaleDateString('en-US', { month: 'long' })}`
+}
 const works = (employee, date) => employee.schedule?.includes(weekdayOf(date))
 const span = (a) => `${clock(a.start.slice(11))} – ${clock(addMinutes(a.start, a.durationMin).slice(11))}`
 const iconButton = 'inline-flex size-11 items-center justify-center rounded-full border border-lavender bg-surface text-ink hover:border-plum-light'
@@ -106,6 +111,8 @@ function TimeGrid({ label, columns, onOpen, highlightId }) {
                   key={a.id}
                   type="button"
                   data-appt={a.id}
+                  data-highlight={a.id === highlightId || undefined}
+                  aria-label={`${fullDay(a.start.slice(0, 10))}, ${a.employeeName}, ${clock(a.start.slice(11))}, ${a.clientName}, ${a.serviceName}, ${status}`}
                   onClick={() => onOpen(a)}
                   className={`absolute overflow-hidden rounded-lg px-2 py-1 text-left text-xs leading-snug hover:brightness-95 ${colours} ${
                     a.id === highlightId ? 'z-10 ring-2 ring-plum ring-offset-1 ring-offset-surface' : ''
@@ -120,7 +127,6 @@ function TimeGrid({ label, columns, onOpen, highlightId }) {
                   <span className="block font-semibold tabular-nums">{clock(a.start.slice(11))}</span>
                   <span className={`block truncate font-medium text-ink ${a.status === 'cancelled' ? 'line-through' : ''}`}>{a.clientName}</span>
                   <span className="block truncate">{a.serviceName}</span>
-                  <span className="sr-only">, {status}</span>
                 </button>
               )
             })}
@@ -223,7 +229,7 @@ function BookDialog({ dialog, form, setForm, onBooked }) {
           </select>,
         )}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {field('date', 'Date', <input type="date" {...control('date')} />)}
+          {field('date', 'Date', <input type="date" min={toDateStr(new Date())} {...control('date')} />)}
           {field(
             'time',
             'Time',
@@ -322,7 +328,7 @@ export function Appointments() {
   const week = weekDays(day)
   const list = appointmentsInRange(state, week[0], week[6], therapistId || undefined)
   const dayItems = list.filter((a) => a.start.startsWith(day))
-  const live = list.filter((a) => a.status !== 'cancelled').length
+  const live = list.filter(isActiveBooking).length
 
   const openBooking = (clientId = '') => {
     setForm({ clientId, serviceId: '', employeeId: therapistId, date: day, time: '' })
@@ -460,6 +466,7 @@ export function Appointments() {
                 <button
                   type="button"
                   data-appt={a.id}
+                  data-highlight={a.id === highlightId || undefined}
                   onClick={() => openDetails(a)}
                   className={`flex w-full items-center gap-3 rounded-lg py-3 text-left ${a.id === highlightId ? 'bg-tint px-2' : ''}`}
                 >
