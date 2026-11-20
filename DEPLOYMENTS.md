@@ -2,6 +2,15 @@
 
 Live: https://spa-management-demo.vercel.app (Vercel, team "kurt's things", project spa-management-demo, deploys on every push to `main`).
 
+## 2026-11-20 21:43 — 7b97569 — Login category bar swatches
+- By: Claude, requested by Kurt
+- Card: #141
+- Code: 0563d06 → 7b97569 (fast-forward of fix/login-swatches into main)
+- Migrations: none
+- Backup: none (static site, no database)
+- Data changes: none
+- Verified: live site serves assets/index-D-2SZEL-.js; on #/login at 1440x900 the five category swatches render inside the white bar as 10px squares with Massage #2F7F86, Facial, Body, Nails, Package colours; 0 page errors.
+
 ## 2026-11-20 21:29 — 828bb1e — Rename to Spa Management System; Massage colour teal
 - By: Claude, requested by Kurt
 - Card: #141
