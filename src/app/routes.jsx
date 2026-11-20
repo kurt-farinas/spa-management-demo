@@ -10,10 +10,12 @@ import { ClientProfile } from '../pages/ClientProfile.jsx'
 import { Employees } from '../pages/Employees.jsx'
 import { EmployeeProfile } from '../pages/EmployeeProfile.jsx'
 import { Services } from '../pages/Services.jsx'
+import { Appointments } from '../pages/Appointments.jsx'
 
 // One entry per built page; pages not listed here show ComingSoon.
 const PAGE_ELEMENTS = {
   dashboard: <Dashboard />,
+  appointments: <Appointments />,
   clients: <Clients />,
   employees: <Employees />,
   services: <Services />,

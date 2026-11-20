@@ -7,19 +7,13 @@ import { toDateStr } from '../data/dates.js'
 import { spaConfig } from '../config/spa.config.js'
 import { formatPeso } from '../lib/money.js'
 import { StatCard } from '../components/StatCard.jsx'
-import { linkClass } from '../components/ui.js'
+import { linkClass, STATUS_PILL as PILL } from '../components/ui.js'
+import { clock } from '../lib/format.js'
 import { SalesBarChart } from '../components/charts/SalesBarChart.jsx'
 
 const FIRST_NAME = { owner: spaConfig.staff.ownerName, receptionist: spaConfig.staff.receptionistName }
-const PILL = {
-  done: ['Done', 'bg-success-bg text-success'],
-  booked: ['Booked', 'bg-tint text-plum-light'],
-  cancelled: ['Cancelled', 'bg-muted/10 text-muted'],
-  'no-show': ['No-show', 'bg-muted/10 text-muted'],
-}
 
 const greeting = (hour) => (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening')
-const clock = (hhmm) => new Date(`2000-01-01T${hhmm}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 
 function Panel({ title, action, className = 'border border-tint bg-surface', titleClass = '', children }) {
   return (
