@@ -96,6 +96,36 @@ export function incomeStatement(state, month) {
   }
 }
 
+// keeps state order, which is newest client first: addClient puts new clients at the front
+export function clientSummaries(state, today) {
+  const day = toDateStr(today)
+  const byClient = new Map()
+  for (const s of state.sales) {
+    const date = s.date.slice(0, 10)
+    if (date > day) continue
+    const row = byClient.get(s.clientId) ?? { visits: 0, totalSpent: 0, lastVisit: null }
+    row.visits += 1
+    row.totalSpent += s.total
+    if (!row.lastVisit || date > row.lastVisit) row.lastVisit = date
+    byClient.set(s.clientId, row)
+  }
+  return state.clients.map((c) => ({ ...c, visits: 0, totalSpent: 0, lastVisit: null, ...byClient.get(c.id) }))
+}
+
+// one row per sale, newest first; date is 'YYYY-MM-DD'
+export function clientHistory(state, clientId) {
+  return state.sales
+    .filter((s) => s.clientId === clientId)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((s) => ({
+      id: s.id,
+      date: s.date.slice(0, 10),
+      serviceNames: s.lines.filter((l) => l.type === 'service').map((l) => l.name).join(', '),
+      therapistName: state.employees.find((e) => e.id === s.employeeId)?.name ?? '',
+      total: s.total,
+    }))
+}
+
 // one row per day for the `days` days ending today; days with no sales are 0
 export function dailySales(sales, today, days) {
   const first = addDays(today, 1 - days)
