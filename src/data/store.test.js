@@ -55,6 +55,26 @@ describe('store', () => {
     expect(validateCheckout(fixture(), { lines: [{ type: 'product', id: 'p1', qty: 11 }] })).toBe('Only 10 left')
   })
 
+  it('checkout sums qty across lines of the same product', () => {
+    const line = { type: 'product', id: 'p1', qty: 6 }
+    expect(validateCheckout(fixture(), { lines: [line, line] })).toBe('Only 10 left')
+  })
+
+  it('checkout rejects bad quantities and unknown items', () => {
+    const check = (line) => validateCheckout(fixture(), { lines: [line] })
+    expect(check({ type: 'product', id: 'p1', qty: 0 })).toBe('Quantity must be at least 1')
+    expect(check({ type: 'service', id: 'svc-swedish', qty: -5 })).toBe('Quantity must be at least 1')
+    expect(check({ type: 'product', id: 'p1', qty: 1.5 })).toBe('Quantity must be at least 1')
+    expect(check({ type: 'product', id: 'nope', qty: 1 })).toBe('Item not found')
+    expect(check({ type: 'service', id: 'nope', qty: 1 })).toBe('Item not found')
+  })
+
+  it('reducer ignores a checkout that would oversell', () => {
+    const state = fixture()
+    const sale = { id: 'S-4', lines: [{ type: 'product', id: 'p1', qty: 11, unitPrice: 350 }] }
+    expect(demoReducer(state, { type: 'checkout', sale })).toBe(state)
+  })
+
   it('booking rejects overlap', () => {
     const state = fixture()
     const at = (start) => validateBooking(state, { employeeId: 'e1', start, durationMin: 60 })

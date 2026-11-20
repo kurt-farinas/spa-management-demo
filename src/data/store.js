@@ -9,6 +9,7 @@ export function demoReducer(state, action) {
     case 'bookAppointment':
       return { ...state, appointments: [...state.appointments, action.appointment] }
     case 'checkout': {
+      if (validateCheckout(state, action.sale)) return state // stale callers can't oversell
       const sold = {}
       for (const l of action.sale.lines) if (l.type === 'product') sold[l.id] = (sold[l.id] ?? 0) + l.qty
       return {
@@ -24,10 +25,16 @@ export function demoReducer(state, action) {
 
 export function validateCheckout(state, { lines }) {
   if (!lines?.length) return 'Add at least one item'
+  const wanted = {}
   for (const l of lines) {
-    if (l.type !== 'product') continue
-    const p = state.products.find((x) => x.id === l.id)
-    if (p && l.qty > p.stock) return `Only ${p.stock} left`
+    const item = (l.type === 'service' ? state.services : state.products).find((x) => x.id === l.id)
+    if (!item) return 'Item not found'
+    if (!Number.isInteger(l.qty) || l.qty < 1) return 'Quantity must be at least 1'
+    if (l.type === 'product') wanted[l.id] = (wanted[l.id] ?? 0) + l.qty
+  }
+  for (const [id, qty] of Object.entries(wanted)) {
+    const { stock } = state.products.find((x) => x.id === id)
+    if (qty > stock) return `Only ${stock} left`
   }
   return null
 }
