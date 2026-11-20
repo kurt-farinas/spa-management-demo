@@ -9,7 +9,7 @@ import { validateClient } from '../lib/validateClient.js'
 import { visitDate } from '../lib/format.js'
 import { Avatar } from '../components/Avatar.jsx'
 import { ClientFacts, ClientHeading, TagLabel } from '../components/ClientParts.jsx'
-import { linkClass, pillClass } from '../components/ui.js'
+import { linkClass, pillClass, primaryButton, secondaryButton, textButton } from '../components/ui.js'
 
 const TAGS = ['All', 'VIP', 'Regular', 'New']
 // first click on a column: names A–Z, the rest biggest / newest first
@@ -38,7 +38,7 @@ function SortHeader({ column, sort, setSort, className }) {
   const flip = active ? (sort.dir === 'asc' ? 'desc' : 'asc') : first
   const Icon = active && sort.dir === 'asc' ? PiCaretUp : PiCaretDown
   return (
-    <th scope="col" aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'} className={`font-medium ${className}`}>
+    <th scope="col" aria-sort={active ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'} className={`font-semibold ${className}`}>
       <button
         type="button"
         onClick={() => setSort({ key: column, dir: flip })}
@@ -59,7 +59,7 @@ const FIELDS = [
   { key: 'birthday', label: 'Birthday', optional: true, type: 'date' },
   { key: 'notes', label: 'Notes', optional: true, multiline: true, placeholder: 'Pressure, allergies, preferences' },
 ]
-const inputClass = 'w-full rounded-xl border bg-surface px-3.5 text-sm text-ink placeholder:text-muted aria-invalid:border-danger'
+const inputClass = 'w-full rounded-md border bg-surface px-3 text-sm text-ink placeholder:text-muted aria-invalid:border-danger'
 
 function AddClientDialog({ dialog, onAdded }) {
   const { addClient } = useDemoStore()
@@ -96,17 +96,17 @@ function AddClientDialog({ dialog, onAdded }) {
       onClose={reset}
       onMouseDown={(e) => (downOnBackdrop.current = e.target === dialog.current)}
       onClick={(e) => e.target === dialog.current && downOnBackdrop.current && dialog.current.close()}
-      className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl bg-surface p-0 text-ink backdrop:bg-rail-active/60"
+      className="m-auto w-[min(30rem,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-0 text-ink backdrop:bg-ink/40"
     >
-      <form noValidate onSubmit={submit} className="flex flex-col gap-4 p-5 md:p-6">
-        <h2 id="add-client-title" className="font-heading text-[22px] font-medium">
+      <form noValidate onSubmit={submit} className="flex flex-col gap-4 p-5">
+        <h2 id="add-client-title" className="-mx-5 -mt-1 border-b border-line px-5 pb-4 text-[15px] font-semibold">
           Add client
         </h2>
         {FIELDS.map(({ key, label, optional, multiline, ...input }) => {
           const Field = multiline ? 'textarea' : 'input'
           return (
             <div key={key} className="flex flex-col gap-1.5">
-              <label htmlFor={`client-${key}`} className="text-[13px] font-medium">
+              <label htmlFor={`client-${key}`} className="text-[13px] font-semibold text-muted">
                 {label} {optional && <span className="font-normal text-muted">(optional)</span>}
               </label>
               <Field
@@ -128,12 +128,12 @@ function AddClientDialog({ dialog, onAdded }) {
             </div>
           )
         })}
-        <div className="mt-1 flex justify-end gap-2">
-          <button type="button" onClick={() => dialog.current.close()} className="inline-flex h-11 items-center rounded-full px-5 text-sm text-muted hover:text-ink">
-            Cancel
-          </button>
-          <button type="submit" className="inline-flex h-11 items-center rounded-full bg-rail px-5 text-sm font-medium text-rail-ink hover:bg-rail-active">
+        <div className="mt-1 flex gap-2">
+          <button type="submit" className={primaryButton}>
             Save client
+          </button>
+          <button type="button" onClick={() => dialog.current.close()} className={secondaryButton}>
+            Cancel
           </button>
         </div>
       </form>
@@ -143,22 +143,22 @@ function AddClientDialog({ dialog, onAdded }) {
 
 function Preview({ client, history, today }) {
   return (
-    <section aria-label={`${client.name} profile`} className="rounded-2xl border border-soft bg-surface p-[22px] lg:sticky lg:top-6">
+    <section aria-label={`${client.name} profile`} className="rounded-lg border border-line bg-surface p-5 lg:sticky lg:top-6">
       <ClientHeading client={client} />
       <div className="mt-[18px]">
         <ClientFacts client={client} />
       </div>
-      <h3 className="mt-[18px] mb-2 text-[13px] font-semibold">Recent visits</h3>
+      <h3 className="mt-5 mb-1 text-[13px] font-semibold text-muted">Recent visits</h3>
       {history.length === 0 ? (
         <p className="text-[13px] text-muted">No visits yet</p>
       ) : (
         <ul>
           {history.slice(0, 3).map((h) => (
-            <li key={h.id} className="flex justify-between gap-3 py-1.5 text-[13px]">
+            <li key={h.id} className="flex justify-between gap-3 border-b border-line py-2 text-[13px] last:border-b-0">
               <span className="min-w-0">
                 {visitDate(h.date, today)} · {h.serviceNames || 'Products only'}
               </span>
-              <span className="shrink-0 tabular-nums">{formatPeso(h.total)}</span>
+              <span className="shrink-0 font-semibold tabular-nums">{formatPeso(h.total)}</span>
             </li>
           ))}
         </ul>
@@ -202,18 +202,14 @@ export function Clients() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-5">
-      <header className="on-rail-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-rail px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
+      <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="text-xs text-line md:text-[13px] md:text-muted">
+          <h1 className="text-2xl font-bold">Clients</h1>
+          <p className="text-[13px] text-muted tabular-nums">
             {all.length} {all.length === 1 ? 'client' : 'clients'} · {newCount} new in the last 30 days
-          </div>
-          <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">Clients</h1>
+          </p>
         </div>
-        <button
-          type="button"
-          onClick={() => dialog.current.showModal()}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-rail-ink px-5 text-sm font-medium text-rail hover:bg-white md:bg-rail md:text-rail-ink md:hover:bg-rail-active"
-        >
+        <button type="button" onClick={() => dialog.current.showModal()} className={primaryButton}>
           <PiPlus aria-hidden="true" className="size-4" />
           Add client
         </button>
@@ -229,7 +225,7 @@ export function Clients() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by name or phone"
-          className="h-11 min-w-0 flex-[1_1_260px] rounded-full border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted"
+          className="h-11 min-w-0 flex-[1_1_260px] rounded-md border border-line bg-surface px-3 text-sm text-ink placeholder:text-muted"
         />
         <div role="group" aria-label="Filter by tag" className="flex flex-wrap gap-2">
           {TAGS.map((t) => (
@@ -247,7 +243,7 @@ export function Clients() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
-        <section aria-label="Client list" className="min-w-0 overflow-x-auto rounded-2xl border border-soft bg-surface lg:col-span-2">
+        <section aria-label="Client list" className="min-w-0 overflow-x-auto rounded-lg border border-line bg-surface lg:col-span-2">
           {rows.length === 0 ? (
             <div className="px-5 py-12 text-center">
               {query.trim() ? (
@@ -256,7 +252,7 @@ export function Clients() {
                   <button
                     type="button"
                     onClick={() => setQuery('')}
-                    className="mt-3 inline-flex h-11 items-center rounded-full border border-line px-5 text-sm hover:border-rail-active"
+                    className={`${secondaryButton} mt-3`}
                   >
                     Clear search
                   </button>
@@ -266,14 +262,15 @@ export function Clients() {
               )}
             </div>
           ) : (
-            <table className="w-full min-w-[560px] border-collapse text-sm">
+            // below md, phone and last visit fold under the name so the table fits a phone
+            <table className="w-full border-collapse text-sm md:min-w-[560px]">
               <thead>
-                <tr className="text-left text-xs text-muted">
-                  <SortHeader column="name" sort={sort} setSort={setSort} className="px-5" />
-                  <th scope="col" className="px-3 font-medium">Phone</th>
-                  <SortHeader column="lastVisit" sort={sort} setSort={setSort} className="px-3" />
-                  <th scope="col" className="px-3 text-right font-medium">Visits</th>
-                  <SortHeader column="totalSpent" sort={sort} setSort={setSort} className="px-5 text-right" />
+                <tr className="border-b border-line text-left text-xs text-muted">
+                  <SortHeader column="name" sort={sort} setSort={setSort} className="px-3.5 md:px-5" />
+                  <th scope="col" className="px-3 font-semibold max-md:hidden">Phone</th>
+                  <SortHeader column="lastVisit" sort={sort} setSort={setSort} className="px-3 max-md:hidden" />
+                  <th scope="col" className="px-3 text-right font-semibold">Visits</th>
+                  <SortHeader column="totalSpent" sort={sort} setSort={setSort} className="px-3.5 text-right md:px-5" />
                   <th scope="col" className="hidden px-5 lg:table-cell">
                     <span className="sr-only">Preview</span>
                   </th>
@@ -283,33 +280,36 @@ export function Clients() {
                 {rows.map((c) => {
                   const current = c.id === selected?.id
                   return (
-                    <tr key={c.id} className={`relative border-t border-soft hover:bg-page ${current ? 'lg:bg-page' : ''}`}>
-                      <td className="px-5 py-3">
+                    <tr key={c.id} className={`relative border-b border-line last:border-b-0 hover:bg-soft ${current ? 'lg:bg-soft' : ''}`}>
+                      <td className="px-3.5 py-3 md:px-5">
                         <div className="flex items-center gap-2.5">
                           <Avatar name={c.name} />
                           <span className="min-w-0">
                             {/* the link covers the whole row */}
                             <Link
                               to={`/clients/${c.id}`}
-                              className="block font-medium after:absolute after:inset-0 after:content-['']"
+                              className="block font-semibold after:absolute after:inset-0 after:content-['']"
                             >
                               {c.name}
                             </Link>
                             <TagLabel tags={c.tags} />
+                            <span className="block text-xs text-muted tabular-nums md:hidden">
+                              {c.phone} · {visitDate(c.lastVisit, today)}
+                            </span>
                           </span>
                         </div>
                       </td>
-                      <td className="px-3 py-3 whitespace-nowrap tabular-nums">{c.phone}</td>
-                      <td className="px-3 py-3 whitespace-nowrap">{visitDate(c.lastVisit, today)}</td>
+                      <td className="px-3 py-3 whitespace-nowrap tabular-nums max-md:hidden">{c.phone}</td>
+                      <td className="px-3 py-3 whitespace-nowrap tabular-nums max-md:hidden">{visitDate(c.lastVisit, today)}</td>
                       <td className="px-3 py-3 text-right tabular-nums">{c.visits}</td>
-                      <td className="px-5 py-3 text-right font-medium tabular-nums">{formatPeso(c.totalSpent)}</td>
+                      <td className="px-3.5 py-3 text-right font-semibold whitespace-nowrap tabular-nums md:px-5">{formatPeso(c.totalSpent)}</td>
                       <td className="relative hidden px-5 py-3 text-right lg:table-cell">
                         <button
                           type="button"
                           aria-label={`Preview ${c.name}`}
                           aria-pressed={current}
                           onClick={() => setSelectedId(c.id)}
-                          className={`${linkClass} min-w-11 justify-center px-2`}
+                          className={textButton}
                         >
                           Preview
                         </button>
