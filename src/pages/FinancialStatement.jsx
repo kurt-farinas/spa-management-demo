@@ -11,8 +11,18 @@ import { TrendChart } from '../components/charts/TrendChart.jsx'
 // 'YYYY-MM' → 'October 2026'
 const monthName = (month) => new Date(`${month}-01T00:00`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 const shortMonth = (month) => new Date(`${month}-01T00:00`).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-const previousMonth = (month) => toDateStr(new Date(month.slice(0, 4), month.slice(5, 7) - 2, 1)).slice(0, 7)
-const margin = (s) => (s.totalRevenue ? `${((s.netIncome / s.totalRevenue) * 100).toFixed(1)}%` : '—')
+const previousMonth = (month) => shiftMonth(month, -1)
+const shortName = (month) => new Date(`${month}-01T00:00`).toLocaleDateString('en-US', { month: 'short' })
+// the same 'YYYY-MM' n months on (negative n for earlier)
+const shiftMonth = (month, n) => toDateStr(new Date(month.slice(0, 4), month.slice(5, 7) - 1 + n, 1)).slice(0, 7)
+// a loss margin goes in parentheses like the amounts
+const margin = (s) => {
+  if (!s.totalRevenue) return '—'
+  const pct = (s.netIncome / s.totalRevenue) * 100
+  return pct < 0 ? `(${Math.abs(pct).toFixed(1)}%)` : `${pct.toFixed(1)}%`
+}
+const clearChange = (line) => ({ ...line, change: null })
+const withoutChanges = (lines) => Object.fromEntries(Object.entries(lines).map(([k, v]) => [k, Array.isArray(v) ? v.map(clearChange) : clearChange(v)]))
 
 // up is good for revenue and profit, bad for costs; the arrow carries the direction, colour only says good or bad
 function Change({ change, upIsGood = true }) {
@@ -65,13 +75,22 @@ export function FinancialStatement() {
   const month = months.includes(params.get('month')) ? params.get('month') : latestFull
   const partial = month === thisMonth
   const prevKey = previousMonth(month)
+  const todayDay = new Date().getDate()
+  // the first month of data starts mid-month when the earliest sale is not on the 1st
+  const firstSale = state.sales.map((s) => s.date.slice(0, 10)).sort()[0]
+  const partialFirst = firstSale && firstSale.slice(8) !== '01' && firstSale.slice(0, 7) === months.at(-1) ? months.at(-1) : null
+  const prevPartial = prevKey === partialFirst
 
   const cur = incomeStatement(state, month)
-  const prev = months.includes(prevKey) ? incomeStatement(state, prevKey) : null
-  const lines = compareStatements(cur, prev)
+  // a month so far is compared with days 1..today of the last one, not all of it
+  const prev = months.includes(prevKey) ? incomeStatement(state, prevKey, partial ? { throughDay: todayDay } : undefined) : null
+  const prevLabel = partial ? `${shortName(prevKey)} 1–${todayDay}` : shortMonth(prevKey)
+  const compared = compareStatements(cur, prev)
+  const lines = prevPartial ? withoutChanges(compared) : compared
   const empty = cur.totalRevenue === 0
   const biggest = [...cur.expenses].sort((a, b) => b.amount - a.amount)[0]
-  const trend = monthlyTrend(state, months.slice(0, 6).reverse())
+  // 6 calendar months ending at the selected one; a month without data is drawn at 0
+  const trend = monthlyTrend(state, Array.from({ length: 6 }, (_, i) => shiftMonth(month, i - 5)))
   const title = `${monthName(month)}${partial ? ' (so far)' : ''}`
 
   return (
@@ -87,7 +106,7 @@ export function FinancialStatement() {
           >
             {months.map((m) => (
               <option key={m} value={m}>
-                {m === thisMonth ? 'This month (so far)' : monthName(m)}
+                {m === thisMonth ? 'This month (so far)' : `${monthName(m)}${m === partialFirst ? ' (partial)' : ''}`}
               </option>
             ))}
           </select>
@@ -96,17 +115,17 @@ export function FinancialStatement() {
       </header>
 
       <section aria-label={`Key figures, ${title}`} className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-4">
-        <StatCard dark label="Net income" value={formatAccounting(empty ? 0 : cur.netIncome)} note={partial ? 'Month so far' : monthName(month)} />
+        <StatCard dark label="Net income" value={formatAccounting(cur.netIncome)} note={partial ? 'Month so far' : monthName(month)} />
         <StatCard label="Net margin" value={empty ? '—' : margin(cur)} note="Net income ÷ revenue" />
         <StatCard
-          label={`Biggest expense${!empty && biggest ? ` · ${biggest.category}` : ''}`}
-          value={formatPeso(!empty && biggest ? biggest.amount : 0)}
-          note={!empty && biggest ? `${Math.round((biggest.amount / cur.totalExpenses) * 100)}% of operating expenses` : 'No expenses'}
+          label={`Biggest expense${biggest ? ` · ${biggest.category}` : ''}`}
+          value={formatPeso(biggest ? biggest.amount : 0)}
+          note={biggest ? `${Math.round((biggest.amount / cur.totalExpenses) * 100)}% of operating expenses` : 'No expenses'}
         />
         <StatCard
           label="Revenue change"
           value={empty ? '—' : <Change change={lines.totalRevenue.change} />}
-          note={prev ? `vs ${monthName(prevKey)}` : 'No earlier month'}
+          note={prev ? (prevPartial ? 'Previous month is partial' : `vs ${partial ? prevLabel : monthName(prevKey)}`) : 'No earlier month'}
         />
       </section>
 
@@ -132,7 +151,7 @@ export function FinancialStatement() {
                     {shortMonth(month)}
                   </th>
                   <th scope="col" className="px-3 py-2 text-right font-normal">
-                    {shortMonth(prevKey)}
+                    {prevLabel}
                   </th>
                   <th scope="col" className="px-3 py-2 text-right font-normal">
                     Change
@@ -164,6 +183,7 @@ export function FinancialStatement() {
             </table>
           </div>
         )}
+        {!empty && prevPartial && <p className="mt-2 text-xs text-muted">Previous month is partial, so there is no change to show.</p>}
       </section>
 
       <section aria-labelledby="trend-title" className="min-w-0 rounded-2xl border border-tint bg-surface px-5 py-4 md:px-[22px]">
