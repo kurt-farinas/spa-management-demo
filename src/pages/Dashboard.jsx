@@ -46,7 +46,7 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
-      <header className="on-plum -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-4 pb-6 md:mx-0 md:bg-transparent md:p-0">
+      <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-4 pb-6 md:mx-0 md:bg-transparent md:p-0">
         <div>
           <div className="text-xs text-lavender md:text-[13px] md:text-muted">
             {now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}

@@ -42,3 +42,10 @@ body {
 .on-plum :focus-visible {
   outline-color: var(--color-gold-on-plum);
 }
+
+/* same, but the area is only plum below the md breakpoint (48rem) */
+@media (width < 48rem) {
+  .on-plum-mobile :focus-visible {
+    outline-color: var(--color-gold-on-plum);
+  }
+}
