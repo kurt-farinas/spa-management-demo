@@ -152,9 +152,12 @@ export function buildSeed(seed = 42, today = new Date()) {
     const key = toDateStr(m).slice(0, 7)
     const revenue = sales.filter((s) => s.date.startsWith(key)).reduce((sum, s) => sum + s.total, 0)
     const vary = (rate) => Math.round(revenue * rate * (0.9 + 0.2 * rand()))
+    // the current month is still filling up, so its rent and salaries follow its own
+    // revenue like the other costs; prorated averages would swamp the first days
+    const fixed = (rate) => Math.round(((key === todayStr.slice(0, 7) ? revenue : fullMonthRevenue * share) * rate) / 100) * 100
     const amounts = {
-      Rent: Math.round((fullMonthRevenue * 0.14 * share) / 100) * 100,
-      Salaries: Math.round((fullMonthRevenue * 0.33 * share) / 100) * 100,
+      Rent: fixed(0.14),
+      Salaries: fixed(0.33),
       Utilities: vary(0.06),
       Supplies: vary(0.07),
       Marketing: vary(0.04),
