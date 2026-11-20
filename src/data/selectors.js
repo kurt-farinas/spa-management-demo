@@ -227,3 +227,43 @@ export const inventorySummary = (state) => ({
 // lines are checkout input: { type: 'service' | 'product', id, qty }
 export const cartTotal = (state, lines) =>
   sum(lines, (l) => l.qty * ((l.type === 'service' ? state.services : state.products).find((x) => x.id === l.id)?.price ?? 0))
+
+// Sales report. from / to are 'YYYY-MM-DD', both included
+export const salesInRange = (sales, from, to) => sales.filter((s) => s.date.slice(0, 10) >= from && s.date.slice(0, 10) <= to)
+
+export function salesTotals(sales) {
+  const total = sum(sales, (s) => s.total)
+  const lines = sales.flatMap((s) => s.lines)
+  const paid = (method) => sum(sales.filter((s) => s.payment === method), (s) => s.total)
+  return {
+    total,
+    count: sales.length,
+    average: sales.length ? Math.round(total / sales.length) : 0,
+    services: sum(lines.filter((l) => l.type === 'service'), lineTotal),
+    products: sum(lines.filter((l) => l.type === 'product'), lineTotal),
+    byPayment: { cash: paid('cash'), card: paid('card'), gcash: paid('gcash') },
+  }
+}
+
+// day and month rows get every period from..to, missing ones at 0 (labels as salesSummary makes them); other groupings pass through
+export function fillPeriods(rows, { from, to, groupBy }) {
+  if (groupBy !== 'day' && groupBy !== 'month') return rows
+  const keys = []
+  if (groupBy === 'day') for (let d = new Date(`${from}T00:00`); toDateStr(d) <= to; d = addDays(d, 1)) keys.push(toDateStr(d))
+  else for (let d = new Date(`${from.slice(0, 7)}-01T00:00`); toDateStr(d) <= to; d = new Date(d.getFullYear(), d.getMonth() + 1, 1)) keys.push(toDateStr(d).slice(0, 7))
+  const byKey = new Map(rows.map((r) => [r.key, r]))
+  const label = (key) => `${MONTHS[key.slice(5, 7) - 1]} ${key.length === 10 ? Number(key.slice(8)) : key.slice(0, 4)}`
+  return keys.map((key) => byKey.get(key) ?? { key, label: label(key), total: 0, count: 0 })
+}
+
+// name: 'today' | 'week' (Monday to today) | 'month' (1st to today) | 'last-month' | '6-months'
+export function rangePreset(name, today) {
+  const [y, m, d] = [today.getFullYear(), today.getMonth(), today.getDate()]
+  const to = toDateStr(today)
+  if (name === 'week') return { from: toDateStr(addDays(today, -((today.getDay() + 6) % 7))), to }
+  if (name === 'month') return { from: toDateStr(new Date(y, m, 1)), to }
+  if (name === 'last-month') return { from: toDateStr(new Date(y, m - 1, 1)), to: toDateStr(new Date(y, m, 0)) }
+  // the day after the same date 6 months back, clamped to that month's end: Nov 20 → May 21, Aug 31 → Mar 1
+  if (name === '6-months') return { from: toDateStr(addDays(new Date(y, m - 6, Math.min(d, new Date(y, m - 5, 0).getDate())), 1)), to }
+  return { from: to, to }
+}
