@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@theme {
+  --color-plum: var(--brand-primary);
+  --color-plum-dark: var(--brand-primary-dark);
+  --color-gold: var(--brand-accent);
+  --color-gold-text: var(--brand-accent-text);
+  --color-gold-on-plum: var(--brand-gold-on-plum);
+  --color-page: var(--brand-page);
+  --color-surface: var(--brand-surface);
+  --color-ink: var(--brand-text);
+  --color-muted: var(--brand-muted);
+  --color-tint: var(--brand-tint);
+  --color-success: var(--brand-success);
+  --color-danger: var(--brand-danger);
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
