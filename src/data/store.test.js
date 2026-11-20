@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { demoReducer, validateCheckout, validateBooking, buildSale } from './store.js'
-import { dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
+import { agenda, dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
 
 const swedish = { id: 'svc-swedish', name: 'Swedish massage', category: 'Massage', durationMin: 60, price: 800, commissionRate: 0.1 }
 
@@ -12,6 +12,7 @@ const fixture = () => ({
   appointments: [
     { id: 'A-1', clientId: 'c1', employeeId: 'e1', serviceId: 'svc-swedish', start: '2026-11-20T10:00', durationMin: 60, status: 'booked' },
     { id: 'A-2', clientId: 'c1', employeeId: 'e1', serviceId: 'svc-swedish', start: '2026-11-20T12:00', durationMin: 60, status: 'cancelled' },
+    { id: 'A-3', clientId: 'c1', employeeId: 'e1', serviceId: 'svc-swedish', start: '2026-11-20T14:00', durationMin: 60, status: 'no-show' },
   ],
   sales: [
     {
@@ -113,6 +114,12 @@ describe('selectors', () => {
     expect(days).toHaveLength(14)
     expect(days[0]).toEqual({ key: '2026-11-07', label: 'Nov 7', total: 0, count: 0 })
     expect(days.slice(-2).map((d) => d.total)).toEqual([1800, 1700])
+  })
+
+  it('agenda puts booked first, drops cancelled, keeps time order', () => {
+    const at = (id, time, status) => ({ id, time, status })
+    const rows = [at('a', '09:00', 'done'), at('b', '10:00', 'cancelled'), at('c', '11:00', 'booked'), at('d', '12:00', 'no-show'), at('e', '13:00', 'booked')]
+    expect(agenda(rows).map((r) => r.id)).toEqual(['c', 'e', 'a', 'd'])
   })
 
   it('dashboardStats', () => {

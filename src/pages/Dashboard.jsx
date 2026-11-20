@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
-import { dashboardStats, todaysAppointments, dailySales, incomeStatement } from '../data/selectors.js'
+import { dashboardStats, todaysAppointments, agenda, dailySales, incomeStatement } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
 import { spaConfig } from '../config/spa.config.js'
 import { formatPeso } from '../lib/money.js'
@@ -39,6 +39,7 @@ export function Dashboard() {
   const now = new Date()
   const stats = dashboardStats(state, now)
   const appointments = todaysAppointments(state, now)
+  const list = agenda(appointments)
   const days = dailySales(state.sales, now, 14)
   const done = appointments.filter((a) => a.status === 'done').length
   const toGo = appointments.filter((a) => a.status === 'booked').length
@@ -47,7 +48,7 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
-      <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-4 pb-6 md:mx-0 md:bg-transparent md:p-0">
+      <header className="on-plum-mobile -mx-4 flex flex-wrap items-end justify-between gap-4 bg-plum px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
         <div>
           <div className="text-xs text-lavender md:text-[13px] md:text-muted">
             {now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
@@ -74,16 +75,16 @@ export function Dashboard() {
       </section>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Panel title="Sales, last 14 days" action={canSee(role, 'sales-report') && <Link to="/sales-report" className={linkClass}>Sales report</Link>}>
+        <Panel title="Sales, last 14 days" className="self-start border border-tint bg-surface" action={canSee(role, 'sales-report') && <Link to="/sales-report" className={linkClass}>Sales report</Link>}>
           <SalesBarChart days={days} />
         </Panel>
 
         <Panel title="Today's appointments" action={<Link to="/appointments" className={linkClass}>See all</Link>}>
-          {appointments.length === 0 ? (
+          {list.length === 0 ? (
             <p className="py-6 text-sm text-muted">No appointments today</p>
           ) : (
             <ul className="mt-1">
-              {appointments.slice(0, 6).map((a) => {
+              {list.slice(0, 6).map((a) => {
                 const [label, pill] = PILL[a.status] ?? PILL.booked
                 return (
                   <li key={a.id} className="flex items-center gap-3.5 border-b border-tint py-2.5 last:border-b-0">

@@ -14,7 +14,7 @@ export function dashboardStats(state, today) {
   }
   return {
     salesToday: sum(state.sales.filter((s) => s.date.startsWith(day)), (s) => s.total),
-    bookingsToday: state.appointments.filter((a) => a.start.startsWith(day) && a.status !== 'cancelled').length,
+    bookingsToday: state.appointments.filter((a) => a.start.startsWith(day) && a.status !== 'cancelled' && a.status !== 'no-show').length,
     newClientsThisMonth: state.clients.filter((c) => c.joinedOn.startsWith(month)).length,
     topServices: [...counts]
       .map(([name, count]) => ({ name, count }))
@@ -37,6 +37,12 @@ export function todaysAppointments(state, today) {
       status: a.status,
     }))
     .sort((a, b) => a.time.localeCompare(b.time))
+}
+
+// the dashboard list: cancelled left out, appointments still to come first, each group by time
+export function agenda(appointments) {
+  const live = appointments.filter((a) => a.status !== 'cancelled')
+  return [...live.filter((a) => a.status === 'booked'), ...live.filter((a) => a.status !== 'booked')]
 }
 
 // from / to are 'YYYY-MM-DD', both included; leave one out for an open range

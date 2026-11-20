@@ -26,7 +26,7 @@ export function SalesBarChart({ days }) {
     )
   return (
     <>
-      <div aria-hidden="true" className="mt-4 h-[200px]">
+      <div aria-hidden="true" className="mt-4 h-[240px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={days} margin={{ top: 24, right: 16, bottom: 0, left: 16 }} barCategoryGap="18%">
             <XAxis
@@ -40,7 +40,7 @@ export function SalesBarChart({ days }) {
             <Tooltip cursor={{ fill: 'var(--color-tint)', fillOpacity: 0.6 }} content={<PesoTooltip />} />
             <Bar dataKey="total" radius={[4, 4, 0, 0]} isAnimationActive={false}>
               {days.map((d, i) => (
-                <Cell key={d.key} className={i === last ? 'fill-gold' : 'fill-lavender'} />
+                <Cell key={d.key} className={i === last ? 'fill-gold' : 'fill-[color-mix(in_srgb,var(--color-plum-light)_60%,var(--color-surface))]'} />
               ))}
               <LabelList dataKey="total" content={todayLabel} />
             </Bar>

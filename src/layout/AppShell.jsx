@@ -88,7 +88,7 @@ export function AppShell() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* phone top bar; the page header below continues its plum band */}
-        <header className="on-plum flex items-center justify-between gap-2 bg-plum px-4 pt-4 md:hidden">
+        <header className="on-plum flex items-center justify-between gap-2 bg-plum px-4 pt-4 pb-3 md:hidden">
           <button
             type="button"
             aria-label="Open menu"
