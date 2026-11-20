@@ -120,7 +120,7 @@ describe('FinancialStatement review fixes', () => {
 
   it('the trend is 6 calendar months ending at the selected one, empty ones at 0', () => {
     const { el, root } = render(<FinancialStatement />, '/financial-statement?month=2026-10')
-    const rows = [...el.querySelectorAll('table.sr-only tbody tr')].map((tr) => tr.firstChild.textContent)
+    const rows = [...el.querySelectorAll('.sr-only table tbody tr')].map((tr) => tr.firstChild.textContent)
     expect(rows).toEqual(['May 2026', 'Jun 2026', 'Jul 2026', 'Aug 2026', 'Sep 2026', 'Oct 2026'])
     act(() => root.unmount())
   })
