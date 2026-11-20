@@ -35,8 +35,9 @@ export function Login() {
         </div>
         <ul aria-label="Service categories" className="mt-6 grid grid-cols-5 overflow-hidden rounded-lg bg-surface lg:mt-auto">
           {Object.keys(CATEGORY_BAND).map((c) => (
-            <li key={c} className="relative border-l border-line pt-3.5 pb-3 text-center text-xs font-semibold tracking-[0.04em] text-ink first:border-l-0">
-              <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1.5 ${categoryBand(c)}`} />
+            <li key={c} className="flex items-center justify-center gap-1.5 border-l border-line py-3 text-xs font-semibold tracking-[0.04em] text-ink first:border-l-0">
+              {/* swatch sits on white, so no category colour can melt into the green panel */}
+              <span aria-hidden="true" className={`size-2.5 shrink-0 rounded-sm ${categoryBand(c)}`} />
               {c}
             </li>
           ))}
