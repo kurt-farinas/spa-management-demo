@@ -52,7 +52,7 @@ describe('Dashboard', () => {
     const seeAll = [...el.querySelectorAll('a')].find((a) => a.textContent.startsWith('See all')).textContent
     expect(value).toBe('3')
     expect(seeAll).toBe(`See all ${value}`)
-    expect(tile(el, 'Bookings today').textContent).toContain('1 done · 1 to go · 1 no-show')
+    expect(tile(el, 'Bookings today').textContent).toContain('1 done, 1 to go, 1 no-show')
     act(() => root.unmount())
   })
 

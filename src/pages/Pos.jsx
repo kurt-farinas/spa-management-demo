@@ -32,7 +32,7 @@ function Tile({ item, meta, out, inSale, onAdd }) {
       }`}
     >
       <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1 ${categoryBand(item.category)}`} />
-      <span className="pr-10 text-[15px] leading-5 font-semibold">{item.name}</span>
+      <span className={`text-[15px] leading-5 font-semibold ${inSale ? 'pr-10' : ''}`}>{item.name}</span>
       <span className="text-[13px] text-muted">
         {item.category} · {out ? 'Out of stock' : meta}
       </span>

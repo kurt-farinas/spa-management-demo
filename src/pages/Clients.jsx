@@ -295,7 +295,7 @@ export function Clients() {
                             <TagLabel tags={c.tags} />
                             {/* wrap between tokens, never inside a date */}
                             <span className="block text-xs text-muted tabular-nums md:hidden">
-                              <span className="whitespace-nowrap">{c.phone}</span> <span className="whitespace-nowrap">· {visitDate(c.lastVisit, today)}</span>
+                              <span className="block whitespace-nowrap">{c.phone}</span> <span className="block whitespace-nowrap">Last visit {visitDate(c.lastVisit, today)}</span>
                             </span>
                           </span>
                         </div>

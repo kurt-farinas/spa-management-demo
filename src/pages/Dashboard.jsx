@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { useRole } from '../auth/RoleProvider.jsx'
@@ -53,7 +54,15 @@ export function Dashboard() {
   // each part stays on one line, so a narrow tile never breaks inside "no-show"
   const bookingsNote = [`${done} done`, `${toGo} to go`, noShow && `${noShow} no-show`, cancelled && `${cancelled} cancelled`]
     .filter(Boolean)
-    .map((part, i) => <span key={part}>{i > 0 && ' · '}<span className="whitespace-nowrap">{part}</span></span>)
+    .map((part, i, all) => <span key={part} className="whitespace-nowrap">{part}{i < all.length - 1 && ','} </span>)
+  // the md+ list scrolls; open it at the first booking still to come, earlier rows stay one scroll up
+  const list = useRef(null)
+  const firstUpcoming = appointments.find((a) => a.status === 'booked')?.id
+  useEffect(() => {
+    const ul = list.current
+    const row = ul?.querySelector(`[data-appt="${firstUpcoming}"]`)
+    if (row && ul.scrollHeight > ul.clientHeight) ul.scrollTop += row.getBoundingClientRect().top - ul.getBoundingClientRect().top
+  }, [firstUpcoming])
   const here = inSpaNow(state.appointments, now).map((a) => nameOf(state.clients, a.clientId))
   const hereNote = here.length === 0 ? 'No one right now' : here.slice(0, 2).join(', ') + (here.length > 2 ? ` +${here.length - 2}` : '')
   const lowStock = state.products.filter((p) => p.stock <= p.reorderAt).sort((a, b) => a.stock - b.stock)
@@ -123,12 +132,12 @@ export function Dashboard() {
                   <span className={STATUS}>Status</span>
                 </div>
                 {/* every row; from md up it scrolls at 8.5 rows (the cut row shows there is more), below md the page scrolls */}
-                <ul tabIndex={0} aria-label="Appointment rows" className="md:max-h-[374px] md:overflow-y-auto">
+                <ul ref={list} tabIndex={0} aria-label="Appointment rows" className="md:max-h-[374px] md:overflow-y-auto">
                   {appointments.map((a) => {
                     const [label, pill] = PILL[a.status] ?? PILL.booked
                     const off = a.status === 'cancelled' || a.status === 'no-show'
                     return (
-                      <li key={a.id} className={`${ROW} min-h-[60px] border-b border-line last:border-b-0 md:min-h-11 ${off ? 'text-muted' : ''}`}>
+                      <li key={a.id} data-appt={a.id} className={`${ROW} min-h-[60px] border-b border-line last:border-b-0 md:min-h-11 ${off ? 'text-muted' : ''}`}>
                         <span aria-hidden="true" className={`w-1 shrink-0 self-stretch ${categoryBand(categoryById(serviceIdOf.get(a.id)))}`} />
                         <span className={`${TIME} text-[13px] font-semibold md:text-sm ${off ? 'line-through' : ''}`}>{clock(a.time)}</span>
                         <span className={`${WHO} ${off ? 'line-through' : ''}`}>
