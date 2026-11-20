@@ -100,6 +100,37 @@ export function incomeStatement(state, month) {
   }
 }
 
+// every 'YYYY-MM' with sales or expenses, newest first
+export const statementMonths = (state) =>
+  [...new Set([...state.sales, ...state.expenses].map((x) => x.date.slice(0, 7)))].sort().reverse()
+
+// change is a % of the previous amount's size (so a smaller loss reads as a rise), or null with no previous to compare
+const compareLine = (current, previous) => ({
+  current,
+  previous,
+  change: previous ? Math.round(((current - previous) / Math.abs(previous)) * 1000) / 10 : null,
+})
+
+// cur and prev are incomeStatement results; prev may be null for the first month
+export function compareStatements(cur, prev) {
+  const keys = ['serviceRevenue', 'productRevenue', 'totalRevenue', 'costOfProducts', 'grossProfit', 'totalExpenses', 'netIncome']
+  const result = Object.fromEntries(keys.map((k) => [k, compareLine(cur[k], prev ? prev[k] : null)]))
+  const amountOf = (list, category) => list.find((e) => e.category === category)?.amount ?? 0
+  const categories = [...new Set([...cur.expenses, ...(prev?.expenses ?? [])].map((e) => e.category))]
+  result.expenses = categories.map((category) => ({
+    category,
+    ...compareLine(amountOf(cur.expenses, category), prev ? amountOf(prev.expenses, category) : null),
+  }))
+  return result
+}
+
+// months in the order given; costs are products sold plus operating expenses
+export const monthlyTrend = (state, months) =>
+  months.map((month) => {
+    const s = incomeStatement(state, month)
+    return { month, label: MONTHS[month.slice(5, 7) - 1], revenue: s.totalRevenue, costs: s.costOfProducts + s.totalExpenses, netIncome: s.netIncome }
+  })
+
 // joined in the last 30 days, today counted: the one rule for the New tag and the header count
 export const isNewClient = (client, today) => client.joinedOn > toDateStr(addDays(today, -30)) && client.joinedOn <= toDateStr(today)
 
