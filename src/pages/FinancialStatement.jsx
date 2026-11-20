@@ -40,14 +40,17 @@ function Change({ change, upIsGood = true }) {
 
 function Row({ label, line, upIsGood, kind = 'item' }) {
   const strong = kind !== 'item'
-  const border = kind === 'total' ? 'border-t border-soft' : kind === 'net' ? 'border-t-[3px] border-double border-ink' : ''
-  const cell = `px-3 py-2 text-right tabular-nums ${border}`
+  const net = kind === 'net'
+  // hairline over subtotals; net income sits under a double rule, larger and bold
+  const border = kind === 'total' ? 'border-t border-line' : net ? 'border-t-[3px] border-double border-ink' : ''
+  const cell = `px-3 ${net ? 'py-3' : 'py-2'} text-right tabular-nums whitespace-nowrap ${border}`
   return (
-    <tr className={strong ? 'font-semibold' : ''}>
-      <th scope="row" className={`py-2 pr-3 text-left ${kind === 'item' ? 'pl-4 font-normal' : ''} ${border}`}>
+    <tr className={net ? 'text-[15px] font-bold' : strong ? 'font-semibold' : ''}>
+      <th scope="row" className={`${net ? 'py-3' : 'py-2'} pr-3 text-left ${kind === 'item' ? 'pl-4 font-normal' : ''} ${border}`}>
         {label}
       </th>
-      <td className={cell}>{formatAccounting(line.current)}</td>
+      {/* a loss already reads in parentheses; danger only adds to it on net income */}
+      <td className={`${cell} ${net && line.current < 0 ? 'text-danger' : ''}`}>{formatAccounting(line.current)}</td>
       <td className={`${cell} text-muted`}>{line.previous === null ? '—' : formatAccounting(line.previous)}</td>
       <td className={`${cell} font-normal`}>
         <Change change={line.change} upIsGood={upIsGood} />
@@ -59,7 +62,7 @@ function Row({ label, line, upIsGood, kind = 'item' }) {
 function Heading({ children }) {
   return (
     <tr>
-      <th scope="rowgroup" colSpan={4} className="pt-4 pb-1 text-left text-xs font-semibold tracking-wide text-muted uppercase">
+      <th scope="rowgroup" colSpan={4} className="pt-5 pb-1 text-left text-xs font-semibold tracking-[0.08em] text-muted uppercase">
         {children}
       </th>
     </tr>
@@ -96,13 +99,16 @@ export function FinancialStatement() {
   return (
     <div className="flex flex-col gap-5 md:gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="font-heading text-[26px] font-medium md:text-[32px]">Financial statement</h1>
-        <label className="relative inline-flex items-center gap-2 text-[13px] text-muted">
+        <div>
+          <h1 className="text-[22px] leading-7 font-bold md:text-2xl md:leading-8">Financial statement</h1>
+          <p className="text-sm text-muted">{spaConfig.name} · income statement by month</p>
+        </div>
+        <label className="relative inline-flex items-center gap-2 text-[13px] font-semibold text-muted">
           Month
           <select
             value={month}
             onChange={(e) => setParams({ month: e.target.value })}
-            className="h-11 cursor-pointer appearance-none rounded-full border border-line bg-surface pr-9 pl-4 text-sm text-ink hover:border-rail-active"
+            className="h-11 cursor-pointer appearance-none rounded-md border border-line bg-surface pr-9 pl-3 text-sm font-medium text-ink hover:border-rail-active"
           >
             {months.map((m) => (
               <option key={m} value={m}>
@@ -129,8 +135,8 @@ export function FinancialStatement() {
         />
       </section>
 
-      <section aria-labelledby="statement-title" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
-        <h2 id="statement-title" className="font-heading text-[19px] font-medium">
+      <section aria-labelledby="statement-title" className="min-w-0 rounded-lg border border-line bg-surface px-3.5 py-4 md:px-5">
+        <h2 id="statement-title" className="text-[15px] font-semibold">
           Income statement · {title}
         </h2>
         <p className="mt-0.5 text-[13px] text-muted">
@@ -143,17 +149,17 @@ export function FinancialStatement() {
           <div tabIndex={0} role="region" aria-label="Income statement table" className="relative -mx-1 mt-3 overflow-x-auto px-1">
             <table className="w-full min-w-[520px] text-sm">
               <thead>
-                <tr className="border-b border-soft text-xs text-muted">
+                <tr className="border-b border-line text-xs text-muted">
                   <th scope="col" className="py-2 pr-3 text-left font-normal">
                     <span className="sr-only">Line</span>
                   </th>
-                  <th scope="col" className="px-3 py-2 text-right font-medium text-ink">
+                  <th scope="col" className="px-3 py-2 text-right font-semibold text-ink">
                     {shortMonth(month)}
                   </th>
-                  <th scope="col" className="px-3 py-2 text-right font-normal">
+                  <th scope="col" className="px-3 py-2 text-right font-semibold">
                     {prevLabel}
                   </th>
-                  <th scope="col" className="px-3 py-2 text-right font-normal">
+                  <th scope="col" className="px-3 py-2 text-right font-semibold">
                     Change
                   </th>
                 </tr>
@@ -186,8 +192,8 @@ export function FinancialStatement() {
         {!empty && prevPartial && <p className="mt-2 text-xs text-muted">Previous month is partial, so there is no change to show.</p>}
       </section>
 
-      <section aria-labelledby="trend-title" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
-        <h2 id="trend-title" className="font-heading text-[19px] font-medium">
+      <section aria-labelledby="trend-title" className="min-w-0 rounded-lg border border-line bg-surface px-3.5 py-4 md:px-5">
+        <h2 id="trend-title" className="text-[15px] font-semibold">
           Last {trend.length} months
         </h2>
         <p className="mt-0.5 text-[13px] text-muted">Revenue against total costs (products sold plus expenses)</p>

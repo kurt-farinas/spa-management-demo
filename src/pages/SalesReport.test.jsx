@@ -107,6 +107,14 @@ describe('SalesReport', () => {
     expect(el.querySelector('[aria-label="Totals for this period"]')).toBeNull()
   })
 
+  it('the by-service breakdown marks a Massage service with its category colour', () => {
+    const withCategories = { ...initialState, services: [{ id: 's1', name: 'Swedish massage', category: 'Massage' }, { id: 's2', name: 'Gold facial', category: 'Facial' }] }
+    const el = render('/sales-report?from=2026-11-17&to=2026-11-20&group=service', withCategories)
+    const row = [...el.querySelectorAll('tbody tr')].find((tr) => tr.firstChild.textContent === 'Swedish massage')
+    expect(row.querySelector('.bg-cat-massage')).not.toBeNull()
+    expect(row.querySelector('.bg-cat-facial')).toBeNull()
+  })
+
   it('keeps the clicked preset highlighted when two presets give the same dates', () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-11-01T12:00'))

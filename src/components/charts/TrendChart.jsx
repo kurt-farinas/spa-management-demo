@@ -57,11 +57,11 @@ export function TrendChart({ months, partialMonth }) {
       <div aria-hidden="true" className="mt-3 h-[260px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={months} margin={{ top: 8, right: 8, bottom: 0, left: 0 }} barGap={2} barCategoryGap="24%">
-            <CartesianGrid vertical={false} stroke="var(--color-soft)" />
+            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--color-line)" />
             <XAxis
               dataKey="label"
               tickLine={false}
-              axisLine={{ stroke: 'var(--color-soft)' }}
+              axisLine={{ stroke: 'var(--color-line)' }}
               tick={{ fontSize: 12, fill: 'var(--color-muted)' }}
               tickFormatter={(label) => tickLabel(months, partialMonth, label)}
             />
