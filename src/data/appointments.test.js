@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { weekDays, appointmentsInRange, validateBookingForm } from './selectors.js'
+import { weekDays, appointmentsInRange, validateBookingForm as validate } from './selectors.js'
 
 const state = {
   employees: [
@@ -43,23 +43,33 @@ describe('appointmentsInRange', () => {
 })
 
 describe('validateBookingForm', () => {
+  const validateBookingForm = (st, form, today = '2026-11-01') => validate(st, form, today)
   const ok = { clientId: 'c1', serviceId: 's1', employeeId: 'e1', date: '2026-11-20', time: '10:00' }
 
+  it('rejects a client id that is not in the state', () => {
+    expect(validateBookingForm(state, { ...ok, clientId: 'c999' })).toEqual({ clientId: 'Choose a client' })
+  })
+
+  it('rejects a date before today, accepts today', () => {
+    expect(validateBookingForm(state, { ...ok, date: '2026-11-19' }, '2026-11-20')).toEqual({ date: 'Pick today or a later date' })
+    expect(validateBookingForm(state, ok, '2026-11-20')).toEqual({})
+  })
+
   it('passes a complete booking', () => {
-    expect(validateBookingForm(state, ok)).toEqual({})
+    expect(validate(state, ok)).toEqual({})
   })
 
   it('asks for a missing client', () => {
-    expect(validateBookingForm(state, { ...ok, clientId: '' })).toEqual({ clientId: 'Choose a client' })
+    expect(validate(state, { ...ok, clientId: '' })).toEqual({ clientId: 'Choose a client' })
   })
 
   it('rejects a therapist on their day off', () => {
     // 2026-11-22 is a Sunday
-    expect(validateBookingForm(state, { ...ok, date: '2026-11-22' })).toEqual({ employeeId: 'Ana Cruz is off on Sunday' })
+    expect(validate(state, { ...ok, date: '2026-11-22' })).toEqual({ employeeId: 'Ana Cruz is off on Sunday' })
   })
 
   it('rejects a service that ends after closing', () => {
-    expect(validateBookingForm(state, { ...ok, serviceId: 's2', time: '17:45' })).toEqual({ time: 'Ends after closing (8:00 PM)' })
-    expect(validateBookingForm(state, { ...ok, serviceId: 's2', time: '17:30' })).toEqual({})
+    expect(validate(state, { ...ok, serviceId: 's2', time: '17:45' })).toEqual({ time: 'Ends after closing (8:00 PM)' })
+    expect(validate(state, { ...ok, serviceId: 's2', time: '17:30' })).toEqual({})
   })
 })

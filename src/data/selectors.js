@@ -4,6 +4,9 @@ import { MONTHS, WEEK, nameOf, clock } from '../lib/format.js'
 const sum = (list, fn) => list.reduce((total, x) => total + fn(x), 0)
 const lineTotal = (l) => l.qty * l.unitPrice
 
+// still counts toward the day: cancelled and no-show bookings do not
+export const isActiveBooking = (a) => a.status !== 'cancelled' && a.status !== 'no-show'
+
 export function dashboardStats(state, today) {
   const day = toDateStr(today)
   const month = day.slice(0, 7)
@@ -14,7 +17,7 @@ export function dashboardStats(state, today) {
   }
   return {
     salesToday: sum(state.sales.filter((s) => s.date.startsWith(day)), (s) => s.total),
-    bookingsToday: state.appointments.filter((a) => a.start.startsWith(day) && a.status !== 'cancelled' && a.status !== 'no-show').length,
+    bookingsToday: state.appointments.filter((a) => a.start.startsWith(day) && isActiveBooking(a)).length,
     newClientsThisMonth: state.clients.filter((c) => c.joinedOn.startsWith(month)).length,
     topServices: [...counts]
       .map(([name, count]) => ({ name, count }))
@@ -60,7 +63,9 @@ export function salesSummary(sales, { from, to, groupBy }, state) {
     if (groupBy === 'day') add(day, `${MONTHS[m - 1]} ${Number(d)}`, s.total, 1)
     else if (groupBy === 'month') add(`${y}-${m}`, `${MONTHS[m - 1]} ${y}`, s.total, 1)
     else if (groupBy === 'employee')
-      add(s.employeeId, state?.employees.find((e) => e.id === s.employeeId)?.name ?? s.employeeId, s.total, 1)
+      s.employeeId
+        ? add(s.employeeId, state?.employees.find((e) => e.id === s.employeeId)?.name ?? s.employeeId, s.total, 1)
+        : add('none', 'No therapist (retail)', s.total, 1)
     else if (groupBy === 'service')
       for (const l of s.lines) if (l.type === 'service') add(l.id, l.name, lineTotal(l), l.qty)
   }
@@ -193,11 +198,12 @@ export const SPA_CLOSE = '20:00'
 export const weekdayOf = (date) => WEEK[(new Date(`${date}T00:00`).getDay() + 6) % 7]
 
 // the form's own rules; overlaps are checked by the store's validateBooking
-export function validateBookingForm(state, { clientId, serviceId, employeeId, date, time }) {
+export function validateBookingForm(state, { clientId, serviceId, employeeId, date, time }, today = toDateStr(new Date())) {
   const errors = {}
-  if (!clientId) errors.clientId = 'Choose a client'
+  if (!state.clients.some((c) => c.id === clientId)) errors.clientId = 'Choose a client'
   if (!serviceId) errors.serviceId = 'Choose a service'
   if (!date) errors.date = 'Choose a date'
+  else if (date < today) errors.date = 'Pick today or a later date'
   if (!time) errors.time = 'Choose a time'
   const employee = state.employees.find((e) => e.id === employeeId)
   if (!employee) errors.employeeId = 'Choose a therapist'

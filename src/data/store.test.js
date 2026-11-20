@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { demoReducer, validateCheckout, validateBooking, buildSale } from './store.js'
-import { agenda, dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
+import { agenda, isActiveBooking, dashboardStats, salesSummary, incomeStatement, dailySales } from './selectors.js'
 
 const swedish = { id: 'svc-swedish', name: 'Swedish massage', category: 'Massage', durationMin: 60, price: 800, commissionRate: 0.1 }
 
@@ -99,6 +99,22 @@ describe('selectors', () => {
     sales.push({ ...sales[0], id: 'S-9', date: '2026-11-18T10:00' })
     const rows = salesSummary(sales, { from: '2026-11-01', to: '2026-11-30', groupBy: 'service' })
     expect(rows).toEqual([{ key: 'svc-swedish', label: 'Swedish massage', total: 1600, count: 2 }])
+  })
+
+  it('salesSummary by employee groups product-only sales under "none"', () => {
+    const sale = (id, employeeId, total) => ({ id, employeeId, total, date: '2026-11-18T10:00', lines: [] })
+    const sales = [sale('S-1', null, 650), sale('S-2', null, 350), sale('S-3', 'e1', 1200)]
+    const rows = salesSummary(sales, { groupBy: 'employee' }, { employees: [{ id: 'e1', name: 'Ana Cruz' }] })
+    expect(rows).toEqual([
+      { key: 'e1', label: 'Ana Cruz', total: 1200, count: 1 },
+      { key: 'none', label: 'No therapist (retail)', total: 1000, count: 2 },
+    ])
+  })
+
+  it('isActiveBooking leaves out cancelled and no-show', () => {
+    const active = (status) => isActiveBooking({ status })
+    expect(['booked', 'done'].map(active)).toEqual([true, true])
+    expect(['cancelled', 'no-show'].map(active)).toEqual([false, false])
   })
 
   it('salesSummary by day', () => {
