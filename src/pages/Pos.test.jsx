@@ -136,6 +136,33 @@ describe('Point of Sale', () => {
     expect(el.querySelector('#pos-therapist').textContent).not.toContain('Kristine')
   })
 
+  it('bands each service tile in its category colour', () => {
+    const el = render(<Pos />)
+    expect(button(el, 'Swedish massage').querySelector('.bg-cat-massage')).not.toBeNull()
+  })
+
+  it('filters the tiles by category pill', () => {
+    const el = render(<Pos />)
+    click(button(el, 'Products'))
+    const pills = el.querySelector('[aria-label="Category"]')
+    expect([...pills.querySelectorAll('button')].map((b) => b.textContent)).toEqual(['All', 'Oils', 'Home'])
+    click(button(pills, 'Home'))
+    expect(button(el, 'Reed diffuser')).toBeDefined()
+    expect(button(el, 'Lavender massage oil')).toBeUndefined()
+    click(button(el, 'Services')) // a new tab starts on All
+    expect(button(el, 'Swedish massage')).toBeDefined()
+  })
+
+  it('offers Cash, Card and GCash as one choice with the picked one pressed', () => {
+    const el = render(<Pos />)
+    const group = [...el.querySelectorAll('fieldset')].find((f) => f.querySelector('legend')?.textContent === 'Payment method')
+    const options = [...group.querySelectorAll('button')]
+    expect(options.map((b) => b.textContent)).toEqual(['Cash', 'Card', 'GCash'])
+    expect(options.map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'false', 'false'])
+    click(options[2])
+    expect(options.map((b) => b.getAttribute('aria-pressed'))).toEqual(['false', 'false', 'true'])
+  })
+
   it('needs a payment method', () => {
     const el = render(<Pos />)
     click(button(el, 'Products'))
