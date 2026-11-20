@@ -6,7 +6,7 @@ export const pillClass = (on) =>
     on ? 'bg-rail font-semibold text-rail-ink' : 'border border-line bg-surface text-ink hover:border-rail-active'
   }`
 
-// ink on amber is 6.40:1 (5.79:1 at the hover's 95% brightness); never white on amber
+// ink on amber is 6.40:1 (still above 4.5:1 at the hover's 95% brightness); never white on amber
 export const primaryButton = 'inline-flex h-11 items-center gap-2 rounded-md bg-accent px-5 text-sm font-semibold text-ink hover:brightness-95'
 
 export const secondaryButton = 'inline-flex h-11 items-center gap-2 rounded-md border border-line bg-surface px-4 text-sm font-semibold text-ink hover:bg-soft'

@@ -1,5 +1,5 @@
 export function StatCard({ label, value, note, dark = false }) {
-  const sub = dark ? 'text-rail-ink/90' : 'text-muted'
+  const sub = dark ? 'text-rail-ink' : 'text-muted'
   return (
     <div className={`rounded-lg border px-3.5 py-3 md:px-5 md:py-4 ${dark ? 'border-rail bg-rail' : 'border-line bg-surface'}`}>
       <div className={`text-[13px] font-semibold ${sub}`}>{label}</div>

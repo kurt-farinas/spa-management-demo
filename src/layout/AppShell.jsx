@@ -23,11 +23,11 @@ function NavItems({ role, onNavigate }) {
       end
       onClick={onNavigate}
       className={({ isActive }) =>
-        // inactive rail-ink/90 on rail is 4.92:1
+        // rail-ink on rail is covered by themeContrast.test.js
         `flex min-h-11 items-center gap-3 rounded-md border-l-[3px] px-3 text-sm transition-colors ${
           isActive
             ? 'border-highlight bg-rail-active font-semibold text-rail-ink'
-            : 'border-transparent font-medium text-rail-ink/90 hover:bg-rail-active hover:text-rail-ink'
+            : 'border-transparent font-medium text-rail-ink hover:bg-rail-active hover:text-rail-ink'
         }`
       }
     >
@@ -41,7 +41,7 @@ function NavItems({ role, onNavigate }) {
       {visible.filter((p) => !p.section).map(item)}
       {reports.length > 0 && (
         <>
-          <div className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-[0.14em] text-rail-ink/90">REPORTS</div>
+          <div className="px-3 pt-6 pb-2 text-[11px] font-semibold tracking-[0.14em] text-rail-ink">REPORTS</div>
           {reports.map(item)}
         </>
       )}
@@ -53,9 +53,6 @@ function RoleSwitch({ role, login }) {
   return (
     <label className="inline-flex items-center gap-2 text-[13px] text-muted">
       <span className="sr-only">Viewing as</span>
-      <span aria-hidden="true" className="hidden md:inline">
-        Role
-      </span>
       <span className="relative inline-flex items-center">
         <select
           value={role}
@@ -162,7 +159,7 @@ export function AppShell() {
           <button
             type="button"
             onClick={signOut}
-            className="mt-auto flex min-h-11 items-center gap-3 rounded-md px-3.5 text-sm font-medium text-rail-ink/90 hover:bg-rail-active hover:text-rail-ink"
+            className="mt-auto flex min-h-11 items-center gap-3 rounded-md px-3.5 text-sm font-medium text-rail-ink hover:bg-rail-active hover:text-rail-ink"
           >
             <PiSignOut aria-hidden="true" className="size-[18px]" />
             Log out
