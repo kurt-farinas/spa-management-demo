@@ -166,3 +166,17 @@ export function employeeStats(state, employeeId, month) {
     commission: Math.round(sum(lines, (l) => lineTotal(l) * rate(l))),
   }
 }
+
+// out at 0, low at or below the reorder point
+export const stockStatus = (p) => (p.stock <= 0 ? 'out' : p.stock <= p.reorderAt ? 'low' : 'ok')
+
+// lowStock counts every product at or below its reorder point, out of stock included
+export const inventorySummary = (state) => ({
+  products: state.products.length,
+  lowStock: state.products.filter((p) => stockStatus(p) !== 'ok').length,
+  stockValueAtCost: sum(state.products, (p) => p.stock * p.cost),
+})
+
+// lines are checkout input: { type: 'service' | 'product', id, qty }
+export const cartTotal = (state, lines) =>
+  sum(lines, (l) => l.qty * ((l.type === 'service' ? state.services : state.products).find((x) => x.id === l.id)?.price ?? 0))

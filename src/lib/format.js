@@ -11,6 +11,9 @@ export const initials = (name) => {
 
 export const nameOf = (list, id) => list.find((x) => x.id === id)?.name ?? ''
 
+// 45 → '45 min', 60 → '1 hr', 90 → '1 hr 30 min'
+export const duration = (min) => (min < 60 ? `${min} min` : `${Math.floor(min / 60)} hr${min % 60 ? ` ${min % 60} min` : ''}`)
+
 // 'YYYY-MM-DD' → 'Nov 14'
 export const monthDay = (date) => `${MONTHS[date.slice(5, 7) - 1]} ${Number(date.slice(8, 10))}`
 // 'YYYY-MM-…' → 'Nov 2026'
