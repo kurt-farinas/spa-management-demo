@@ -194,7 +194,7 @@ Kanban card: #139 (Side Hustle → General)
    - `profit` is a pseudo-key, not a page. `/login` is a route, not in PAGES.
    - `canSee` returns false for an unknown key.
    - Commission hiding uses the `commission` pseudo-key (false for the receptionist), added in Phase 2.
-9. **Tests:** add `jsdom` as a dev dependency. Only `applyTheme.test.js` uses `// @vitest-environment jsdom`.
+9. **Tests:** add `jsdom` as a dev dependency. Tests that touch the DOM use `// @vitest-environment jsdom`.
 10. **Repo:** the project is `C:\xampp\htdocs\side-hustle\spa-demo`. `.gitignore` = `node_modules`, `dist`. Commit after each task. Versions: `recharts@^2.15`, `react-icons@^5`, `react-hot-toast@^2` (same as PIS, used for toasts), and the latest `@vitejs/plugin-react` that supports Vite 6.
 11. **Dashboard:**
     - Add `todaysAppointments(state, today) → Array<{ id, time: 'HH:mm', clientName, employeeName, serviceName, status }>`, sorted by time.
