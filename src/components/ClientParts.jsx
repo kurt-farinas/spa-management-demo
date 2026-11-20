@@ -13,12 +13,12 @@ export function TagLabel({ tags, className = 'text-xs' }) {
 }
 
 // avatar, name, tag and since-line; the heading level differs between the panel and the page
-export function ClientHeading({ client, as: Heading = 'h2', size = 'text-[22px]', subClass = '' }) {
+export function ClientHeading({ client, as: Heading = 'h2', size = 'text-xl', subClass = '' }) {
   return (
     <div className="flex items-center gap-3.5">
       <Avatar name={client.name} large />
       <div className="min-w-0">
-        <Heading className={`font-heading font-medium break-words ${size}`}>{client.name}</Heading>
+        <Heading className={`font-bold break-words ${size}`}>{client.name}</Heading>
         <div className={`text-[13px] ${subClass}`}>
           <TagLabel tags={client.tags} className="" /> <span className="text-muted">· Client since {monthYear(client.joinedOn)}</span>
         </div>
@@ -36,9 +36,9 @@ export function ClientFacts({ client }) {
           ['Visits', client.visits],
           ['Total spent', formatPeso(client.totalSpent)],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-[10px] bg-page p-3">
-            <dt className="text-xs text-muted">{label}</dt>
-            <dd className="text-xl font-medium tabular-nums">{value}</dd>
+          <div key={label} className="rounded-md border border-line px-3 py-2.5">
+            <dt className="text-[13px] font-semibold text-muted">{label}</dt>
+            <dd className="text-2xl font-semibold tabular-nums">{value}</dd>
           </div>
         ))}
       </dl>
@@ -55,9 +55,9 @@ export function ClientFacts({ client }) {
         ))}
       </dl>
       {client.notes ? (
-        <p className="mt-4 rounded-[10px] bg-warn-bg px-3.5 py-3 text-[13px] text-warn-ink">Note: {client.notes}</p>
+        <p className="mt-4 rounded-md border border-l-4 border-accent bg-warn-bg px-3 py-2.5 text-[13px] text-warn-ink">Note: {client.notes}</p>
       ) : (
-        <p className="mt-4 rounded-[10px] border border-dashed border-line px-3.5 py-3 text-[13px] text-muted">No notes yet</p>
+        <p className="mt-4 rounded-md border border-dashed border-line px-3 py-2.5 text-[13px] text-muted">No notes yet</p>
       )}
     </>
   )

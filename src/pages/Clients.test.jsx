@@ -2,11 +2,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { RoleProvider } from '../auth/RoleProvider.jsx'
 import { DemoStoreProvider } from '../data/DemoStore.jsx'
 import { Clients } from './Clients.jsx'
+import { ClientProfile } from './ClientProfile.jsx'
 import { toDateStr, addDays } from '../data/dates.js'
 
 vi.mock('react-hot-toast', () => ({ default: Object.assign(vi.fn(), { success: vi.fn() }) }))
@@ -35,7 +36,7 @@ const initialState = {
 }
 
 let mounted
-function render(state = initialState) {
+function render(state = initialState, { at = '/', page = <Clients /> } = {}) {
   const el = document.createElement('div')
   document.body.append(el)
   const root = createRoot(el)
@@ -43,8 +44,8 @@ function render(state = initialState) {
     root.render(
       <RoleProvider initialRole="receptionist">
         <DemoStoreProvider initialState={state}>
-          <MemoryRouter>
-            <Clients />
+          <MemoryRouter initialEntries={[at]}>
+            {page}
           </MemoryRouter>
         </DemoStoreProvider>
       </RoleProvider>,
@@ -159,5 +160,31 @@ describe('Clients', () => {
       dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     })
     expect(dialog.open).toBe(false)
+  })
+})
+
+describe('ClientProfile', () => {
+  const profile = (state) =>
+    render(state, { at: '/clients/c1', page: <Routes><Route path="/clients/:id" element={<ClientProfile />} /></Routes> })
+  const services = [{ id: 's1', name: 'Swedish massage', category: 'Massage', durationMin: 60, price: 1200 }]
+  const history = (el) => el.querySelector('section[aria-label="Visit history"]')
+
+  it("marks each visit in the history with its service's category band", () => {
+    const el = profile({ ...initialState, services })
+    expect(history(el).textContent).toContain('Swedish massage')
+    expect(history(el).querySelector('li [class*="bg-cat-massage"]')).not.toBeNull()
+  })
+
+  it('keeps a no-show in the history, stamped, with no charge', () => {
+    const el = profile({
+      ...initialState,
+      services,
+      appointments: [{ id: 'A-1', clientId: 'c1', employeeId: 'e1', serviceId: 's1', start: '2026-02-01T11:00', durationMin: 60, status: 'no-show' }],
+    })
+    const rows = [...history(el).querySelectorAll('li')]
+    expect(rows).toHaveLength(2)
+    expect(rows[0].textContent).toContain('No-show')
+    expect(rows[0].textContent).toContain('No charge')
+    expect(rows[1].textContent).toContain('Done')
   })
 })
