@@ -9,6 +9,7 @@ export const pillClass = (on) =>
 export const primaryButton = 'inline-flex h-11 items-center rounded-full bg-plum px-5 text-sm font-medium text-gold-on-plum hover:bg-plum-light'
 
 // appointment status → [label, pill and block colours]
+// contrast: muted #5F5A73 on muted/10 over page #FBF8F3 is 5.40:1 (white surface 5.70:1), both pass 4.5:1
 export const STATUS_PILL = {
   done: ['Done', 'bg-success-bg text-success'],
   booked: ['Booked', 'bg-tint text-plum-light'],
