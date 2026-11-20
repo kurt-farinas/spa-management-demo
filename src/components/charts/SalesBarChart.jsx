@@ -1,5 +1,9 @@
-import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell, LabelList } from 'recharts'
-import { formatPeso } from '../../lib/money.js'
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LabelList } from 'recharts'
+import { formatPeso, kilo } from '../../lib/money.js'
+
+// past days in a calm pandan tint; today in calamansi with a darker edge so it holds against the tint
+const PAST = 'fill-[color-mix(in_srgb,var(--color-rail)_32%,var(--color-surface))]'
+const TODAY = 'fill-highlight stroke-[color-mix(in_srgb,var(--color-highlight)_60%,var(--color-ink))]'
 
 // unit: [one, many], the word after the count
 export function PesoTooltip({ active, payload, unit = ['sale', 'sales'] }) {
@@ -27,21 +31,23 @@ export function SalesBarChart({ days }) {
     )
   return (
     <>
-      <div aria-hidden="true" className="mt-4 h-[240px]">
+      <div aria-hidden="true" className="mt-4 h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={days} margin={{ top: 24, right: 16, bottom: 0, left: 16 }} barCategoryGap="18%">
+          <BarChart data={days} margin={{ top: 24, right: 8, bottom: 0, left: 0 }} barCategoryGap="18%">
+            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--color-line)" />
+            <YAxis width={40} tickCount={4} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'var(--color-muted)' }} tickFormatter={kilo} />
             <XAxis
               dataKey="label"
               interval={0}
               tickLine={false}
-              axisLine={{ stroke: 'var(--color-soft)' }}
+              axisLine={{ stroke: 'var(--color-line)' }}
               tick={{ fontSize: 12, fill: 'var(--color-muted)' }}
               tickFormatter={tick}
             />
             <Tooltip cursor={{ fill: 'var(--color-soft)', fillOpacity: 0.6 }} content={<PesoTooltip />} />
             <Bar dataKey="total" radius={[4, 4, 0, 0]} isAnimationActive={false}>
               {days.map((d, i) => (
-                <Cell key={d.key} className={i === last ? 'fill-accent' : 'fill-[color-mix(in_srgb,var(--color-rail-active)_60%,var(--color-surface))]'} />
+                <Cell key={d.key} className={i === last ? TODAY : PAST} />
               ))}
               <LabelList dataKey="total" content={todayLabel} />
             </Bar>
