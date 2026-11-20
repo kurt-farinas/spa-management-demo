@@ -7,16 +7,22 @@ import { Dashboard } from '../pages/Dashboard.jsx'
 import { ComingSoon } from '../pages/ComingSoon.jsx'
 import { Clients } from '../pages/Clients.jsx'
 import { ClientProfile } from '../pages/ClientProfile.jsx'
+import { Employees } from '../pages/Employees.jsx'
+import { EmployeeProfile } from '../pages/EmployeeProfile.jsx'
+import { Services } from '../pages/Services.jsx'
 
 // One entry per built page; pages not listed here show ComingSoon.
 const PAGE_ELEMENTS = {
   dashboard: <Dashboard />,
   clients: <Clients />,
+  employees: <Employees />,
+  services: <Services />,
 }
 
 // Detail routes: { path, page (the PAGES key that guards it), element }.
 const DETAIL_ROUTES = [
   { path: '/clients/:id', page: 'clients', element: <ClientProfile /> },
+  { path: '/employees/:id', page: 'employees', element: <EmployeeProfile /> },
 ]
 
 export function AppRoutes() {

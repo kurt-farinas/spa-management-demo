@@ -137,3 +137,24 @@ export function dailySales(sales, today, days) {
     return byDay.get(key) ?? { key, label: `${MONTHS[m - 1]} ${Number(d)}`, total: 0, count: 0 }
   })
 }
+
+// month is 'YYYY-MM'; cancelled ones stay in the list (the profile shows them), sorted by start
+export function employeeMonthAppointments(state, employeeId, month) {
+  return state.appointments
+    .filter((a) => a.employeeId === employeeId && a.start.startsWith(month))
+    .sort((a, b) => a.start.localeCompare(b.start))
+}
+
+// commission is each service line at that service's own rate, rounded to whole pesos
+export function employeeStats(state, employeeId, month) {
+  const lines = state.sales
+    .filter((s) => s.employeeId === employeeId && s.date.startsWith(month))
+    .flatMap((s) => s.lines.filter((l) => l.type === 'service'))
+  const rate = (l) => state.services.find((s) => s.id === l.id)?.commissionRate ?? 0
+  return {
+    appointments: employeeMonthAppointments(state, employeeId, month).filter((a) => a.status !== 'cancelled').length,
+    servicesDone: sum(lines, (l) => l.qty),
+    serviceSales: sum(lines, lineTotal),
+    commission: Math.round(sum(lines, (l) => lineTotal(l) * rate(l))),
+  }
+}
