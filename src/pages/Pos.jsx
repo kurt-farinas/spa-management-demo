@@ -203,7 +203,7 @@ export function Pos() {
         {categories.length > 1 && (
           <div role="group" aria-label="Category" className="flex flex-wrap gap-2">
             {[null, ...categories].map((c) => (
-              <button key={c ?? 'all'} type="button" aria-pressed={category === c} onClick={() => setCategory(c)} className={`${pillClass(category === c)} gap-1.5 font-semibold`}>
+              <button key={c ?? 'all'} type="button" aria-pressed={category === c} onClick={() => setCategory(c)} className={`${pillClass(category === c)} gap-1.5`}>
                 {CATEGORY_BAND[c] && <span aria-hidden="true" className={`size-2 rounded-[2px] ${CATEGORY_BAND[c]}`} />}
                 {c ?? 'All'}
               </button>
@@ -364,8 +364,9 @@ export function Pos() {
                         setPayment(key)
                         setErrors(({ payment, ...rest }) => rest)
                       }}
-                      className={`h-11 rounded-md text-sm font-semibold ${payment === key ? 'bg-rail text-rail-ink' : 'text-ink hover:bg-surface'}`}
+                      className={`inline-flex h-11 items-center justify-center gap-1.5 rounded-md text-sm ${payment === key ? 'bg-rail font-semibold text-rail-ink' : 'font-medium text-ink hover:bg-surface'}`}
                     >
+                      {payment === key && <PiCheck aria-hidden="true" className="size-4" />}
                       {label}
                     </button>
                   ))}

@@ -146,6 +146,8 @@ describe('Appointments', () => {
     const block = dayGrid(el).querySelector('button[data-appt="A-2"]')
     expect(block.textContent).toContain('Paolo Reyes')
     expect(block.textContent).toContain('No-show')
+    // the pill hides in narrow blocks (container query), so an icon must carry the status there
+    expect(block.querySelector('[data-status-icon="no-show"]')).not.toBeNull()
   })
 
   it('bands each block in its service category colour', () => {

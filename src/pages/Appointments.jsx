@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { PiPlus, PiCaretLeft, PiCaretRight, PiCaretDown } from 'react-icons/pi'
+import { PiPlus, PiCaretLeft, PiCaretRight, PiCaretDown, PiCheckBold, PiXBold, PiProhibitBold } from 'react-icons/pi'
 import { useDemoStore } from '../data/DemoStore.jsx'
 import { weekDays, appointmentsInRange, validateBookingForm, isActiveBooking, weekdayOf, SPA_OPEN, SPA_CLOSE } from '../data/selectors.js'
 import { toDateStr, addDays, addMinutes } from '../data/dates.js'
@@ -81,6 +81,13 @@ function Modal({ dialog, labelledBy, onClose, side = false, children }) {
 }
 
 // done and booked are round pills; cancelled and no-show are small square stamps
+// always-visible status cue for calendar blocks too narrow for the pill; booked has none
+const STATUS_ICON = { done: [PiCheckBold, 'text-success'], 'no-show': [PiProhibitBold, 'text-danger'], cancelled: [PiXBold, 'text-muted'] }
+function StatusIcon({ status, className = '' }) {
+  const [Icon, colour] = STATUS_ICON[status] ?? []
+  return Icon ? <Icon aria-hidden="true" data-status-icon={status} className={`size-3 shrink-0 ${colour} ${className}`} /> : null
+}
+
 function StatusPill({ status, className = '' }) {
   const [label, colours] = STATUS_PILL[status] ?? STATUS_PILL.booked
   const shape = struck({ status }) ? 'rounded-sm px-1.5 text-[11px] leading-4 -rotate-2' : 'rounded-full px-2 text-[11px] leading-[18px]'
@@ -163,13 +170,15 @@ function TimeGrid({ label, title, columns, onOpen, highlightId }) {
                     <span aria-hidden="true" className={`absolute inset-y-0 left-0 w-1 ${categoryBand(a.category)}`} />
                     {compact ? (
                       <>
+                        <StatusIcon status={a.status} />
                         <span className={`shrink-0 text-muted tabular-nums ${fade}`}>{clock(a.start.slice(11))}</span>
                         <span className={`truncate text-[13px] font-semibold ${fade}`}>{a.clientName}</span>
                       </>
                     ) : (
                       <>
-                        <span className="flex items-start justify-between gap-1">
-                          <span className={`whitespace-nowrap text-muted tabular-nums ${fade}`}>{shortSpan(a)}</span>
+                        <span className="flex items-center justify-between gap-1">
+                          <StatusIcon status={a.status} className="@[10rem]:hidden" />
+                          <span className={`mr-auto whitespace-nowrap text-muted tabular-nums ${fade}`}>{shortSpan(a)}</span>
                           <StatusPill status={a.status} className="hidden @[10rem]:inline-block" />
                         </span>
                         <span className={`block truncate text-[13px] font-semibold ${fade}`}>{a.clientName}</span>
