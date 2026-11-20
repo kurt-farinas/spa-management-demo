@@ -5,8 +5,9 @@ import { salesInRange, salesTotals, salesSummary, fillPeriods, rangePreset, rang
 import { formatPeso } from '../lib/money.js'
 import { monthDay } from '../lib/format.js'
 import { StatCard } from '../components/StatCard.jsx'
-import { pillClass } from '../components/ui.js'
-import { SalesReportChart } from '../components/charts/SalesReportChart.jsx'
+import { pillClass, CATEGORY_BAND } from '../components/ui.js'
+import { SalesReportChart, categoryFill } from '../components/charts/SalesReportChart.jsx'
+import { toDateStr } from '../data/dates.js'
 
 const PRESETS = [
   ['today', 'Today'],
@@ -30,22 +31,22 @@ const rangeLabel = (from, to) =>
 const share = (part, whole) => (whole ? `${((part / whole) * 100).toFixed(1)}%` : '0%')
 const sumOf = (rows, key) => rows.reduce((t, r) => t + r[key], 0)
 
-const dateInput = 'h-11 rounded-full border bg-surface px-4 text-sm text-ink tabular-nums hover:border-rail-active aria-invalid:border-danger'
-const cell = 'px-3 py-2.5 text-right tabular-nums whitespace-nowrap'
+const dateInput = 'h-11 rounded-md border bg-surface px-3 text-sm text-ink tabular-nums hover:border-rail-active aria-invalid:border-danger'
+const cell = 'h-11 px-3 text-right tabular-nums whitespace-nowrap'
 
 // several figures under one label, each with its share of their sum
 function SplitCard({ label, parts }) {
   const whole = sumOf(parts.map(([, value]) => ({ value })), 'value')
   return (
-    <div className="col-span-2 rounded-xl border border-soft bg-surface p-3.5 md:col-span-3 md:rounded-2xl md:px-5 md:py-[18px]">
-      <div className="text-xs text-muted md:text-[13px]">{label}</div>
+    <div className="col-span-2 rounded-lg border border-line bg-surface px-3.5 py-3 md:col-span-3 md:px-5 md:py-4">
+      <div className="text-[13px] font-semibold text-muted">{label}</div>
       <dl className="mt-1.5 flex flex-wrap gap-x-6 gap-y-2">
         {parts.map(([name, value]) => (
           <div key={name}>
             <dt className="text-xs text-muted">
               {name} · {share(value, whole)}
             </dt>
-            <dd className="font-heading text-[19px] text-ink tabular-nums md:text-[22px]">{formatPeso(value)}</dd>
+            <dd className="text-xl font-semibold text-ink tabular-nums md:text-[22px]">{formatPeso(value)}</dd>
           </div>
         ))}
       </dl>
@@ -86,12 +87,18 @@ export function SalesReport() {
   const rows = byService && totals.products ? [...periods, { key: 'retail', label: 'Retail products', total: totals.products, count: retailQty }].sort((a, b) => b.total - a.total) : periods
   const grand = sumOf(rows, 'total')
   const countLabel = byService ? 'Sold' : 'Sales'
+  // by service: each service row carries its category, for the colour of its bar and swatch (retail has none)
+  const categoryOf = (key) => state.services.find((s) => s.id === key)?.category
+  const shown = byService ? rows.map((r) => ({ ...r, category: CATEGORY_BAND[categoryOf(r.key)] ? categoryOf(r.key) : null })) : rows
+  const todayKey = toDateStr(today)
+  const currentKey = groupBy === 'month' ? todayKey.slice(0, 7) : groupBy === 'day' ? todayKey : null
+  const currentShown = rows.some((r) => r.key === currentKey)
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
-      <header className="on-rail-mobile -mx-4 bg-rail px-4 pt-1 pb-6 md:mx-0 md:bg-transparent md:p-0">
-        <div className="text-xs text-line tabular-nums md:text-[13px] md:text-muted">{invalid ? 'Pick a date range' : rangeLabel(from, to)}</div>
-        <h1 className="mt-1 font-heading text-[26px] font-medium text-white md:text-[32px] md:text-ink">Sales report</h1>
+      <header>
+        <h1 className="text-[22px] leading-7 font-bold md:text-2xl md:leading-8">Sales report</h1>
+        <p className="text-sm text-muted tabular-nums">{invalid ? 'Pick a date range' : rangeLabel(from, to)}</p>
       </header>
 
       <div className="flex flex-col gap-3">
@@ -120,7 +127,7 @@ export function SalesReport() {
               ['from', 'Start date', from],
               ['to', 'End date', to],
             ].map(([key, label, value]) => (
-              <label key={key} className="flex flex-col gap-1 text-xs text-muted">
+              <label key={key} className="flex flex-col gap-1 text-[13px] font-semibold text-muted">
                 {label}
                 <input
                   type="date"
@@ -157,9 +164,9 @@ export function SalesReport() {
             <SplitCard label="Payment mix" parts={[['Cash', totals.byPayment.cash], ['Card', totals.byPayment.card], ['GCash', totals.byPayment.gcash]]} />
           </section>
 
-          <section aria-labelledby="report-title" className="min-w-0 rounded-2xl border border-soft bg-surface px-5 py-4 md:px-[22px]">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 id="report-title" className="font-heading text-[19px] font-medium">
+          <section aria-labelledby="report-title" className="min-w-0 overflow-hidden rounded-lg border border-line bg-surface">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-3.5 py-2 md:px-5">
+              <h2 id="report-title" className="text-[15px] font-semibold">
                 Sales by {groupLabel.toLowerCase()}
               </h2>
               <div role="group" aria-label="Group by" className="flex flex-wrap gap-2">
@@ -175,36 +182,63 @@ export function SalesReport() {
               <p className="py-12 text-center text-sm text-muted">No sales in this period</p>
             ) : (
               <>
-                <SalesReportChart rows={rows} ranked={groupBy === 'service' || groupBy === 'employee'} unit={byService ? ['sold', 'sold'] : undefined} />
-                <div className="-mx-5 mt-4 overflow-x-auto md:-mx-[22px]">
+                <div className="px-3.5 md:px-5">
+                  {byService && (
+                    <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
+                      {[...new Set(shown.map((r) => r.category ?? 'Retail'))].map((c) => (
+                        <li key={c} className="inline-flex items-center gap-1">
+                          <span aria-hidden="true" className="size-2 rounded-sm" style={{ background: categoryFill(c === 'Retail' ? null : c) }} />
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <SalesReportChart rows={shown} ranked={groupBy === 'service' || groupBy === 'employee'} unit={byService ? ['sold', 'sold'] : undefined} currentKey={currentKey} />
+                  {currentShown && (
+                    <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted">
+                      <span aria-hidden="true" className="size-2 rounded-sm bg-highlight" />
+                      {groupBy === 'month' ? 'This month' : 'Today'}
+                    </p>
+                  )}
+                </div>
+                <div tabIndex={0} role="region" aria-label={`Sales by ${groupLabel.toLowerCase()} table`} className="mt-3 overflow-x-auto border-t border-line">
                   <table className="w-full min-w-[420px] border-collapse text-sm">
                     <caption className="sr-only">
                       Sales by {groupLabel.toLowerCase()}, {rangeLabel(from, to)}
                     </caption>
                     <thead>
-                      <tr className="text-left text-xs text-muted">
-                        <th scope="col" className="px-5 py-3 font-medium md:pl-[22px]">{groupLabel}</th>
-                        <th scope="col" className="px-3 py-3 text-right font-medium">{countLabel}</th>
-                        <th scope="col" className="px-3 py-3 text-right font-medium">Total</th>
-                        <th scope="col" className="px-5 py-3 text-right font-medium md:pr-[22px]">Share</th>
+                      <tr className="text-left text-xs font-semibold text-muted">
+                        <th scope="col" className="py-2 pr-3 pl-3.5 md:pl-5">{groupLabel}</th>
+                        <th scope="col" className="px-3 py-2 text-right">{countLabel}</th>
+                        <th scope="col" className="px-3 py-2 text-right">Total</th>
+                        <th scope="col" className="py-2 pr-3.5 pl-3 text-right md:pr-5">Share</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {rows.map((r) => (
-                        <tr key={r.key} className="border-t border-soft">
-                          <th scope="row" className="px-5 py-2.5 text-left font-normal md:pl-[22px]">{r.label}</th>
+                      {shown.map((r) => (
+                        <tr key={r.key} className="border-t border-line">
+                          <th scope="row" className="h-11 pr-3 pl-3.5 text-left font-normal md:pl-5">
+                            {byService && (
+                              <span
+                                aria-hidden="true"
+                                className={`mr-2 inline-block size-2.5 rounded-sm ${r.category ? CATEGORY_BAND[r.category] : ''}`}
+                                style={r.category ? undefined : { background: categoryFill(null) }}
+                              />
+                            )}
+                            {r.label}
+                          </th>
                           <td className={`${cell} text-muted`}>{r.count}</td>
-                          <td className={`${cell} font-medium`}>{formatPeso(r.total)}</td>
-                          <td className={`${cell} pr-5 text-muted md:pr-[22px]`}>{share(r.total, grand)}</td>
+                          <td className={`${cell} font-semibold`}>{formatPeso(r.total)}</td>
+                          <td className={`${cell} pr-3.5 text-muted md:pr-5`}>{share(r.total, grand)}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
-                      <tr className="border-t-2 border-line font-semibold">
-                        <th scope="row" className="px-5 py-3 text-left md:pl-[22px]">Total</th>
+                      <tr className="border-t border-ink font-semibold">
+                        <th scope="row" className="h-11 pr-3 pl-3.5 text-left md:pl-5">Total</th>
                         <td className={cell}>{sumOf(rows, 'count')}</td>
                         <td className={cell}>{formatPeso(grand)}</td>
-                        <td className={`${cell} pr-5 md:pr-[22px]`}>100%</td>
+                        <td className={`${cell} pr-3.5 md:pr-5`}>100%</td>
                       </tr>
                     </tfoot>
                   </table>
