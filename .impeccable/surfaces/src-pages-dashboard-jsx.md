@@ -15,3 +15,5 @@ STORY: Owner sees today at a glance (sales, bookings, who is in, profit), trusts
 FIRST VIEWPORT: Left green rail with nav; greeting + date + amber "New sale" top right; four KPI tiles in a row; today's appointments table (left, wider) with category bands and statuses; 14-day sales bars right with today in calamansi; top services and running-low below.
 FORM: Pandan & Calamansi, candidate 3 of 7 (botanical local packaging). seed:96ac7f64c6b1d127. Raises: cancelled/no-show stay visible and stamped (ticket wallet); colour only does a job (lexicon); one family + hairlines (design annual).
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+
+APPROVED SCREEN MOCKS (2026-11-20): .impeccable/mocks/screens/login.html, appointments.html, pos.html, dashboard-phone.html, together with decision/assigned.html. User's words when asked "Approve these mockups and start building Phase 2?": "Approve, start build".
