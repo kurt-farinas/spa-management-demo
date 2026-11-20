@@ -8,7 +8,7 @@ import { demoOnly } from '../components/demoOnly.js'
 import { StatCard } from '../components/StatCard.jsx'
 import { pillClass, primaryButton, textButton } from '../components/ui.js'
 
-// Out badge: white on danger #A32D2D is 7.07:1 (needs 4.5:1)
+// Out badge: white on danger is 7.07:1 (needs 4.5:1)
 const BADGES = {
   ok: ['OK', 'bg-success-bg text-success'],
   low: ['Low', 'bg-warn-bg text-warn-ink'],
