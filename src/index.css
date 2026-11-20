@@ -11,6 +11,11 @@
   --color-ink: var(--brand-text);
   --color-muted: var(--brand-muted);
   --color-tint: var(--brand-tint);
+  --color-plum-light: var(--brand-primary-light);
+  --color-lavender: var(--brand-lavender);
+  --color-warn-bg: var(--brand-warn-bg);
+  --color-warn-ink: var(--brand-warn-text);
+  --color-success-bg: var(--brand-success-bg);
   --color-success: var(--brand-success);
   --color-danger: var(--brand-danger);
   --font-heading: 'Playfair Display', Georgia, serif;
@@ -21,4 +26,19 @@ body {
   background-color: var(--color-page);
   color: var(--color-ink);
   font-family: var(--font-body);
+}
+
+::selection {
+  background-color: var(--color-lavender);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-plum-light);
+  outline-offset: 2px;
+}
+
+/* dark plum areas need the light ring */
+.on-plum :focus-visible {
+  outline-color: var(--color-gold-on-plum);
 }
