@@ -2,6 +2,9 @@ export const spaConfig = {
   name: 'Lumière Day Spa',
   tagline: 'Unhurried care, beautifully kept.',
   logoText: 'Lumière',
+  subtitle: 'DAY SPA',
+  locale: 'en-PH',
+  staff: { ownerName: 'Carla', receptionistName: 'Grace' },
   currency: 'PHP',
   theme: {
     primary: '#26215C',

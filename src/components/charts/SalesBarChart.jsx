@@ -5,7 +5,7 @@ function PesoTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
   const d = payload[0].payload
   return (
-    <div className="rounded-lg border border-tint bg-surface px-3 py-2 text-xs shadow-[0_4px_12px_rgb(38_33_92/0.12)]">
+    <div className="rounded-lg border border-tint bg-surface px-3 py-2 text-xs shadow-[0_4px_12px_color-mix(in_srgb,var(--brand-primary)_12%,transparent)]">
       <div className="text-muted">{d.label}</div>
       <div className="mt-0.5 font-medium text-ink tabular-nums">
         {formatPeso(d.total)} · {d.count} {d.count === 1 ? 'sale' : 'sales'}

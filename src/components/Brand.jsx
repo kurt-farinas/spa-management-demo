@@ -11,7 +11,7 @@ export function Brand({ large = false }) {
       </div>
       <div>
         <div className={`font-heading text-gold-on-plum ${large ? 'text-4xl' : 'text-[19px]'}`}>{spaConfig.logoText}</div>
-        <div className={`tracking-[0.12em] text-lavender ${large ? 'mt-1 text-xs' : 'text-[11px]'}`}>DAY SPA</div>
+        <div className={`tracking-[0.12em] text-lavender ${large ? 'mt-1 text-xs' : 'text-[11px]'}`}>{spaConfig.subtitle}</div>
       </div>
     </div>
   )

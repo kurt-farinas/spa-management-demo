@@ -4,11 +4,12 @@ import { useRole } from '../auth/RoleProvider.jsx'
 import { canSee } from '../auth/roles.js'
 import { dashboardStats, todaysAppointments, dailySales, incomeStatement } from '../data/selectors.js'
 import { toDateStr } from '../data/dates.js'
+import { spaConfig } from '../config/spa.config.js'
 import { formatPeso } from '../lib/money.js'
 import { StatCard } from '../components/StatCard.jsx'
 import { SalesBarChart } from '../components/charts/SalesBarChart.jsx'
 
-const FIRST_NAME = { owner: 'Carla', receptionist: 'Grace' }
+const FIRST_NAME = { owner: spaConfig.staff.ownerName, receptionist: spaConfig.staff.receptionistName }
 const PILL = {
   done: ['Done', 'bg-success-bg text-success'],
   booked: ['Booked', 'bg-tint text-plum-light'],
