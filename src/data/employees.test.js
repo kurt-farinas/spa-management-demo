@@ -35,8 +35,8 @@ describe('employeeStats', () => {
   })
 
   it('rounds commission to whole pesos', () => {
-    const odd = { ...state, sales: [{ id: 'S-9', date: '2026-11-02T10:00', employeeId: 'e2', lines: [{ type: 'service', id: 's2', name: 'Gold facial', qty: 1, unitPrice: 1003 }] }] }
-    expect(employeeStats(odd, 'e2', '2026-11').commission).toBe(150)
+    const odd = { ...state, sales: [{ id: 'S-9', date: '2026-11-02T10:00', employeeId: 'e2', lines: [{ type: 'service', id: 's2', name: 'Gold facial', qty: 1, unitPrice: 1004 }] }] }
+    expect(employeeStats(odd, 'e2', '2026-11').commission).toBe(151) // 150.6: floor would give 150
   })
 
   it('is all zero for an employee with nothing that month', () => {

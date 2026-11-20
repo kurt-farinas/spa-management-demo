@@ -36,4 +36,23 @@ describe('Services', () => {
     expect(pill.getAttribute('aria-pressed')).toBe('true')
     act(() => root.unmount())
   })
+
+  it('hides the commission rate from a receptionist', () => {
+    const el = document.createElement('div')
+    const root = createRoot(el)
+    act(() =>
+      root.render(
+        <RoleProvider initialRole="receptionist">
+          <DemoStoreProvider initialState={state}>
+            <MemoryRouter>
+              <Services />
+            </MemoryRouter>
+          </DemoStoreProvider>
+        </RoleProvider>,
+      ),
+    )
+    expect(el.textContent).toContain('Swedish massage')
+    expect(el.textContent).not.toMatch(/commission/i)
+    act(() => root.unmount())
+  })
 })

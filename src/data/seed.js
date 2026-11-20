@@ -3,14 +3,14 @@ import { createRandom, int, pick } from './random.js'
 import { pad, toDateStr, toDateTimeStr, addDays } from './dates.js'
 
 const EMPLOYEES = [
-  { id: 'e1', name: 'Ana Cruz', role: 'Therapist', phone: '0917 555 0101', hiredOn: '2021-03-15', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], commissionRate: 0.1 },
-  { id: 'e2', name: 'Maricel Santos', role: 'Therapist', phone: '0918 555 0102', hiredOn: '2021-08-02', schedule: ['Tue', 'Wed', 'Thu', 'Fri', 'Sat'], commissionRate: 0.1 },
-  { id: 'e3', name: 'Jomar Reyes', role: 'Therapist', phone: '0919 555 0103', hiredOn: '2022-01-10', schedule: ['Wed', 'Thu', 'Fri', 'Sat', 'Sun'], commissionRate: 0.1 },
-  { id: 'e4', name: 'Liza Bautista', role: 'Therapist', phone: '0920 555 0104', hiredOn: '2022-06-20', schedule: ['Mon', 'Thu', 'Fri', 'Sat', 'Sun'], commissionRate: 0.1 },
-  { id: 'e5', name: 'Rhea Villanueva', role: 'Therapist', phone: '0921 555 0105', hiredOn: '2023-02-13', schedule: ['Mon', 'Tue', 'Fri', 'Sat', 'Sun'], commissionRate: 0.1 },
-  { id: 'e6', name: 'Paolo Mendoza', role: 'Therapist', phone: '0922 555 0106', hiredOn: '2024-04-01', schedule: ['Mon', 'Tue', 'Wed', 'Sat', 'Sun'], commissionRate: 0.1 },
-  { id: 'e7', name: 'Kristine Garcia', role: 'Receptionist', phone: '0923 555 0107', hiredOn: '2022-09-05', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], commissionRate: 0 },
-  { id: 'e8', name: 'Ramon dela Cruz', role: 'Manager', phone: '0924 555 0108', hiredOn: '2020-11-03', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], commissionRate: 0 },
+  { id: 'e1', name: 'Ana Cruz', role: 'Therapist', phone: '0917 555 0101', hiredOn: '2021-03-15', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
+  { id: 'e2', name: 'Maricel Santos', role: 'Therapist', phone: '0918 555 0102', hiredOn: '2021-08-02', schedule: ['Tue', 'Wed', 'Thu', 'Fri', 'Sat'] },
+  { id: 'e3', name: 'Jomar Reyes', role: 'Therapist', phone: '0919 555 0103', hiredOn: '2022-01-10', schedule: ['Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+  { id: 'e4', name: 'Liza Bautista', role: 'Therapist', phone: '0920 555 0104', hiredOn: '2022-06-20', schedule: ['Mon', 'Thu', 'Fri', 'Sat', 'Sun'] },
+  { id: 'e5', name: 'Rhea Villanueva', role: 'Therapist', phone: '0921 555 0105', hiredOn: '2023-02-13', schedule: ['Mon', 'Tue', 'Fri', 'Sat', 'Sun'] },
+  { id: 'e6', name: 'Paolo Mendoza', role: 'Therapist', phone: '0922 555 0106', hiredOn: '2024-04-01', schedule: ['Mon', 'Tue', 'Wed', 'Sat', 'Sun'] },
+  { id: 'e7', name: 'Kristine Garcia', role: 'Receptionist', phone: '0923 555 0107', hiredOn: '2022-09-05', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] },
+  { id: 'e8', name: 'Ramon dela Cruz', role: 'Manager', phone: '0924 555 0108', hiredOn: '2020-11-03', schedule: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
 ]
 
 const PRODUCTS = [

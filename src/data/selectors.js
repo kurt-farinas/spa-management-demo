@@ -1,6 +1,6 @@
 import { toDateStr, addDays } from './dates.js'
+import { MONTHS, nameOf } from '../lib/format.js'
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const sum = (list, fn) => list.reduce((total, x) => total + fn(x), 0)
 const lineTotal = (l) => l.qty * l.unitPrice
 
@@ -25,7 +25,6 @@ export function dashboardStats(state, today) {
 
 export function todaysAppointments(state, today) {
   const day = toDateStr(today)
-  const nameOf = (list, id) => list.find((x) => x.id === id)?.name ?? ''
   return state.appointments
     .filter((a) => a.start.startsWith(day))
     .map((a) => ({
@@ -96,6 +95,9 @@ export function incomeStatement(state, month) {
   }
 }
 
+// joined in the last 30 days, today counted: the one rule for the New tag and the header count
+export const isNewClient = (client, today) => client.joinedOn > toDateStr(addDays(today, -30)) && client.joinedOn <= toDateStr(today)
+
 // keeps state order, which is newest client first: addClient puts new clients at the front
 export function clientSummaries(state, today) {
   const day = toDateStr(today)
@@ -109,7 +111,13 @@ export function clientSummaries(state, today) {
     if (!row.lastVisit || date > row.lastVisit) row.lastVisit = date
     byClient.set(s.clientId, row)
   }
-  return state.clients.map((c) => ({ ...c, visits: 0, totalSpent: 0, lastVisit: null, ...byClient.get(c.id) }))
+  // 'New' is worked out from the join date, never read from the stored tags
+  const tagsOf = (c) => {
+    const kept = c.tags.filter((t) => t !== 'New')
+    if (isNewClient(c, today)) return [...kept, 'New']
+    return kept.length ? kept : ['Regular']
+  }
+  return state.clients.map((c) => ({ ...c, tags: tagsOf(c), visits: 0, totalSpent: 0, lastVisit: null, ...byClient.get(c.id) }))
 }
 
 // one row per sale, newest first; date is 'YYYY-MM-DD'
