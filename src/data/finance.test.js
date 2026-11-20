@@ -62,3 +62,19 @@ describe('monthlyTrend', () => {
     ])
   })
 })
+
+describe('incomeStatement throughDay', () => {
+  it('limits sales and expenses to days 1..N of the month', () => {
+    const s = incomeStatement(state, '2026-10', { throughDay: 10 })
+    expect(s.totalRevenue).toBe(2000) // the Oct 5 sale only, not Oct 20
+    expect(s.expenses).toEqual([{ category: 'Rent', amount: 300 }, { category: 'Supplies', amount: 100 }])
+    expect(incomeStatement(state, '2026-10', { throughDay: 0 }).totalExpenses).toBe(0)
+    expect(incomeStatement(state, '2026-10', { throughDay: 20 }).totalRevenue).toBe(3200)
+  })
+})
+
+describe('monthlyTrend with empty months', () => {
+  it('draws a month without data at 0', () => {
+    expect(monthlyTrend(state, ['2026-08', '2026-09'])[0]).toEqual({ month: '2026-08', label: 'Aug', revenue: 0, costs: 0, netIncome: 0 })
+  })
+})

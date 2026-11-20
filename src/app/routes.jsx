@@ -14,6 +14,7 @@ import { Appointments } from '../pages/Appointments.jsx'
 import { Pos } from '../pages/Pos.jsx'
 import { Inventory } from '../pages/Inventory.jsx'
 import { FinancialStatement } from '../pages/FinancialStatement.jsx'
+import { SalesReport } from '../pages/SalesReport.jsx'
 
 // One entry per built page; pages not listed here show ComingSoon.
 const PAGE_ELEMENTS = {
@@ -25,6 +26,7 @@ const PAGE_ELEMENTS = {
   pos: <Pos />,
   inventory: <Inventory />,
   'financial-statement': <FinancialStatement />,
+  'sales-report': <SalesReport />,
 }
 
 // Detail routes: { path, page (the PAGES key that guards it), element }.
@@ -53,7 +55,3 @@ export function AppRoutes() {
     </Routes>
   )
 }
-
-// Phase 4 pages, added here to keep merges with the other report page simple; imports are hoisted
-import { SalesReport } from '../pages/SalesReport.jsx'
-PAGE_ELEMENTS['sales-report'] = <SalesReport />

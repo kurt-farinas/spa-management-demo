@@ -1,5 +1,5 @@
 import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
-import { formatAccounting } from '../../lib/money.js'
+import { formatAccounting, kilo } from '../../lib/money.js'
 
 // revenue is plum-light deepened toward the surface; validated with gold for CVD and chroma (dataviz)
 const REVENUE = 'color-mix(in srgb, var(--color-plum-light) 82%, var(--color-surface))'
@@ -9,10 +9,8 @@ const SERIES = [
   ['netIncome', 'Net income', 'var(--color-ink)'],
 ]
 
-const kilo = (v) => {
-  const n = Math.abs(v)
-  return `${v < 0 ? '−' : ''}₱${n >= 1e6 ? `${n / 1e6}M` : n ? `${Math.round(n / 1000)}k` : 0}`
-}
+// the axis tick for a month: the partial one gets its asterisk, found by label and not by tick position
+export const tickLabel = (months, partialMonth, label) => (months.find((m) => m.label === label)?.month === partialMonth ? `${label}*` : label)
 
 function TrendTooltip({ active, payload, partialMonth }) {
   if (!active || !payload?.length) return null
@@ -65,7 +63,7 @@ export function TrendChart({ months, partialMonth }) {
               tickLine={false}
               axisLine={{ stroke: 'var(--color-tint)' }}
               tick={{ fontSize: 12, fill: 'var(--color-muted)' }}
-              tickFormatter={(label, i) => (months[i]?.month === partialMonth ? `${label}*` : label)}
+              tickFormatter={(label) => tickLabel(months, partialMonth, label)}
             />
             <YAxis width={48} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: 'var(--color-muted)' }} tickFormatter={kilo} />
             <Tooltip cursor={{ fill: 'var(--color-tint)', fillOpacity: 0.6 }} content={<TrendTooltip partialMonth={partialMonth} />} />

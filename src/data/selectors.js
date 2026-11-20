@@ -75,15 +75,17 @@ export function salesSummary(sales, { from, to, groupBy }, state) {
     : list.sort((a, b) => b.total - a.total)
 }
 
-export function incomeStatement(state, month) {
-  const lines = state.sales.filter((s) => s.date.startsWith(month)).flatMap((s) => s.lines)
+// throughDay limits sales and expenses to days 1..throughDay, to compare a month so far with the same days of the last one
+export function incomeStatement(state, month, { throughDay = 31 } = {}) {
+  const inScope = (x) => x.date.startsWith(month) && Number(x.date.slice(8, 10)) <= throughDay
+  const lines = state.sales.filter(inScope).flatMap((s) => s.lines)
   const products = lines.filter((l) => l.type === 'product')
   const serviceRevenue = sum(lines.filter((l) => l.type === 'service'), lineTotal)
   const productRevenue = sum(products, lineTotal)
   const costOfProducts = sum(products, (l) => l.qty * (state.products.find((p) => p.id === l.id)?.cost ?? 0))
   const byCategory = new Map()
   for (const e of state.expenses) {
-    if (e.date.startsWith(month)) byCategory.set(e.category, (byCategory.get(e.category) ?? 0) + e.amount)
+    if (inScope(e)) byCategory.set(e.category, (byCategory.get(e.category) ?? 0) + e.amount)
   }
   const expenses = [...byCategory].map(([category, amount]) => ({ category, amount }))
   const totalRevenue = serviceRevenue + productRevenue
