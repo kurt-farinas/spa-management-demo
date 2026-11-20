@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-20T11:02:54.495Z",
+        "reason": "Claude: unchosen direction mockup from the 2026-11-20 decision round; uses its own font on purpose, never shipped"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-20T11:02:54.615Z",
+        "reason": "Claude: unchosen direction mockup from the 2026-11-20 decision round; uses its own font on purpose, never shipped"
+      }
+    ]
+  }
+}

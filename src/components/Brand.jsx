@@ -14,7 +14,7 @@ export function Brand({ large = false }) {
     <div className={`flex items-center ${large ? 'flex-col gap-4 text-center' : 'gap-2'}`}>
       <Leaf className={large ? 'size-14' : 'size-[22px]'} />
       <div>
-        <div className={`font-bold text-rail-ink ${large ? 'text-4xl' : 'text-xl leading-6'}`}>{spaConfig.logoText}</div>
+        <div className={`font-bold text-rail-ink ${large ? 'text-4xl' : 'text-[17px] leading-6'}`}>{spaConfig.logoText}</div>
         <div className={`font-semibold tracking-[0.14em] text-rail-ink ${large ? 'mt-1 text-xs' : 'text-[11px]'}`}>{spaConfig.subtitle}</div>
       </div>
     </div>

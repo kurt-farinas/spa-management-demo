@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-11-20T10:59:48.538Z",
-  "title": "Design System: Lumière Day Spa (spa demo)",
+  "title": "Design System: Spa Management System (spa demo)",
   "extensions": {
     "themeSource": "src/config/spa.config.js theme -> applyTheme() sets --brand-<kebab> on :root -> src/index.css @theme maps --color-<role> to var(--brand-...). Values are the current Lumière skin; roles are the system.",
     "contrastGuard": "src/config/themeContrast.test.js asserts at least 4.5:1 for every text/ground pair in use.",
@@ -297,20 +297,9 @@
       },
       "cat-massage": {
         "role": "category",
-        "displayName": "Massage (pandan)",
-        "canonical": "#2E6B4F",
-        "cssVar": "--color-cat-massage",
-        "oklch": "oklch(47.9% 0.079 161.4)",
-        "tonalRamp": [
-          "#001006",
-          "#002D1A",
-          "#104B33",
-          "#2E6B4F",
-          "#558E72",
-          "#81B198",
-          "#B3D4C2",
-          "#E6F2EB"
-        ]
+        "displayName": "Massage (eucalyptus teal)",
+        "canonical": "#2F7F86",
+        "cssVar": "--color-cat-massage"
       },
       "cat-facial": {
         "role": "category",

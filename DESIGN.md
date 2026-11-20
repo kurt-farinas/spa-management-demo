@@ -1,5 +1,5 @@
 ---
-name: Lumière Day Spa (spa demo)
+name: Spa Management System (spa demo)
 description: A re-skinnable front-desk system for a Philippine day spa, dressed as a fresh botanical label.
 colors:
   rail: "#2E6B4F"
@@ -19,7 +19,7 @@ colors:
   success-bg: "#EAF3DE"
   success: "#3B6D11"
   danger: "#A32D2D"
-  cat-massage: "#2E6B4F"
+  cat-massage: "#2F7F86"
   cat-facial: "#D9E46B"
   cat-body: "#7A5235"
   cat-nails: "#C2413B"
@@ -147,7 +147,7 @@ components:
     height: "44px"
 ---
 
-# Design System: Lumière Day Spa (spa demo)
+# Design System: Spa Management System (spa demo)
 
 ## Overview
 
@@ -155,7 +155,7 @@ components:
 
 The front desk reads like a fresh local product label: pandan green, calamansi yellow-green, coconut white, amber. It is a working tool first. White panels sit on a pale green-white ground, separated by thin hairlines instead of shadows, and colour appears only where it does a job: the rail you navigate with, the one action you take, the booking you are looking at, the category of a service, the state of an appointment. It must not read as a purple-on-grey admin template, nor as a cream-and-serif "luxury" page, and it must never be dark or heavy.
 
-The theme is re-skinned per prospect. Every value below is the current Lumière skin, set in `src/config/spa.config.js` and pushed into CSS variables (`--brand-*`) by `applyTheme`; `src/index.css` maps those into Tailwind tokens (`bg-rail`, `text-ink`, `border-line`, ...). The roles are the system; the hex values are one skin. A new skin changes the values, never the roles.
+The theme is re-skinned per prospect. Every value below is the current default skin, set in `src/config/spa.config.js` and pushed into CSS variables (`--brand-*`) by `applyTheme`; `src/index.css` maps those into Tailwind tokens (`bg-rail`, `text-ink`, `border-line`, ...). The roles are the system; the hex values are one skin. A new skin changes the values, never the roles.
 
 Density is medium: 44px tap targets everywhere, 13–15px working text, tabular figures for every number a spa owner would compare.
 
@@ -196,7 +196,7 @@ A cool botanical palette: green structure, white surfaces, one warm action colou
 - **Danger** (danger, on surface): the No-show stamp, errors, losses.
 
 ### Service categories
-One colour per service category, drawn by `categoryBand()`: **Massage** pandan (cat-massage), **Facial** calamansi (cat-facial), **Body** coffee (cat-body), **Nails** gumamela (cat-nails), **Package** amber (cat-package). Unknown categories fall back to muted. They appear as a 4px band at the left edge of an appointment row or calendar block, a 8px swatch next to a category name, and the bar in Top services. Because calamansi is too pale to show against white, the Facial band always carries an inset ink hairline (ring 1px, ink at 25%).
+One colour per service category, drawn by `categoryBand()`: **Massage** eucalyptus teal (cat-massage, kept apart from the rail green so a band never reads as app chrome), **Facial** calamansi (cat-facial), **Body** coffee (cat-body), **Nails** gumamela (cat-nails), **Package** amber (cat-package). Unknown categories fall back to muted. They appear as a 4px band at the left edge of an appointment row or calendar block, a 8px swatch next to a category name, and the bar in Top services. Because calamansi is too pale to show against white, the Facial band always carries an inset ink hairline (ring 1px, ink at 25%).
 
 ### Named Rules
 **The Roles Not Hex Rule.** Components never hard-code a colour. They use the role tokens (`bg-rail`, `text-ink`, `border-line`, `bg-cat-*`) or `var(--color-*)` / `var(--brand-*)` inside arbitrary values, so a prospect's re-skin in `spa.config.js` reaches every pixel.

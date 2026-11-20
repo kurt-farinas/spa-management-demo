@@ -24,7 +24,7 @@ setMeta('property', 'og:description', description)
 
 // favicon from the theme, so a re-skin changes it too; public/favicon.svg is the static fallback
 const { rail, highlight } = spaConfig.theme
-const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${rail}"/><circle cx="32" cy="32" r="23" fill="none" stroke="${highlight}" stroke-width="3"/><text x="32" y="43" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="${highlight}">${spaConfig.logoText[0]}</text></svg>`
+const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${rail}"/><circle cx="32" cy="32" r="23" fill="none" stroke="${highlight}" stroke-width="3"/><text x="32" y="43" text-anchor="middle" font-family="system-ui, sans-serif" font-size="30" fill="${highlight}">${spaConfig.logoText[0]}</text></svg>`
 const icon = document.head.querySelector('link[rel="icon"]') ?? document.head.appendChild(document.createElement('link'))
 icon.rel = 'icon'
 icon.type = 'image/svg+xml'

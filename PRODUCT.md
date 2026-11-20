@@ -34,7 +34,7 @@ Built for one spa at a time: the name, logo text, colours, fonts and service men
 
 ## Brand Commitments
 
-- Demo spa: "Lumière Day Spa", tagline "Unhurried care, beautifully kept." (fictional, replaceable per prospect).
+- Demo name: "Spa Management System" (user-confirmed 2026-11-20, replacing the fictional "Lumière Day Spa"), tagline "Bookings, sales and reports for your spa, in one place." Replaceable per prospect.
 - Anti-goals confirmed 2026-11-20: must not feel cold or corporate, must not look like a generic admin template, must not be dark or heavy.
 
 ## Evidence on Hand
